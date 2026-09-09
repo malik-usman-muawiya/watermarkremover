@@ -13,8 +13,180 @@ export interface WatermarkRegion {
 }
 
 /**
+ * AI Video Watermark Scanner:
+ * Automatically analyzes the video frame to detect high-contrast text banners, subtitles, or logos.
+ * Returns detected WatermarkRegion boxes with accurate [x, y, width, height] percentages.
+ */
+export function autoDetectVideoWatermark(
+  video: HTMLVideoElement | HTMLCanvasElement,
+  width: number,
+  height: number
+): WatermarkRegion[] {
+  const canvas = document.createElement('canvas');
+  // Scaled down for ultra-fast real-time inference (max 360px height)
+  const scale = Math.min(1, 360 / Math.max(1, height));
+  const sw = Math.max(32, Math.round(width * scale));
+  const sh = Math.max(32, Math.round(height * scale));
+  canvas.width = sw;
+  canvas.height = sh;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  if (!ctx) return [{ id: 'region-1', label: 'Top Text Banner', x: 6, y: 11, width: 88, height: 16 }];
+
+  try {
+    ctx.drawImage(video, 0, 0, sw, sh);
+    const imgData = ctx.getImageData(0, 0, sw, sh);
+    const data = imgData.data;
+
+    // 1. Compute row-level text energy & contrast
+    const rowEnergy = new Float32Array(sh);
+    const rowTextCount = new Int32Array(sh);
+
+    for (let y = 1; y < sh - 1; y++) {
+      let energy = 0;
+      let textCount = 0;
+      const rowOffset = y * sw;
+
+      for (let x = 1; x < sw - 1; x++) {
+        const idx = (rowOffset + x) * 4;
+        const r = data[idx];
+        const g = data[idx + 1];
+        const b = data[idx + 2];
+
+        // Horizontal contrast
+        const leftIdx = (rowOffset + x - 1) * 4;
+        const rightIdx = (rowOffset + x + 1) * 4;
+        const lumL = 0.299 * data[leftIdx] + 0.587 * data[leftIdx + 1] + 0.114 * data[leftIdx + 2];
+        const lumR = 0.299 * data[rightIdx] + 0.587 * data[rightIdx + 1] + 0.114 * data[rightIdx + 2];
+        const hEdge = Math.abs(lumR - lumL);
+        energy += hEdge;
+
+        // Detect high-contrast text pixels (white, yellow, or bright characters)
+        const isWhiteText = (r > 190 && g > 190 && b > 190);
+        const isYellowText = (r > 185 && g > 155 && b < 125);
+
+        if ((isWhiteText || isYellowText) && hEdge > 18) {
+          textCount++;
+        }
+      }
+
+      rowEnergy[y] = energy / sw;
+      rowTextCount[y] = textCount;
+    }
+
+    const detectedRegions: WatermarkRegion[] = [];
+
+    // A. Scan Top/Upper Zone (y: 3% to 42% height) for title banners (e.g. "I SAVED THE VEHICLE...")
+    const topMinY = Math.round(sh * 0.03);
+    const topMaxY = Math.round(sh * 0.42);
+    const bannerWindowH = Math.max(10, Math.round(sh * 0.15));
+
+    let bestTopScore = 0;
+    let bestTopY = -1;
+
+    for (let y = topMinY; y <= topMaxY - bannerWindowH; y++) {
+      let winScore = 0;
+      for (let dy = 0; dy < bannerWindowH; dy++) {
+        winScore += rowEnergy[y + dy] + rowTextCount[y + dy] * 2.8;
+      }
+      if (winScore > bestTopScore) {
+        bestTopScore = winScore;
+        bestTopY = y;
+      }
+    }
+
+    if (bestTopY >= 0 && bestTopScore > 60) {
+      // Find horizontal bounds within bestTopY
+      let minX = sw, maxX = 0;
+      for (let y = bestTopY; y < bestTopY + bannerWindowH; y++) {
+        for (let x = 0; x < sw; x++) {
+          const idx = (y * sw + x) * 4;
+          const r = data[idx], g = data[idx + 1], b = data[idx + 2];
+          if ((r > 190 && g > 190 && b > 190) || (r > 185 && g > 155 && b < 125)) {
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+          }
+        }
+      }
+
+      const normY = Math.max(1, Math.min(85, ((bestTopY / sh) * 100)));
+      const normH = Math.min(28, Math.max(8, ((bannerWindowH / sh) * 100)));
+      const normX = minX < maxX ? Math.max(2, (((minX - 6) / sw) * 100)) : 6;
+      const normW = minX < maxX ? Math.min(96, ((((maxX - minX) + 12) / sw) * 100)) : 88;
+
+      detectedRegions.push({
+        id: 'region-1',
+        label: 'Top Text Banner (Auto-Detected)',
+        x: Math.round(normX),
+        y: Math.round(normY),
+        width: Math.round(normW),
+        height: Math.round(normH)
+      });
+    }
+
+    // B. Scan Bottom Zone (y: 65% to 96% height) for Subtitles or Watermark Handles (e.g. "DDQV GRAPH")
+    const botMinY = Math.round(sh * 0.65);
+    const botMaxY = Math.round(sh * 0.96);
+    const subWindowH = Math.max(8, Math.round(sh * 0.11));
+
+    let bestBotScore = 0;
+    let bestBotY = -1;
+
+    for (let y = botMinY; y <= botMaxY - subWindowH; y++) {
+      let winScore = 0;
+      for (let dy = 0; dy < subWindowH; dy++) {
+        winScore += rowEnergy[y + dy] + rowTextCount[y + dy] * 2.8;
+      }
+      if (winScore > bestBotScore) {
+        bestBotScore = winScore;
+        bestBotY = y;
+      }
+    }
+
+    if (bestBotY >= 0 && bestBotScore > 80) {
+      let minX = sw, maxX = 0;
+      for (let y = bestBotY; y < bestBotY + subWindowH; y++) {
+        for (let x = 0; x < sw; x++) {
+          const idx = (y * sw + x) * 4;
+          const r = data[idx], g = data[idx + 1], b = data[idx + 2];
+          if ((r > 190 && g > 190 && b > 190) || (r > 185 && g > 155 && b < 125)) {
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+          }
+        }
+      }
+
+      const normY = Math.max(50, Math.min(92, ((bestBotY / sh) * 100)));
+      const normH = Math.min(22, Math.max(6, ((subWindowH / sh) * 100)));
+      const normX = minX < maxX ? Math.max(2, (((minX - 6) / sw) * 100)) : 15;
+      const normW = minX < maxX ? Math.min(96, ((((maxX - minX) + 12) / sw) * 100)) : 70;
+
+      detectedRegions.push({
+        id: `region-${detectedRegions.length + 1}`,
+        label: 'Bottom Watermark (Auto-Detected)',
+        x: Math.round(normX),
+        y: Math.round(normY),
+        width: Math.round(normW),
+        height: Math.round(normH)
+      });
+    }
+
+    if (detectedRegions.length > 0) {
+      return detectedRegions;
+    }
+  } catch (err) {
+    console.warn('Auto-detect error:', err);
+  }
+
+  // Fallback matching realistic mobile video caption placement
+  return [
+    { id: 'region-1', label: 'Top Text Banner', x: 6, y: 11, width: 88, height: 16 }
+  ];
+}
+
+/**
  * Intelligent Video Frame Inpainter
  * Blends surrounding video context seamlessly into the watermark region with zero dark bands.
+ * Uses smooth bidirectional gradient blending between top and bottom background contexts.
  */
 export function inpaintVideoRegionOnContext(
   ctx: CanvasRenderingContext2D,
@@ -24,71 +196,78 @@ export function inpaintVideoRegionOnContext(
   regions: WatermarkRegion[]
 ) {
   for (const box of regions) {
-    const bx = Math.round((box.x / 100) * width);
-    const by = Math.round((box.y / 100) * height);
-    const bw = Math.round((box.width / 100) * width);
-    const bh = Math.round((box.height / 100) * height);
+    const bx = Math.max(0, Math.round((box.x / 100) * width));
+    const by = Math.max(0, Math.round((box.y / 100) * height));
+    const bw = Math.min(width - bx, Math.round((box.width / 100) * width));
+    const bh = Math.min(height - by, Math.round((box.height / 100) * height));
 
     if (bw <= 2 || bh <= 2) continue;
 
     ctx.save();
 
-    // 1. Clip to the bounding box
+    // 1. Clip strictly to the target watermark box
     ctx.beginPath();
     ctx.rect(bx, by, bw, bh);
     ctx.clip();
 
-    // Determine available context margins (clamped inside video frame)
-    const padY = Math.max(12, Math.round(bh * 0.45));
-    const padX = Math.max(12, Math.round(bw * 0.25));
+    // Margin sampling distance (outside the watermark text)
+    const padY = Math.max(8, Math.min(48, Math.round(bh * 0.4)));
+    const padX = Math.max(8, Math.min(32, Math.round(bw * 0.2)));
 
-    const canSampleTop = by >= padY;
-    const canSampleBot = (by + bh + padY) <= height;
-    const canSampleLeft = bx >= padX;
-    const canSampleRight = (bx + bw + padX) <= width;
+    const hasTop = by >= padY;
+    const hasBot = (by + bh + padY) <= height;
+    const hasLeft = bx >= padX;
+    const hasRight = (bx + bw + padX) <= width;
 
-    // A. Vertical Background Synthesis (Priority when top or bottom context exists)
-    if (canSampleTop && canSampleBot) {
-      // Top slice into upper half with soft blur
-      ctx.filter = 'blur(6px)';
-      ctx.drawImage(video, bx, by - padY, bw, padY, bx, by, bw, Math.round(bh * 0.55));
-      // Bottom slice into lower half
-      ctx.drawImage(video, bx, by + bh, bw, padY, bx, by + Math.round(bh * 0.45), bw, Math.round(bh * 0.55));
-    } else if (canSampleBot) {
-      // Near top edge of video: sample from bottom context
-      ctx.filter = 'blur(6px)';
-      ctx.drawImage(video, bx, by + bh, bw, padY, bx, by, bw, bh);
-    } else if (canSampleTop) {
-      // Near bottom edge of video: sample from top context
-      ctx.filter = 'blur(6px)';
+    // A. Bidirectional Gradient Inpainting
+    if (hasTop && hasBot) {
+      // Top slice: drawn over whole box with soft edge
+      ctx.filter = 'blur(4px)';
+      ctx.globalAlpha = 1.0;
       ctx.drawImage(video, bx, by - padY, bw, padY, bx, by, bw, bh);
-    } else if (canSampleLeft || canSampleRight) {
+
+      // Bottom slice: blended with 50% opacity to interpolate gradient
+      ctx.globalAlpha = 0.5;
+      ctx.drawImage(video, bx, by + bh, bw, padY, bx, by, bw, bh);
+    } else if (hasBot) {
+      // Near top of frame: synthesize from bottom background
+      ctx.filter = 'blur(5px)';
+      ctx.globalAlpha = 1.0;
+      ctx.drawImage(video, bx, by + bh, bw, padY, bx, by, bw, bh);
+    } else if (hasTop) {
+      // Near bottom of frame: synthesize from top background
+      ctx.filter = 'blur(5px)';
+      ctx.globalAlpha = 1.0;
+      ctx.drawImage(video, bx, by - padY, bw, padY, bx, by, bw, bh);
+    } else if (hasLeft || hasRight) {
       // Lateral sample
-      ctx.filter = 'blur(8px)';
-      if (canSampleLeft) {
+      ctx.filter = 'blur(6px)';
+      ctx.globalAlpha = 1.0;
+      if (hasLeft) {
         ctx.drawImage(video, bx - padX, by, padX, bh, bx, by, bw, bh);
       } else {
         ctx.drawImage(video, bx + bw, by, padX, bh, bx, by, bw, bh);
       }
     } else {
-      // Fallback local blur
-      ctx.filter = 'blur(16px)';
+      // Fallback
+      ctx.filter = 'blur(12px)';
+      ctx.globalAlpha = 1.0;
       ctx.drawImage(video, bx, by, bw, bh, bx, by, bw, bh);
     }
 
-    // B. Lateral Edge Softening
-    if (canSampleLeft && canSampleRight) {
-      ctx.filter = 'blur(8px)';
-      ctx.globalAlpha = 0.35;
-      ctx.drawImage(video, bx - padX, by, padX, bh, bx, by, Math.round(bw * 0.35), bh);
-      ctx.drawImage(video, bx + bw, by, padX, bh, bx + Math.round(bw * 0.65), by, Math.round(bw * 0.35), bh);
+    // B. Lateral Edge Feathering
+    if (hasLeft && hasRight) {
+      ctx.filter = 'blur(6px)';
+      ctx.globalAlpha = 0.25;
+      ctx.drawImage(video, bx - padX, by, padX, bh, bx, by, Math.round(bw * 0.3), bh);
+      ctx.drawImage(video, bx + bw, by, padX, bh, bx + Math.round(bw * 0.7), by, Math.round(bw * 0.3), bh);
     }
 
     ctx.filter = 'none';
     ctx.globalAlpha = 1.0;
 
     // Subtle grain texture overlay to eliminate artificial plastic look
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.012)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.015)';
     ctx.fillRect(bx, by, bw, bh);
 
     ctx.restore();

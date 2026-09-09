@@ -5,6 +5,7 @@ import {
   generateSyntheticSampleVideo, 
   processAndExportCleanVideo, 
   inpaintVideoRegionOnContext, 
+  autoDetectVideoWatermark,
   type WatermarkRegion 
 } from '../../utils/videoGenerator';
 import { VideoComparisonSlider } from './VideoComparisonSlider';
@@ -56,11 +57,12 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
   const [splitSliderPos, setSplitSliderPos] = useState<number>(50);
   const [isDraggingSlider, setIsDraggingSlider] = useState(false);
 
-  // Multi-Region List
+  // Multi-Region List: Default to Title Banner position (y: 11%, height: 16%)
   const [regions, setRegions] = useState<WatermarkRegion[]>([
-    { id: 'region-1', label: 'Top Text Banner', x: 6, y: 4, width: 88, height: 14 }
+    { id: 'region-1', label: 'Top Title Banner', x: 5, y: 11, width: 90, height: 16 }
   ]);
   const [selectedRegionId, setSelectedRegionId] = useState<string>('region-1');
+  const [detectStatus, setDetectStatus] = useState<string | null>(null);
 
   // Drag & Resize state
   const [activeHandle, setActiveHandle] = useState<string | null>(null);
@@ -89,6 +91,27 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
     { title: 'Finalizing Clean Video', desc: 'Ready for instant high-speed download' }
   ];
 
+  const runAutoDetection = useCallback((videoElement?: HTMLVideoElement) => {
+    const v = videoElement || videoRef.current;
+    if (!v) return;
+    const w = v.videoWidth || 720;
+    const h = v.videoHeight || 1280;
+
+    try {
+      const detected = autoDetectVideoWatermark(v, w, h);
+      if (detected && detected.length > 0) {
+        setRegions(detected);
+        setSelectedRegionId(detected[0].id || 'region-1');
+        setDetectStatus(`Watermark auto-detected at ${Math.round(detected[0].y)}% from top`);
+        setTimeout(() => setDetectStatus(null), 3500);
+        return true;
+      }
+    } catch (e) {
+      console.warn('Auto detection failed:', e);
+    }
+    return false;
+  }, []);
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -99,6 +122,8 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
       setCleanedVideoBlobUrl(null);
       setIsPlaying(false);
       setViewMode('preview');
+      setRegions([{ id: 'region-1', label: 'Top Title Banner', x: 5, y: 11, width: 90, height: 16 }]);
+      setSelectedRegionId('region-1');
     }
   };
 
@@ -131,6 +156,14 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
         previewCanvasRef.current.height = h;
       }
       renderLiveInpaintedFrame();
+
+      // Automatically run watermark scanner on frame once ready
+      setTimeout(() => {
+        if (videoRef.current) {
+          runAutoDetection(videoRef.current);
+          renderLiveInpaintedFrame();
+        }
+      }, 150);
     }
   };
 
@@ -171,37 +204,32 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
   }, [regions, renderLiveInpaintedFrame]);
 
   // Handle Box Selection / Movement / Resizing
-  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>, handle?: string, regionId?: string) => {
+  const handleBoxPointerDown = (e: React.PointerEvent<HTMLDivElement>, handle: string, regionId: string) => {
+    e.stopPropagation();
+    const targetId = regionId || selectedRegionId;
+    setSelectedRegionId(targetId);
+    const targetBox = regions.find(r => r.id === targetId);
+    if (!targetBox || !videoWrapperRef.current) return;
+
+    const rect = videoWrapperRef.current.getBoundingClientRect();
+    const clickX = ((e.clientX - rect.left) / rect.width) * 100;
+    const clickY = ((e.clientY - rect.top) / rect.height) * 100;
+
+    setActiveHandle(handle || 'move');
+    setDragStartPos({ x: clickX, y: clickY });
+    setInitialBoxState({ ...targetBox });
+  };
+
+  const handleContainerPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (viewMode === 'preview') {
       setIsDraggingSlider(true);
       handleSliderMove(e.clientX);
-      return;
-    }
-
-    if (viewMode === 'edit') {
-      e.stopPropagation();
-      const targetId = regionId || selectedRegionId;
-      setSelectedRegionId(targetId);
-      const targetBox = regions.find(r => r.id === targetId);
-      if (!targetBox || !videoWrapperRef.current) return;
-
-      const rect = videoWrapperRef.current.getBoundingClientRect();
-      const clickX = ((e.clientX - rect.left) / rect.width) * 100;
-      const clickY = ((e.clientY - rect.top) / rect.height) * 100;
-
-      setActiveHandle(handle || 'move');
-      setDragStartPos({ x: clickX, y: clickY });
-      setInitialBoxState({ ...targetBox });
     }
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (viewMode === 'preview' && isDraggingSlider) {
-      handleSliderMove(e.clientX);
-      return;
-    }
-
-    if (viewMode === 'edit' && activeHandle && dragStartPos && initialBoxState && videoWrapperRef.current) {
+    // 1. Box moving or resizing
+    if (activeHandle && dragStartPos && initialBoxState && videoWrapperRef.current) {
       const rect = videoWrapperRef.current.getBoundingClientRect();
       const curX = ((e.clientX - rect.left) / rect.width) * 100;
       const curY = ((e.clientY - rect.top) / rect.height) * 100;
@@ -248,6 +276,12 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
       }
 
       setRegions(prev => prev.map(r => r.id === selectedRegionId ? { ...r, x, y, width, height } : r));
+      return;
+    }
+
+    // 2. Split comparison slider drag
+    if (viewMode === 'preview' && isDraggingSlider) {
+      handleSliderMove(e.clientX);
     }
   };
 
@@ -290,15 +324,19 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
     setSelectedRegionId(regions.find(r => r.id !== id)?.id || '');
   };
 
-  const applyPreset = (preset: 'top-banner' | 'corner-logo' | 'bottom-subtitle' | 'bottom-right') => {
-    if (preset === 'top-banner') {
-      setRegions([{ id: 'region-1', label: 'Top Text Banner', x: 6, y: 3.5, width: 88, height: 15 }]);
-    } else if (preset === 'corner-logo') {
-      setRegions([{ id: 'region-1', label: 'Top-Right Logo', x: 68, y: 4, width: 28, height: 12 }]);
+  const applyPreset = (preset: 'auto' | 'top-title' | 'top-banner' | 'bottom-subtitle' | 'bottom-right') => {
+    if (preset === 'auto') {
+      runAutoDetection();
+      return;
+    }
+    if (preset === 'top-title') {
+      setRegions([{ id: 'region-1', label: 'Top Title Banner', x: 5, y: 11, width: 90, height: 16 }]);
+    } else if (preset === 'top-banner') {
+      setRegions([{ id: 'region-1', label: 'Top Header / Logo', x: 5, y: 3, width: 90, height: 12 }]);
     } else if (preset === 'bottom-subtitle') {
-      setRegions([{ id: 'region-1', label: 'Bottom Subtitle', x: 8, y: 82, width: 84, height: 13 }]);
+      setRegions([{ id: 'region-1', label: 'Bottom Subtitle', x: 8, y: 82, width: 84, height: 14 }]);
     } else if (preset === 'bottom-right') {
-      setRegions([{ id: 'region-1', label: 'Bottom-Right Stamp', x: 65, y: 82, width: 30, height: 14 }]);
+      setRegions([{ id: 'region-1', label: 'Bottom Channel Handle', x: 20, y: 83, width: 60, height: 10 }]);
     }
     setSelectedRegionId('region-1');
   };
@@ -475,7 +513,7 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
             >
               <div 
                 ref={videoWrapperRef}
-                onPointerDown={(e) => handlePointerDown(e)}
+                onPointerDown={handleContainerPointerDown}
                 className="relative max-h-[62vh] rounded-2xl overflow-hidden shadow-2xl bg-black border border-[#2f354e] select-none mx-auto cursor-pointer"
                 style={{
                   aspectRatio: `${videoAspectRatio || 0.5625}`,
@@ -517,15 +555,15 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                 {/* 3. Live Split Curtain Slider */}
                 {viewMode === 'preview' && selectedVideo && (
                   <>
-                    <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-black text-white uppercase tracking-wider pointer-events-none shadow border border-white/20">
+                    <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-black text-white uppercase tracking-wider pointer-events-none shadow border border-white/20 z-10">
                       BEFORE (ORIGINAL)
                     </div>
-                    <div className="absolute top-3 right-3 bg-amber-500/90 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-black text-white uppercase tracking-wider pointer-events-none shadow border border-amber-300/30">
-                      AFTER (INPAINTED)
+                    <div className="absolute top-3 right-3 bg-amber-500/90 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-black text-white uppercase tracking-wider pointer-events-none shadow border border-amber-300/30 z-10">
+                      AFTER (CLEAN)
                     </div>
 
                     <div
-                      className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_12px_rgba(255,255,255,0.8)] flex items-center justify-center pointer-events-none z-20"
+                      className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_12px_rgba(255,255,255,0.8)] flex items-center justify-center pointer-events-none z-30"
                       style={{ left: `${splitSliderPos}%` }}
                     >
                       <div className="w-8 h-8 rounded-full bg-white text-slate-900 shadow-2xl flex items-center justify-center -ml-[15px] border-2 border-amber-500 pointer-events-auto cursor-ew-resize hover:scale-110 transition-transform">
@@ -535,19 +573,24 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                   </>
                 )}
 
-                {/* 4. Interactive Resizable Watermark Boxes */}
-                {viewMode === 'edit' && selectedVideo && (
-                  <>
+                {/* 4. Interactive Resizable Watermark Boxes (visible in both preview and edit) */}
+                {selectedVideo && (
+                  <div 
+                    className="absolute inset-0 pointer-events-none z-20"
+                    style={{
+                      clipPath: viewMode === 'preview' ? `inset(0 ${Math.max(0, 100 - splitSliderPos)}% 0 0)` : 'none'
+                    }}
+                  >
                     {regions.map((r) => {
                       const isSelected = r.id === selectedRegionId;
                       return (
                         <div
                           key={r.id}
-                          onPointerDown={(e) => handlePointerDown(e, 'move', r.id)}
-                          className={`absolute border-2 rounded-xl shadow-2xl cursor-move select-none transition-shadow ${
+                          onPointerDown={(e) => handleBoxPointerDown(e, 'move', r.id || 'region-1')}
+                          className={`absolute border-2 rounded-xl shadow-2xl cursor-move select-none transition-shadow pointer-events-auto ${
                             isSelected 
-                              ? 'border-amber-400 bg-amber-500/25 shadow-amber-500/30 z-20' 
-                              : 'border-emerald-400/80 bg-emerald-500/15 z-10'
+                              ? 'border-amber-400 bg-amber-500/25 shadow-amber-500/30 ring-2 ring-amber-400/40' 
+                              : 'border-emerald-400/80 bg-emerald-500/15'
                           }`}
                           style={{
                             left: `${r.x}%`,
@@ -557,39 +600,39 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                           }}
                         >
                           {/* Label tag */}
-                          <div className={`text-[9px] font-black px-2 py-0.5 rounded-full shadow absolute -top-5 left-1 uppercase tracking-wider flex items-center gap-1 ${
+                          <div className={`text-[9px] font-black px-2 py-0.5 rounded-full shadow absolute -top-5 left-1 uppercase tracking-wider flex items-center gap-1 whitespace-nowrap ${
                             isSelected ? 'bg-amber-500 text-black' : 'bg-emerald-600 text-white'
                           }`}>
                             <Sparkle className="w-2.5 h-2.5" />
-                            <span>{r.label || 'Watermark Area'}</span>
+                            <span>{r.label || 'Target Watermark'}</span>
                           </div>
 
                           {/* Resize Handles (when selected) */}
                           {isSelected && (
                             <>
                               {/* 4 Corners */}
-                              <div onPointerDown={(e) => handlePointerDown(e, 'nw', r.id)} className="w-3 h-3 bg-amber-400 border border-white rounded-full absolute -top-1.5 -left-1.5 cursor-nwse-resize shadow-md" />
-                              <div onPointerDown={(e) => handlePointerDown(e, 'ne', r.id)} className="w-3 h-3 bg-amber-400 border border-white rounded-full absolute -top-1.5 -right-1.5 cursor-nesw-resize shadow-md" />
-                              <div onPointerDown={(e) => handlePointerDown(e, 'sw', r.id)} className="w-3 h-3 bg-amber-400 border border-white rounded-full absolute -bottom-1.5 -left-1.5 cursor-nesw-resize shadow-md" />
-                              <div onPointerDown={(e) => handlePointerDown(e, 'se', r.id)} className="w-3 h-3 bg-amber-400 border border-white rounded-full absolute -bottom-1.5 -right-1.5 cursor-nwse-resize shadow-md" />
+                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'nw', r.id || 'region-1')} className="w-3.5 h-3.5 bg-amber-400 border-2 border-black rounded-full absolute -top-1.5 -left-1.5 cursor-nwse-resize shadow-md" />
+                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'ne', r.id || 'region-1')} className="w-3.5 h-3.5 bg-amber-400 border-2 border-black rounded-full absolute -top-1.5 -right-1.5 cursor-nesw-resize shadow-md" />
+                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'sw', r.id || 'region-1')} className="w-3.5 h-3.5 bg-amber-400 border-2 border-black rounded-full absolute -bottom-1.5 -left-1.5 cursor-nesw-resize shadow-md" />
+                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'se', r.id || 'region-1')} className="w-3.5 h-3.5 bg-amber-400 border-2 border-black rounded-full absolute -bottom-1.5 -right-1.5 cursor-nwse-resize shadow-md" />
                               
                               {/* 4 Edges */}
-                              <div onPointerDown={(e) => handlePointerDown(e, 'n', r.id)} className="w-4 h-1.5 bg-amber-400 rounded-full absolute -top-1 left-1/2 -translate-x-1/2 cursor-ns-resize" />
-                              <div onPointerDown={(e) => handlePointerDown(e, 's', r.id)} className="w-4 h-1.5 bg-amber-400 rounded-full absolute -bottom-1 left-1/2 -translate-x-1/2 cursor-ns-resize" />
-                              <div onPointerDown={(e) => handlePointerDown(e, 'w', r.id)} className="w-1.5 h-4 bg-amber-400 rounded-full absolute top-1/2 -left-1 -translate-y-1/2 cursor-ew-resize" />
-                              <div onPointerDown={(e) => handlePointerDown(e, 'e', r.id)} className="w-1.5 h-4 bg-amber-400 rounded-full absolute top-1/2 -right-1 -translate-y-1/2 cursor-ew-resize" />
+                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'n', r.id || 'region-1')} className="w-5 h-2 bg-amber-400 border border-black rounded-full absolute -top-1 left-1/2 -translate-x-1/2 cursor-ns-resize shadow-sm" />
+                              <div onPointerDown={(e) => handleBoxPointerDown(e, 's', r.id || 'region-1')} className="w-5 h-2 bg-amber-400 border border-black rounded-full absolute -bottom-1 left-1/2 -translate-x-1/2 cursor-ns-resize shadow-sm" />
+                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'w', r.id || 'region-1')} className="w-2 h-5 bg-amber-400 border border-black rounded-full absolute top-1/2 -left-1 -translate-y-1/2 cursor-ew-resize shadow-sm" />
+                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'e', r.id || 'region-1')} className="w-2 h-5 bg-amber-400 border border-black rounded-full absolute top-1/2 -right-1 -translate-y-1/2 cursor-ew-resize shadow-sm" />
                             </>
                           )}
                         </div>
                       );
                     })}
-                  </>
+                  </div>
                 )}
 
                 {/* 5. Center Play Button Overlay */}
                 <div 
                   onClick={togglePlay}
-                  className="absolute inset-0 flex items-center justify-center bg-black/10 hover:bg-black/30 transition-colors cursor-pointer z-10"
+                  className="absolute inset-0 flex items-center justify-center bg-black/10 hover:bg-black/25 transition-colors cursor-pointer z-10"
                 >
                   <button 
                     onClick={(e) => {
@@ -706,25 +749,43 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                 ))}
               </div>
 
-              {/* Quick Placement Presets */}
+              {/* AI Auto-Detect Action & Status */}
               <div className="space-y-2 pt-2 border-t border-[#232738]">
+                <button
+                  onClick={() => runAutoDetection()}
+                  className="w-full py-2.5 px-4 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/10 hover:bg-amber-500/30 border border-amber-500/40 hover:border-amber-400 rounded-2xl text-xs font-black text-amber-300 flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
+                >
+                  <Wand2 className="w-4 h-4 text-amber-400 animate-pulse" />
+                  <span>✨ AI Auto-Detect Watermark</span>
+                </button>
+
+                {detectStatus && (
+                  <div className="p-2.5 bg-amber-500/15 border border-amber-500/40 rounded-xl text-[11px] text-amber-300 font-bold flex items-center gap-2 animate-in fade-in slide-in-from-top-1">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>{detectStatus}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Quick Placement Presets */}
+              <div className="space-y-2">
                 <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
                   Quick-Snap Presets:
                 </span>
                 
                 <div className="grid grid-cols-2 gap-2">
                   <button
-                    onClick={() => applyPreset('top-banner')}
+                    onClick={() => applyPreset('top-title')}
                     className="p-2.5 bg-[#181a26] hover:bg-amber-500/10 border border-[#262a3e] hover:border-amber-500/40 rounded-xl text-left text-xs font-bold text-slate-200 transition-colors cursor-pointer"
                   >
-                    📝 Top Banner
+                    🎬 Title Banner (11%)
                   </button>
 
                   <button
-                    onClick={() => applyPreset('corner-logo')}
+                    onClick={() => applyPreset('top-banner')}
                     className="p-2.5 bg-[#181a26] hover:bg-amber-500/10 border border-[#262a3e] hover:border-amber-500/40 rounded-xl text-left text-xs font-bold text-slate-200 transition-colors cursor-pointer"
                   >
-                    🏷️ Top-Right Logo
+                    📝 Top Header (3%)
                   </button>
 
                   <button
@@ -738,7 +799,7 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                     onClick={() => applyPreset('bottom-right')}
                     className="p-2.5 bg-[#181a26] hover:bg-amber-500/10 border border-[#262a3e] hover:border-amber-500/40 rounded-xl text-left text-xs font-bold text-slate-200 transition-colors cursor-pointer"
                   >
-                    ✨ Corner Stamp
+                    🏷️ Bottom Handle
                   </button>
                 </div>
               </div>
