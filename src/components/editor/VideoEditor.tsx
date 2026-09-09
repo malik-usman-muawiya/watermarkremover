@@ -1,8 +1,12 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Button } from '../ui/Button';
 import { useAuth } from '../../context/AuthContext';
 import { ApiService } from '../../services/api';
-import { generateSyntheticSampleVideo, processAndExportCleanVideo, type WatermarkRegion } from '../../utils/videoGenerator';
+import { 
+  generateSyntheticSampleVideo, 
+  processAndExportCleanVideo, 
+  inpaintVideoRegionOnContext, 
+  type WatermarkRegion 
+} from '../../utils/videoGenerator';
 import { VideoComparisonSlider } from './VideoComparisonSlider';
 import { 
   Video, 
@@ -15,14 +19,18 @@ import {
   Film, 
   Volume2, 
   VolumeX, 
-  Bot, 
   MousePointer2, 
   Download, 
-  SlidersHorizontal,
+  SlidersHorizontal, 
+  Plus, 
+  Trash2, 
+  CheckCircle2, 
+  Sparkle,
   RotateCcw,
-  CheckCircle2,
+  Maximize2,
   Scan,
-  Sparkle
+  Layers,
+  Wand2
 } from 'lucide-react';
 
 interface VideoEditorProps {
@@ -37,37 +45,27 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(6);
   const [isMuted, setIsMuted] = useState(false);
-  const [videoAspectRatio, setVideoAspectRatio] = useState<number>(1);
+  const [videoAspectRatio, setVideoAspectRatio] = useState<number>(0.5625); // Default portrait 9:16
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoWrapperRef = useRef<HTMLDivElement>(null);
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
 
-  // View Mode: 'edit' vs 'preview'
+  // View Mode: 'preview' (Split slider) vs 'edit' (Interactive box edit)
   const [viewMode, setViewMode] = useState<'preview' | 'edit'>('preview');
   const [splitSliderPos, setSplitSliderPos] = useState<number>(50);
   const [isDraggingSlider, setIsDraggingSlider] = useState(false);
 
-  // Removal Mode: 'auto' vs 'manual'
-  const [removalMode, setRemovalMode] = useState<'auto' | 'manual'>('auto');
+  // Multi-Region List
+  const [regions, setRegions] = useState<WatermarkRegion[]>([
+    { id: 'region-1', label: 'Top Text Banner', x: 6, y: 4, width: 88, height: 14 }
+  ]);
+  const [selectedRegionId, setSelectedRegionId] = useState<string>('region-1');
 
-  // Manual Watermark Box
-  const [box, setBox] = useState<WatermarkRegion>({ 
-    id: 'top-banner',
-    label: 'Top Title Banner',
-    x: 8, 
-    y: 5, 
-    width: 84, 
-    height: 16 
-  });
-  const [isDrawingBox, setIsDrawingBox] = useState(false);
-  const [drawStart, setDrawStart] = useState<{ x: number; y: number } | null>(null);
-
-  // Smart Pre-set Regions
-  const autoDetectedRegions: WatermarkRegion[] = [
-    { id: 'top-text', label: 'Top Title Text Banner', x: 8, y: 5, width: 84, height: 16 },
-    { id: 'bottom-stamp', label: 'Bottom Timestamp / Subtitle', x: 15, y: 84, width: 70, height: 10 }
-  ];
+  // Drag & Resize state
+  const [activeHandle, setActiveHandle] = useState<string | null>(null);
+  const [dragStartPos, setDragStartPos] = useState<{ x: number; y: number } | null>(null);
+  const [initialBoxState, setInitialBoxState] = useState<WatermarkRegion | null>(null);
 
   // Processing & Export State
   const [isProcessing, setIsProcessing] = useState(false);
@@ -86,9 +84,9 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
   }, []);
 
   const stages = [
-    { title: 'Job Queued', desc: 'Assigned to high-speed GPU worker' },
-    { title: 'AI Neural Text Inpainting', desc: 'Isolating watermark banner & synthesizing background pixels' },
-    { title: 'Quality Verification', desc: 'Cleaned video ready for instant HD download' }
+    { title: 'Analyzing Video Frames', desc: 'Isolating watermark bounding areas' },
+    { title: 'Neural Background Synthesis', desc: 'Applying temporal edge-clamped inpainting' },
+    { title: 'Finalizing Clean Video', desc: 'Ready for instant high-speed download' }
   ];
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,14 +122,18 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
   const handleLoadedMetadata = () => {
     if (videoRef.current) {
       const w = videoRef.current.videoWidth || 720;
-      const h = videoRef.current.videoHeight || 720;
+      const h = videoRef.current.videoHeight || 1280;
       setVideoAspectRatio(w / h);
       setDuration(videoRef.current.duration || 6);
+
+      if (previewCanvasRef.current) {
+        previewCanvasRef.current.width = w;
+        previewCanvasRef.current.height = h;
+      }
       renderLiveInpaintedFrame();
     }
   };
 
-  // Direct toggle play that ALWAYS works
   const togglePlay = () => {
     const v = videoRef.current;
     if (!v) return;
@@ -146,49 +148,117 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
     }
   };
 
-  const renderLiveInpaintedFrame = () => {
+  // Re-render current frame with inpainting
+  const renderLiveInpaintedFrame = useCallback(() => {
     const video = videoRef.current;
     const canvas = previewCanvasRef.current;
     if (!video || !canvas) return;
 
-    const width = canvas.width;
-    const height = canvas.height;
+    const width = canvas.width || video.videoWidth || 720;
+    const height = canvas.height || video.videoHeight || 1280;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
+    // 1. Draw original video frame
     ctx.drawImage(video, 0, 0, width, height);
 
-    const activeRegions = removalMode === 'auto' ? autoDetectedRegions : [box];
+    // 2. Inpaint all active watermark regions
+    inpaintVideoRegionOnContext(ctx, video, width, height, regions);
+  }, [regions]);
 
-    for (const r of activeRegions) {
-      const bx = (r.x / 100) * width;
-      const by = (r.y / 100) * height;
-      const bw = (r.width / 100) * width;
-      const bh = (r.height / 100) * height;
+  useEffect(() => {
+    renderLiveInpaintedFrame();
+  }, [regions, renderLiveInpaintedFrame]);
 
-      if (bw <= 0 || bh <= 0) continue;
+  // Handle Box Selection / Movement / Resizing
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>, handle?: string, regionId?: string) => {
+    if (viewMode === 'preview') {
+      setIsDraggingSlider(true);
+      handleSliderMove(e.clientX);
+      return;
+    }
 
-      ctx.save();
-      const samplePadY = Math.max(14, bh * 0.4);
-      const topY = Math.max(0, by - samplePadY);
-      const botY = Math.min(height - samplePadY, by + bh);
+    if (viewMode === 'edit') {
+      e.stopPropagation();
+      const targetId = regionId || selectedRegionId;
+      setSelectedRegionId(targetId);
+      const targetBox = regions.find(r => r.id === targetId);
+      if (!targetBox || !videoWrapperRef.current) return;
 
-      ctx.beginPath();
-      ctx.rect(bx, by, bw, bh);
-      ctx.clip();
+      const rect = videoWrapperRef.current.getBoundingClientRect();
+      const clickX = ((e.clientX - rect.left) / rect.width) * 100;
+      const clickY = ((e.clientY - rect.top) / rect.height) * 100;
 
-      ctx.filter = 'blur(10px)';
-      ctx.drawImage(video, bx, topY, bw, samplePadY, bx, by, bw, bh * 0.55);
-      ctx.drawImage(video, bx, botY, bw, samplePadY, bx, by + bh * 0.45, bw, bh * 0.55);
-      ctx.filter = 'none';
-
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.015)';
-      ctx.fillRect(bx, by, bw, bh);
-      ctx.restore();
+      setActiveHandle(handle || 'move');
+      setDragStartPos({ x: clickX, y: clickY });
+      setInitialBoxState({ ...targetBox });
     }
   };
 
-  // Slider Mouse / Touch handlers (without blocking clicks)
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (viewMode === 'preview' && isDraggingSlider) {
+      handleSliderMove(e.clientX);
+      return;
+    }
+
+    if (viewMode === 'edit' && activeHandle && dragStartPos && initialBoxState && videoWrapperRef.current) {
+      const rect = videoWrapperRef.current.getBoundingClientRect();
+      const curX = ((e.clientX - rect.left) / rect.width) * 100;
+      const curY = ((e.clientY - rect.top) / rect.height) * 100;
+      const dx = curX - dragStartPos.x;
+      const dy = curY - dragStartPos.y;
+
+      let { x, y, width, height } = initialBoxState;
+
+      if (activeHandle === 'move') {
+        x = Math.max(0, Math.min(100 - width, initialBoxState.x + dx));
+        y = Math.max(0, Math.min(100 - height, initialBoxState.y + dy));
+      } else if (activeHandle === 'se') {
+        width = Math.max(4, Math.min(100 - x, initialBoxState.width + dx));
+        height = Math.max(3, Math.min(100 - y, initialBoxState.height + dy));
+      } else if (activeHandle === 'sw') {
+        const newX = Math.max(0, initialBoxState.x + dx);
+        width = Math.max(4, initialBoxState.width + (initialBoxState.x - newX));
+        x = newX;
+        height = Math.max(3, Math.min(100 - y, initialBoxState.height + dy));
+      } else if (activeHandle === 'ne') {
+        const newY = Math.max(0, initialBoxState.y + dy);
+        height = Math.max(3, initialBoxState.height + (initialBoxState.y - newY));
+        y = newY;
+        width = Math.max(4, Math.min(100 - x, initialBoxState.width + dx));
+      } else if (activeHandle === 'nw') {
+        const newX = Math.max(0, initialBoxState.x + dx);
+        const newY = Math.max(0, initialBoxState.y + dy);
+        width = Math.max(4, initialBoxState.width + (initialBoxState.x - newX));
+        height = Math.max(3, initialBoxState.height + (initialBoxState.y - newY));
+        x = newX;
+        y = newY;
+      } else if (activeHandle === 'n') {
+        const newY = Math.max(0, initialBoxState.y + dy);
+        height = Math.max(3, initialBoxState.height + (initialBoxState.y - newY));
+        y = newY;
+      } else if (activeHandle === 's') {
+        height = Math.max(3, Math.min(100 - y, initialBoxState.height + dy));
+      } else if (activeHandle === 'w') {
+        const newX = Math.max(0, initialBoxState.x + dx);
+        width = Math.max(4, initialBoxState.width + (initialBoxState.x - newX));
+        x = newX;
+      } else if (activeHandle === 'e') {
+        width = Math.max(4, Math.min(100 - x, initialBoxState.width + dx));
+      }
+
+      setRegions(prev => prev.map(r => r.id === selectedRegionId ? { ...r, x, y, width, height } : r));
+    }
+  };
+
+  const handlePointerUp = () => {
+    setActiveHandle(null);
+    setIsDraggingSlider(false);
+    setDragStartPos(null);
+    setInitialBoxState(null);
+    renderLiveInpaintedFrame();
+  };
+
   const handleSliderMove = useCallback((clientX: number) => {
     if (!videoWrapperRef.current) return;
     const rect = videoWrapperRef.current.getBoundingClientRect();
@@ -197,48 +267,43 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
     setSplitSliderPos(percent);
   }, []);
 
-  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (viewMode === 'edit') {
-      if (removalMode !== 'manual' || !videoWrapperRef.current) return;
-      const rect = videoWrapperRef.current.getBoundingClientRect();
-      const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
-      const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
-      
-      setIsDrawingBox(true);
-      setDrawStart({ x, y });
-      setBox({ x, y, width: 0, height: 0 });
-    } else if (viewMode === 'preview') {
-      setIsDraggingSlider(true);
-      handleSliderMove(e.clientX);
+  // Add / Remove Region
+  const addRegion = () => {
+    const newId = `region-${Date.now()}`;
+    const newBox: WatermarkRegion = {
+      id: newId,
+      label: `Watermark #${regions.length + 1}`,
+      x: 15,
+      y: 75,
+      width: 70,
+      height: 12
+    };
+    setRegions(prev => [...prev, newBox]);
+    setSelectedRegionId(newId);
+    setViewMode('edit');
+  };
+
+  const deleteRegion = (id: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (regions.length <= 1) return;
+    setRegions(prev => prev.filter(r => r.id !== id));
+    setSelectedRegionId(regions.find(r => r.id !== id)?.id || '');
+  };
+
+  const applyPreset = (preset: 'top-banner' | 'corner-logo' | 'bottom-subtitle' | 'bottom-right') => {
+    if (preset === 'top-banner') {
+      setRegions([{ id: 'region-1', label: 'Top Text Banner', x: 6, y: 3.5, width: 88, height: 15 }]);
+    } else if (preset === 'corner-logo') {
+      setRegions([{ id: 'region-1', label: 'Top-Right Logo', x: 68, y: 4, width: 28, height: 12 }]);
+    } else if (preset === 'bottom-subtitle') {
+      setRegions([{ id: 'region-1', label: 'Bottom Subtitle', x: 8, y: 82, width: 84, height: 13 }]);
+    } else if (preset === 'bottom-right') {
+      setRegions([{ id: 'region-1', label: 'Bottom-Right Stamp', x: 65, y: 82, width: 30, height: 14 }]);
     }
+    setSelectedRegionId('region-1');
   };
 
-  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (viewMode === 'edit' && isDrawingBox && drawStart && videoWrapperRef.current) {
-      const rect = videoWrapperRef.current.getBoundingClientRect();
-      const curX = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
-      const curY = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
-
-      const bx = Math.min(drawStart.x, curX);
-      const by = Math.min(drawStart.y, curY);
-      const bw = Math.max(4, Math.abs(curX - drawStart.x));
-      const bh = Math.max(4, Math.abs(curY - drawStart.y));
-
-      setBox({ x: bx, y: by, width: bw, height: bh });
-      renderLiveInpaintedFrame();
-    } else if (viewMode === 'preview' && isDraggingSlider) {
-      handleSliderMove(e.clientX);
-    }
-  };
-
-  const handlePointerUp = () => {
-    setIsDrawingBox(false);
-    setIsDraggingSlider(false);
-    setDrawStart(null);
-    renderLiveInpaintedFrame();
-  };
-
-  // Ultra-Fast Export Process with Immediate Download & Redirect
+  // Video Export & Download
   const startVideoProcessing = async () => {
     if (!isAuthenticated) {
       openAuthModal('Please sign in with Google to start free video watermark removal');
@@ -247,15 +312,18 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
 
     setIsProcessing(true);
     setProgress(20);
-    setCurrentStage(1);
+    setCurrentStage(0);
     setIsCompleted(false);
 
-    const targetRegions = removalMode === 'auto' ? autoDetectedRegions : [box];
+    setTimeout(() => {
+      setProgress(55);
+      setCurrentStage(1);
+    }, 400);
 
     let cleanedBlob = selectedVideo;
     if (videoRef.current) {
       try {
-        cleanedBlob = await processAndExportCleanVideo(videoRef.current, targetRegions, Math.min(10, duration));
+        cleanedBlob = await processAndExportCleanVideo(videoRef.current, regions, Math.min(10, duration));
       } catch (err) {
         console.warn('Video export fallback:', err);
       }
@@ -268,12 +336,12 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
       setIsCompleted(true);
       setCleanedVideoBlobUrl(cleanedBlob);
 
-      ApiService.createJob('video', videoTitle, selectedVideo, 0, '22.4 MB');
+      ApiService.createJob('video', videoTitle, selectedVideo, 0, '18.5 MB');
 
       // Download file
       const link = document.createElement('a');
       link.href = cleanedBlob;
-      link.download = `cleanmark_ai_${videoTitle.replace(/\.[^/.]+$/, "")}_clean.mp4`;
+      link.download = `cleanmark_${videoTitle.replace(/\.[^/.]+$/, "")}_clean.mp4`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -301,17 +369,17 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       
-      {/* Header Card */}
-      <div className="flex flex-wrap items-center justify-between gap-4 p-6 bg-white border border-slate-200 rounded-3xl shadow-sm">
+      {/* Top Header Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-4 p-6 bg-[#13151f] border border-[#232738] rounded-3xl shadow-xl">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 text-brand-600 text-xs font-bold border border-teal-200 mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20 mb-2">
             <Video className="w-3.5 h-3.5" />
-            <span>AI Temporal Video Inpainter</span>
+            <span>AI Temporal Video Inpainter 3.0</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             AI Video Watermark Remover
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Remove text banners, logos, and timestamps with instant Live Before & After preview.
           </p>
         </div>
@@ -325,24 +393,24 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
               className="hidden"
               onChange={handleFileUpload}
             />
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-brand-500 hover:opacity-95 text-white font-bold text-xs shadow-md shadow-orange-500/20 transition-all cursor-pointer">
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:opacity-95 text-white font-extrabold text-xs shadow-lg shadow-orange-500/20 transition-all cursor-pointer">
               <UploadCloud className="w-4 h-4" />
               Upload Video
             </span>
           </label>
 
           {/* Sample Switcher */}
-          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs">
+          <div className="flex items-center gap-1.5 bg-[#1a1d2c] p-1 rounded-2xl border border-[#2d3248] text-xs">
             <span className="text-slate-400 text-[11px] px-2 font-medium">Demo:</span>
             <button
               onClick={() => loadSample('drone')}
-              className="px-2.5 py-1 font-semibold rounded-lg bg-white shadow-xs text-slate-700 hover:text-brand-600 cursor-pointer"
+              className="px-2.5 py-1 font-semibold rounded-xl bg-[#282d42] text-amber-300 hover:text-white transition-colors cursor-pointer"
             >
               Sample 1
             </button>
             <button
               onClick={() => loadSample('vlog')}
-              className="px-2.5 py-1 font-semibold rounded-lg hover:bg-white text-slate-700 hover:text-brand-600 cursor-pointer"
+              className="px-2.5 py-1 font-semibold rounded-xl hover:bg-[#282d42] text-slate-300 hover:text-amber-300 transition-colors cursor-pointer"
             >
               Sample 2
             </button>
@@ -350,7 +418,7 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
         </div>
       </div>
 
-      {/* When completed, show full Inpainting Complete comparison slider */}
+      {/* Completed State */}
       {isCompleted && cleanedVideoBlobUrl ? (
         <VideoComparisonSlider
           originalUrl={selectedVideo}
@@ -359,61 +427,63 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
           onReset={handleResetVideo}
         />
       ) : (
-        /* Main Workspace */
+        /* Main Workspace Grid */
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
-          {/* Left 2 Cols: Adaptive Aspect Ratio Video Player & Live Slider */}
+          {/* Left 2 Cols: Video Viewport & Controls */}
           <div className="lg:col-span-2 space-y-4">
             
             {/* View Mode Bar */}
-            <div className="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-2xl shadow-xs text-xs">
+            <div className="flex items-center justify-between p-2.5 bg-[#13151f] border border-[#232738] rounded-2xl shadow-md text-xs">
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setViewMode('preview')}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold transition-all cursor-pointer ${
                     viewMode === 'preview'
-                      ? 'bg-brand-500 text-white shadow-xs'
-                      : 'bg-slate-100 text-slate-600 hover:text-slate-900'
+                      ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20'
+                      : 'bg-[#1a1d2c] text-slate-300 hover:text-white'
                   }`}
                 >
                   <SlidersHorizontal className="w-3.5 h-3.5" />
-                  <span>Live Before & After Split Slider</span>
+                  <span>Live Before & After Split</span>
                 </button>
 
                 <button
                   onClick={() => setViewMode('edit')}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold transition-all cursor-pointer ${
                     viewMode === 'edit'
-                      ? 'bg-brand-500 text-white shadow-xs'
-                      : 'bg-slate-100 text-slate-600 hover:text-slate-900'
+                      ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20'
+                      : 'bg-[#1a1d2c] text-slate-300 hover:text-white'
                   }`}
                 >
                   <MousePointer2 className="w-3.5 h-3.5" />
-                  <span>Select / Move Area</span>
+                  <span>Adjust Watermark Area</span>
                 </button>
               </div>
 
-              <div className="hidden sm:flex items-center gap-1.5 font-semibold text-slate-500">
-                <Sparkles className="w-3.5 h-3.5 text-brand-600" />
-                <span>Live Inpainting Active</span>
+              <div className="hidden sm:flex items-center gap-1.5 font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Zero Artifact Inpainting</span>
               </div>
             </div>
 
-            {/* Video Canvas Viewport */}
-            <div className="p-4 bg-checkerboard rounded-3xl border border-slate-200 flex items-center justify-center overflow-hidden shadow-md">
+            {/* Video Theater Viewport */}
+            <div 
+              className="relative p-6 bg-[#0a0a0f] rounded-3xl border border-[#1f2334] flex items-center justify-center overflow-hidden shadow-2xl min-h-[480px]"
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+            >
               <div 
                 ref={videoWrapperRef}
-                onPointerDown={handlePointerDown}
-                onPointerMove={handlePointerMove}
-                onPointerUp={handlePointerUp}
-                className="relative max-h-[60vh] rounded-2xl overflow-hidden shadow-2xl bg-black border border-slate-400 select-none mx-auto cursor-pointer"
+                onPointerDown={(e) => handlePointerDown(e)}
+                className="relative max-h-[62vh] rounded-2xl overflow-hidden shadow-2xl bg-black border border-[#2f354e] select-none mx-auto cursor-pointer"
                 style={{
-                  aspectRatio: `${videoAspectRatio}`,
-                  width: videoAspectRatio < 1 ? 'auto' : '100%',
-                  height: videoAspectRatio < 1 ? '60vh' : 'auto'
+                  aspectRatio: `${videoAspectRatio || 0.5625}`,
+                  maxHeight: '62vh',
+                  maxWidth: '100%'
                 }}
               >
-                {/* 1. Underlying Video Element */}
+                {/* 1. Underlying Video */}
                 {selectedVideo ? (
                   <video
                     ref={videoRef}
@@ -421,7 +491,7 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                     onTimeUpdate={handleTimeUpdate}
                     onLoadedMetadata={handleLoadedMetadata}
                     onClick={togglePlay}
-                    className="w-full h-full object-cover block"
+                    className="w-full h-full object-contain block bg-black"
                     loop
                     playsInline
                     muted={isMuted}
@@ -437,44 +507,48 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                 {/* 2. Live Inpainted Preview Canvas */}
                 <canvas
                   ref={previewCanvasRef}
-                  width={720}
-                  height={Math.round(720 / (videoAspectRatio || 1))}
-                  className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                  className="absolute inset-0 w-full h-full object-contain pointer-events-none"
                   style={{
                     clipPath: viewMode === 'preview' ? `inset(0 0 0 ${splitSliderPos}%)` : 'none',
                     display: viewMode === 'preview' ? 'block' : 'none'
                   }}
                 />
 
-                {/* 3. Live Split Curtain Divider */}
+                {/* 3. Live Split Curtain Slider */}
                 {viewMode === 'preview' && selectedVideo && (
                   <>
-                    <div className="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-md px-3 py-0.5 rounded-full text-[9px] font-black text-white uppercase tracking-wider pointer-events-none shadow border border-white/20">
+                    <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-black text-white uppercase tracking-wider pointer-events-none shadow border border-white/20">
                       BEFORE (ORIGINAL)
                     </div>
-                    <div className="absolute top-3 right-3 bg-brand-500/90 backdrop-blur-md px-3 py-0.5 rounded-full text-[9px] font-black text-white uppercase tracking-wider pointer-events-none shadow border border-brand-300/30">
+                    <div className="absolute top-3 right-3 bg-amber-500/90 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-black text-white uppercase tracking-wider pointer-events-none shadow border border-amber-300/30">
                       AFTER (INPAINTED)
                     </div>
 
                     <div
-                      className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_10px_rgba(0,0,0,0.8)] flex items-center justify-center pointer-events-none z-10"
+                      className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_12px_rgba(255,255,255,0.8)] flex items-center justify-center pointer-events-none z-20"
                       style={{ left: `${splitSliderPos}%` }}
                     >
-                      <div className="w-8 h-8 rounded-full bg-white text-slate-800 shadow-xl flex items-center justify-center -ml-[15px] border-2 border-brand-500 pointer-events-auto cursor-ew-resize">
-                        <SlidersHorizontal className="w-3.5 h-3.5 rotate-90 text-brand-600" />
+                      <div className="w-8 h-8 rounded-full bg-white text-slate-900 shadow-2xl flex items-center justify-center -ml-[15px] border-2 border-amber-500 pointer-events-auto cursor-ew-resize hover:scale-110 transition-transform">
+                        <SlidersHorizontal className="w-3.5 h-3.5 rotate-90 text-amber-600" />
                       </div>
                     </div>
                   </>
                 )}
 
-                {/* 4. Watermark Bounding Boxes */}
+                {/* 4. Interactive Resizable Watermark Boxes */}
                 {viewMode === 'edit' && selectedVideo && (
                   <>
-                    {removalMode === 'auto' ? (
-                      autoDetectedRegions.map((r, i) => (
+                    {regions.map((r) => {
+                      const isSelected = r.id === selectedRegionId;
+                      return (
                         <div
-                          key={i}
-                          className="absolute border-2 border-dashed border-emerald-400 bg-emerald-500/25 rounded-lg shadow-lg pointer-events-none flex items-center justify-center animate-pulse"
+                          key={r.id}
+                          onPointerDown={(e) => handlePointerDown(e, 'move', r.id)}
+                          className={`absolute border-2 rounded-xl shadow-2xl cursor-move select-none transition-shadow ${
+                            isSelected 
+                              ? 'border-amber-400 bg-amber-500/25 shadow-amber-500/30 z-20' 
+                              : 'border-emerald-400/80 bg-emerald-500/15 z-10'
+                          }`}
                           style={{
                             left: `${r.x}%`,
                             top: `${r.y}%`,
@@ -482,41 +556,47 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                             height: `${r.height}%`
                           }}
                         >
-                          <div className="bg-emerald-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded shadow absolute -top-4 left-0 uppercase tracking-wider flex items-center gap-1">
-                            <Sparkle className="w-2.5 h-2.5" /> {r.label || `Watermark ${i + 1}`}
+                          {/* Label tag */}
+                          <div className={`text-[9px] font-black px-2 py-0.5 rounded-full shadow absolute -top-5 left-1 uppercase tracking-wider flex items-center gap-1 ${
+                            isSelected ? 'bg-amber-500 text-black' : 'bg-emerald-600 text-white'
+                          }`}>
+                            <Sparkle className="w-2.5 h-2.5" />
+                            <span>{r.label || 'Watermark Area'}</span>
                           </div>
+
+                          {/* Resize Handles (when selected) */}
+                          {isSelected && (
+                            <>
+                              {/* 4 Corners */}
+                              <div onPointerDown={(e) => handlePointerDown(e, 'nw', r.id)} className="w-3 h-3 bg-amber-400 border border-white rounded-full absolute -top-1.5 -left-1.5 cursor-nwse-resize shadow-md" />
+                              <div onPointerDown={(e) => handlePointerDown(e, 'ne', r.id)} className="w-3 h-3 bg-amber-400 border border-white rounded-full absolute -top-1.5 -right-1.5 cursor-nesw-resize shadow-md" />
+                              <div onPointerDown={(e) => handlePointerDown(e, 'sw', r.id)} className="w-3 h-3 bg-amber-400 border border-white rounded-full absolute -bottom-1.5 -left-1.5 cursor-nesw-resize shadow-md" />
+                              <div onPointerDown={(e) => handlePointerDown(e, 'se', r.id)} className="w-3 h-3 bg-amber-400 border border-white rounded-full absolute -bottom-1.5 -right-1.5 cursor-nwse-resize shadow-md" />
+                              
+                              {/* 4 Edges */}
+                              <div onPointerDown={(e) => handlePointerDown(e, 'n', r.id)} className="w-4 h-1.5 bg-amber-400 rounded-full absolute -top-1 left-1/2 -translate-x-1/2 cursor-ns-resize" />
+                              <div onPointerDown={(e) => handlePointerDown(e, 's', r.id)} className="w-4 h-1.5 bg-amber-400 rounded-full absolute -bottom-1 left-1/2 -translate-x-1/2 cursor-ns-resize" />
+                              <div onPointerDown={(e) => handlePointerDown(e, 'w', r.id)} className="w-1.5 h-4 bg-amber-400 rounded-full absolute top-1/2 -left-1 -translate-y-1/2 cursor-ew-resize" />
+                              <div onPointerDown={(e) => handlePointerDown(e, 'e', r.id)} className="w-1.5 h-4 bg-amber-400 rounded-full absolute top-1/2 -right-1 -translate-y-1/2 cursor-ew-resize" />
+                            </>
+                          )}
                         </div>
-                      ))
-                    ) : (
-                      <div
-                        className="absolute border-2 border-red-500 bg-red-500/30 rounded-lg shadow-lg cursor-move select-none flex items-center justify-center"
-                        style={{
-                          left: `${box.x}%`,
-                          top: `${box.y}%`,
-                          width: `${box.width}%`,
-                          height: `${box.height}%`
-                        }}
-                      >
-                        <div className="bg-red-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded shadow absolute -top-4 left-0 uppercase tracking-wider">
-                          Selected Box (Draw / Move)
-                        </div>
-                        <div className="w-2 h-2 rounded-full bg-white opacity-90" />
-                      </div>
-                    )}
+                      );
+                    })}
                   </>
                 )}
 
-                {/* 5. Center Play Button Overlay (always works on click) */}
+                {/* 5. Center Play Button Overlay */}
                 <div 
                   onClick={togglePlay}
-                  className="absolute inset-0 flex items-center justify-center bg-black/5 hover:bg-black/25 transition-colors cursor-pointer z-10"
+                  className="absolute inset-0 flex items-center justify-center bg-black/10 hover:bg-black/30 transition-colors cursor-pointer z-10"
                 >
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
                       togglePlay();
                     }}
-                    className="w-14 h-14 rounded-full bg-white/40 backdrop-blur-md border border-white/50 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-2xl cursor-pointer"
+                    className="w-14 h-14 rounded-full bg-black/60 backdrop-blur-md border border-white/30 text-white flex items-center justify-center hover:scale-110 hover:bg-amber-500 hover:text-black transition-all shadow-2xl cursor-pointer"
                   >
                     {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-0.5" />}
                   </button>
@@ -524,18 +604,20 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
               </div>
             </div>
 
-            {/* Video Scrubber & Playback Controls Bar */}
-            <div className="p-4 bg-white border border-slate-200 rounded-2xl space-y-2 shadow-xs">
-              <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
-                <span className="font-mono font-bold text-slate-700">{formatTime(currentTime)} / {formatTime(duration)}</span>
+            {/* Video Controls Bar */}
+            <div className="p-4 bg-[#13151f] border border-[#232738] rounded-2xl space-y-3 shadow-md">
+              <div className="flex items-center justify-between text-xs font-bold text-slate-300">
+                <span className="font-mono text-amber-400">{formatTime(currentTime)} / {formatTime(duration)}</span>
                 <div className="flex items-center gap-3">
                   <button 
                     onClick={() => setIsMuted(!isMuted)} 
-                    className="text-slate-500 hover:text-slate-800 p-1 cursor-pointer"
+                    className="text-slate-400 hover:text-white p-1 cursor-pointer"
                   >
                     {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                   </button>
-                  <span className="text-brand-600 font-bold">Full HD Quality</span>
+                  <span className="text-amber-400 font-extrabold flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Full HD Quality
+                  </span>
                 </div>
               </div>
 
@@ -543,154 +625,167 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                 type="range"
                 min="0"
                 max={duration || 10}
-                step="0.1"
+                step="0.05"
                 value={currentTime}
                 onChange={(e) => {
                   const t = parseFloat(e.target.value);
                   setCurrentTime(t);
                   if (videoRef.current) videoRef.current.currentTime = t;
                 }}
-                className="w-full accent-brand-500 cursor-pointer h-2 bg-slate-200 rounded-lg appearance-none"
+                className="w-full accent-amber-500 cursor-pointer h-2 bg-[#232738] rounded-lg appearance-none"
               />
 
               <div className="flex items-center justify-between pt-1">
                 <button
                   onClick={togglePlay}
-                  className="px-4 py-1.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-95 text-black font-extrabold rounded-xl text-xs flex items-center gap-2 cursor-pointer shadow-md"
                 >
                   {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
                   <span>{isPlaying ? 'Pause Video' : 'Play Video'}</span>
                 </button>
 
-                <span className="text-[11px] text-slate-400">Click anywhere on video or button to play/pause</span>
+                <span className="text-[11px] text-slate-400">Click video or press Play to inspect in real-time</span>
               </div>
             </div>
           </div>
 
-          {/* Right Col: Quick Targets & Download */}
-          <div className="p-6 bg-white border border-slate-200 rounded-3xl shadow-sm flex flex-col justify-between space-y-6">
+          {/* Right Col: Watermark Presets & Download */}
+          <div className="p-6 bg-[#13151f] border border-[#232738] rounded-3xl shadow-xl flex flex-col justify-between space-y-6">
             <div className="space-y-4">
-              <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
-                <Sliders className="w-5 h-5 text-brand-600" />
-                Watermark Target Presets
-              </h3>
-
-              {/* Mode Toggle */}
-              <div className="grid grid-cols-2 gap-2 bg-slate-100 p-1 rounded-2xl border border-slate-200 text-xs">
+              <div className="flex items-center justify-between">
+                <h3 className="font-extrabold text-white text-base flex items-center gap-2">
+                  <Sliders className="w-5 h-5 text-amber-400" />
+                  Watermark Placement
+                </h3>
                 <button
-                  onClick={() => {
-                    setRemovalMode('auto');
-                    renderLiveInpaintedFrame();
-                  }}
-                  className={`py-2 px-2.5 rounded-xl font-bold transition-all text-center ${
-                    removalMode === 'auto' ? 'bg-brand-500 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                  }`}
+                  onClick={addRegion}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#1e2235] hover:bg-amber-500/20 text-amber-400 text-xs font-bold transition-colors cursor-pointer"
                 >
-                  🤖 Auto-Detect
-                </button>
-                <button
-                  onClick={() => {
-                    setRemovalMode('manual');
-                    setViewMode('edit');
-                    renderLiveInpaintedFrame();
-                  }}
-                  className={`py-2 px-2.5 rounded-xl font-bold transition-all text-center ${
-                    removalMode === 'manual' ? 'bg-brand-500 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  ✋ Manual Box
+                  <Plus className="w-3.5 h-3.5" /> Add Box
                 </button>
               </div>
 
-              {/* Quick Target Presets */}
+              {/* Watermark Region Manager List */}
               <div className="space-y-2">
-                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-                  Quick-Select Target:
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                  Active Watermark Boxes ({regions.length}):
                 </span>
                 
-                <button
-                  onClick={() => {
-                    setRemovalMode('manual');
-                    setBox({ id: 'top-title', label: 'Top Title Text Banner', x: 8, y: 5, width: 84, height: 16 });
-                    setViewMode('preview');
-                    renderLiveInpaintedFrame();
-                  }}
-                  className="w-full p-2.5 bg-slate-50 hover:bg-teal-50 border border-slate-200 hover:border-brand-300 rounded-xl text-left text-xs font-bold text-slate-800 flex items-center justify-between transition-colors cursor-pointer"
-                >
-                  <span>📝 Top Text Banner ("I SAVED...")</span>
-                  <span className="text-[10px] text-brand-600 bg-white px-2 py-0.5 rounded shadow-xs">Active</span>
-                </button>
+                {regions.map((r, i) => (
+                  <div
+                    key={r.id}
+                    onClick={() => {
+                      setSelectedRegionId(r.id || '');
+                      setViewMode('edit');
+                    }}
+                    className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-between transition-all cursor-pointer ${
+                      selectedRegionId === r.id 
+                        ? 'bg-amber-500/15 border-amber-500/50 text-white' 
+                        : 'bg-[#181a26] border-[#262a3e] text-slate-300 hover:border-amber-500/30'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-amber-400" />
+                      <span>{r.label || `Watermark Region ${i + 1}`}</span>
+                    </div>
 
-                <button
-                  onClick={() => {
-                    setRemovalMode('manual');
-                    setBox({ id: 'corner-logo', label: 'Top-Right Logo', x: 65, y: 6, width: 30, height: 14 });
-                    setViewMode('preview');
-                    renderLiveInpaintedFrame();
-                  }}
-                  className="w-full p-2.5 bg-slate-50 hover:bg-teal-50 border border-slate-200 hover:border-brand-300 rounded-xl text-left text-xs font-bold text-slate-800 flex items-center justify-between transition-colors cursor-pointer"
-                >
-                  <span>🏷️ Corner Logo / Stamp</span>
-                  <span className="text-[10px] text-slate-400">Select</span>
-                </button>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] text-amber-400 bg-[#24283b] px-2 py-0.5 rounded font-mono">
+                        {Math.round(r.width)}% &times; {Math.round(r.height)}%
+                      </span>
+                      {regions.length > 1 && (
+                        <button
+                          onClick={(e) => deleteRegion(r.id || '', e)}
+                          className="p-1 text-slate-500 hover:text-red-400 rounded cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
 
-                <button
-                  onClick={() => {
-                    setRemovalMode('manual');
-                    setBox({ id: 'bottom-stamp', label: 'Bottom Timestamp', x: 12, y: 83, width: 76, height: 12 });
-                    setViewMode('preview');
-                    renderLiveInpaintedFrame();
-                  }}
-                  className="w-full p-2.5 bg-slate-50 hover:bg-teal-50 border border-slate-200 hover:border-brand-300 rounded-xl text-left text-xs font-bold text-slate-800 flex items-center justify-between transition-colors cursor-pointer"
-                >
-                  <span>🕒 Bottom Subtitle / Timestamp</span>
-                  <span className="text-[10px] text-slate-400">Select</span>
-                </button>
+              {/* Quick Placement Presets */}
+              <div className="space-y-2 pt-2 border-t border-[#232738]">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                  Quick-Snap Presets:
+                </span>
+                
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => applyPreset('top-banner')}
+                    className="p-2.5 bg-[#181a26] hover:bg-amber-500/10 border border-[#262a3e] hover:border-amber-500/40 rounded-xl text-left text-xs font-bold text-slate-200 transition-colors cursor-pointer"
+                  >
+                    📝 Top Banner
+                  </button>
+
+                  <button
+                    onClick={() => applyPreset('corner-logo')}
+                    className="p-2.5 bg-[#181a26] hover:bg-amber-500/10 border border-[#262a3e] hover:border-amber-500/40 rounded-xl text-left text-xs font-bold text-slate-200 transition-colors cursor-pointer"
+                  >
+                    🏷️ Top-Right Logo
+                  </button>
+
+                  <button
+                    onClick={() => applyPreset('bottom-subtitle')}
+                    className="p-2.5 bg-[#181a26] hover:bg-amber-500/10 border border-[#262a3e] hover:border-amber-500/40 rounded-xl text-left text-xs font-bold text-slate-200 transition-colors cursor-pointer"
+                  >
+                    🕒 Bottom Subtitle
+                  </button>
+
+                  <button
+                    onClick={() => applyPreset('bottom-right')}
+                    className="p-2.5 bg-[#181a26] hover:bg-amber-500/10 border border-[#262a3e] hover:border-amber-500/40 rounded-xl text-left text-xs font-bold text-slate-200 transition-colors cursor-pointer"
+                  >
+                    ✨ Corner Stamp
+                  </button>
+                </div>
               </div>
 
               {/* Status Info */}
-              <div className="p-3.5 bg-teal-50 border border-teal-200 rounded-2xl space-y-1.5 text-xs text-slate-700">
+              <div className="p-3.5 bg-[#181a26] border border-[#262a3e] rounded-2xl space-y-1.5 text-xs text-slate-300">
                 <div className="flex justify-between items-center">
-                  <span>Live Split Preview:</span>
-                  <span className="font-bold text-brand-600">Active on Player</span>
+                  <span className="text-slate-400">Live Split Preview:</span>
+                  <span className="font-bold text-amber-400">Active</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span>Speed:</span>
-                  <span className="font-bold text-emerald-600">⚡ Instant GPU Inpaint</span>
+                  <span className="text-slate-400">Inpainting Engine:</span>
+                  <span className="font-bold text-emerald-400">⚡ Zero-Artifact GPU</span>
                 </div>
               </div>
             </div>
 
             {/* Fast Processing / Download Trigger */}
             {isProcessing ? (
-              <div className="p-4 bg-teal-50 border border-teal-200 rounded-2xl space-y-3 animate-in fade-in">
+              <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl space-y-3 animate-in fade-in">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-brand-700 flex items-center gap-1.5">
-                    <Cpu className="w-4 h-4 animate-spin text-brand-600" />
+                  <span className="font-bold text-amber-400 flex items-center gap-1.5">
+                    <Cpu className="w-4 h-4 animate-spin text-amber-400" />
                     {stages[currentStage].title}
                   </span>
-                  <span className="font-mono font-bold text-brand-800">{progress}%</span>
+                  <span className="font-mono font-bold text-white">{progress}%</span>
                 </div>
 
-                <div className="w-full bg-teal-200/60 h-2.5 rounded-full overflow-hidden">
+                <div className="w-full bg-[#232738] h-2.5 rounded-full overflow-hidden">
                   <div 
-                    className="bg-brand-500 h-full transition-all duration-150 rounded-full"
+                    className="bg-gradient-to-r from-amber-500 to-orange-500 h-full transition-all duration-200 rounded-full"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
 
-                <p className="text-[11px] text-slate-500 leading-tight">{stages[currentStage].desc}</p>
+                <p className="text-[11px] text-slate-400 leading-tight">{stages[currentStage].desc}</p>
               </div>
             ) : (
               <div className="space-y-2">
                 <button
                   onClick={startVideoProcessing}
-                  className="w-full py-4 bg-gradient-to-r from-amber-500 via-orange-500 to-brand-500 hover:opacity-95 text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-orange-500/20 transition-all flex items-center justify-center gap-2 active:scale-[0.99] cursor-pointer"
+                  className="w-full py-4 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:opacity-95 text-black font-black text-sm rounded-2xl shadow-xl shadow-orange-500/20 transition-all flex items-center justify-center gap-2 active:scale-[0.99] cursor-pointer"
                 >
                   <Download className="w-5 h-5" />
                   <span>Download Clean HD Video</span>
                 </button>
-                <p className="text-center text-[11px] text-slate-400">
+                <p className="text-center text-[11px] text-slate-500">
                   Instant export &bull; Automatically downloads video and opens team portal
                 </p>
               </div>
@@ -704,3 +799,4 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
     </div>
   );
 };
+

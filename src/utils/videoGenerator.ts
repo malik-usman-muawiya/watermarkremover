@@ -1,5 +1,5 @@
 /**
- * Video generator and high-fidelity inpainting processor for CleanMark AI.
+ * CleanMark AI - State-of-the-Art Video Inpainting Engine
  * Handles high-resolution canvas synthesis, precise text banner inpainting, and export.
  */
 
@@ -12,12 +12,95 @@ export interface WatermarkRegion {
   height: number; // percentage (0 - 100)
 }
 
+/**
+ * Intelligent Video Frame Inpainter
+ * Blends surrounding video context seamlessly into the watermark region with zero dark bands.
+ */
+export function inpaintVideoRegionOnContext(
+  ctx: CanvasRenderingContext2D,
+  video: HTMLVideoElement | HTMLCanvasElement,
+  width: number,
+  height: number,
+  regions: WatermarkRegion[]
+) {
+  for (const box of regions) {
+    const bx = Math.round((box.x / 100) * width);
+    const by = Math.round((box.y / 100) * height);
+    const bw = Math.round((box.width / 100) * width);
+    const bh = Math.round((box.height / 100) * height);
+
+    if (bw <= 2 || bh <= 2) continue;
+
+    ctx.save();
+
+    // 1. Clip to the bounding box
+    ctx.beginPath();
+    ctx.rect(bx, by, bw, bh);
+    ctx.clip();
+
+    // Determine available context margins (clamped inside video frame)
+    const padY = Math.max(12, Math.round(bh * 0.45));
+    const padX = Math.max(12, Math.round(bw * 0.25));
+
+    const canSampleTop = by >= padY;
+    const canSampleBot = (by + bh + padY) <= height;
+    const canSampleLeft = bx >= padX;
+    const canSampleRight = (bx + bw + padX) <= width;
+
+    // A. Vertical Background Synthesis (Priority when top or bottom context exists)
+    if (canSampleTop && canSampleBot) {
+      // Top slice into upper half with soft blur
+      ctx.filter = 'blur(6px)';
+      ctx.drawImage(video, bx, by - padY, bw, padY, bx, by, bw, Math.round(bh * 0.55));
+      // Bottom slice into lower half
+      ctx.drawImage(video, bx, by + bh, bw, padY, bx, by + Math.round(bh * 0.45), bw, Math.round(bh * 0.55));
+    } else if (canSampleBot) {
+      // Near top edge of video: sample from bottom context
+      ctx.filter = 'blur(6px)';
+      ctx.drawImage(video, bx, by + bh, bw, padY, bx, by, bw, bh);
+    } else if (canSampleTop) {
+      // Near bottom edge of video: sample from top context
+      ctx.filter = 'blur(6px)';
+      ctx.drawImage(video, bx, by - padY, bw, padY, bx, by, bw, bh);
+    } else if (canSampleLeft || canSampleRight) {
+      // Lateral sample
+      ctx.filter = 'blur(8px)';
+      if (canSampleLeft) {
+        ctx.drawImage(video, bx - padX, by, padX, bh, bx, by, bw, bh);
+      } else {
+        ctx.drawImage(video, bx + bw, by, padX, bh, bx, by, bw, bh);
+      }
+    } else {
+      // Fallback local blur
+      ctx.filter = 'blur(16px)';
+      ctx.drawImage(video, bx, by, bw, bh, bx, by, bw, bh);
+    }
+
+    // B. Lateral Edge Softening
+    if (canSampleLeft && canSampleRight) {
+      ctx.filter = 'blur(8px)';
+      ctx.globalAlpha = 0.35;
+      ctx.drawImage(video, bx - padX, by, padX, bh, bx, by, Math.round(bw * 0.35), bh);
+      ctx.drawImage(video, bx + bw, by, padX, bh, bx + Math.round(bw * 0.65), by, Math.round(bw * 0.35), bh);
+    }
+
+    ctx.filter = 'none';
+    ctx.globalAlpha = 1.0;
+
+    // Subtle grain texture overlay to eliminate artificial plastic look
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.012)';
+    ctx.fillRect(bx, by, bw, bh);
+
+    ctx.restore();
+  }
+}
+
 // Generates an animated high-quality sample video in-browser using Canvas + MediaRecorder
 export function generateSyntheticSampleVideo(type: 'drone' | 'vlog' = 'drone'): Promise<string> {
   return new Promise((resolve) => {
     const canvas = document.createElement('canvas');
     canvas.width = 720;
-    canvas.height = 720; // 1:1 crisp square / portrait capable
+    canvas.height = 720;
     const ctx = canvas.getContext('2d');
     if (!ctx) return resolve('');
 
@@ -167,49 +250,7 @@ export async function processAndExportCleanVideo(
       ctx.drawImage(videoElement, 0, 0, width, height);
 
       // 2. High-fidelity inpainting on all target regions
-      for (const box of regions) {
-        const bx = (box.x / 100) * width;
-        const by = (box.y / 100) * height;
-        const bw = (box.width / 100) * width;
-        const bh = (box.height / 100) * height;
-
-        if (bw <= 0 || bh <= 0) continue;
-
-        ctx.save();
-
-        // Sample context above and below the watermark banner to interpolate smooth natural background
-        const samplePadY = Math.max(16, bh * 0.4);
-        const samplePadX = Math.max(16, bw * 0.15);
-
-        // Top sample slice
-        const topY = Math.max(0, by - samplePadY);
-        // Bottom sample slice
-        const botY = Math.min(height - samplePadY, by + bh);
-
-        ctx.beginPath();
-        ctx.rect(bx, by, bw, bh);
-        ctx.clip();
-
-        // High quality blended background synthesis
-        ctx.filter = 'blur(10px)';
-        // Top contextual stretch
-        ctx.drawImage(videoElement, bx, topY, bw, samplePadY, bx, by, bw, bh * 0.55);
-        // Bottom contextual stretch
-        ctx.drawImage(videoElement, bx, botY, bw, samplePadY, bx, by + bh * 0.45, bw, bh * 0.55);
-
-        // Lateral side context sampling for edges
-        ctx.filter = 'blur(14px)';
-        ctx.drawImage(videoElement, Math.max(0, bx - samplePadX), by, samplePadX, bh, bx, by, bw * 0.3, bh);
-        ctx.drawImage(videoElement, Math.min(width - samplePadX, bx + bw), by, samplePadX, bh, bx + bw * 0.7, by, bw * 0.3, bh);
-
-        ctx.filter = 'none';
-
-        // Add subtle film grain to match camera noise
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.015)';
-        ctx.fillRect(bx, by, bw, bh);
-
-        ctx.restore();
-      }
+      inpaintVideoRegionOnContext(ctx, videoElement, width, height, regions);
 
       if (Date.now() - startTime < renderDurationMs && !videoElement.ended) {
         requestAnimationFrame(renderLoop);

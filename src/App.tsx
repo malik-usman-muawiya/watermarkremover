@@ -13,6 +13,11 @@ import { LandingPage } from './pages/LandingPage';
 import { ImageEditorPage } from './pages/ImageEditorPage';
 import { VideoEditorPage } from './pages/VideoEditorPage';
 import { BatchEditorPage } from './pages/BatchEditorPage';
+import { CompressorPage } from './pages/CompressorPage';
+import { KbLandingPage } from './pages/KbLandingPage';
+import { PakistanFormPhotoHubPage } from './pages/PakistanFormPhotoHubPage';
+import { ResolutionReducerPage } from './pages/ResolutionReducerPage';
+import { GifCompressorPage } from './pages/GifCompressorPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { PricingPage } from './pages/PricingPage';
 import { ApiDocsPage } from './pages/ApiDocsPage';
@@ -35,20 +40,34 @@ export function App() {
       <CreditsProvider>
         <Router>
           <ScrollToTop />
-          <div className="min-h-screen flex flex-col bg-[#f8fafc] text-slate-800 selection:bg-brand-500 selection:text-white">
+          <div className="min-h-screen flex flex-col bg-[#0e0e11] text-slate-100 selection:bg-amber-500 selection:text-black">
             {/* Top Launch Alert Continuous Marquee Ticker */}
             <PromoBanner />
 
-            {/* Light Themed Navbar */}
+            {/* Navbar */}
             <Navbar />
 
             {/* Main Application Routes */}
             <main className="flex-1">
               <Routes>
+                {/* Core AI Tools */}
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/editor/image" element={<ImageEditorPage />} />
                 <Route path="/editor/video" element={<VideoEditorPage />} />
                 <Route path="/editor/batch" element={<BatchEditorPage />} />
+
+                {/* Image Compressor Suite */}
+                <Route path="/compress-image" element={<CompressorPage />} />
+                <Route path="/compress-image-to-20kb" element={<KbLandingPage />} />
+                <Route path="/compress-image-to-50kb" element={<KbLandingPage />} />
+                <Route path="/compress-image-to-100kb" element={<KbLandingPage />} />
+                <Route path="/compress-image-to-200kb" element={<KbLandingPage />} />
+                <Route path="/compress-image-to-300kb" element={<KbLandingPage />} />
+                <Route path="/reduce-image-resolution" element={<ResolutionReducerPage />} />
+                <Route path="/pakistan-job-form-photo-size" element={<PakistanFormPhotoHubPage />} />
+                <Route path="/compress-gif" element={<GifCompressorPage />} />
+
+                {/* User & Admin */}
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/pricing" element={<PricingPage />} />
                 <Route path="/api-docs" element={<ApiDocsPage />} />
@@ -60,7 +79,7 @@ export function App() {
               </Routes>
             </main>
 
-            {/* Deep Teal Footer Matching Image 1 */}
+            {/* Dark Footer */}
             <Footer />
 
             {/* Global Google Authentication Modal */}

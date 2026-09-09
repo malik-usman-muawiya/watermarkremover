@@ -7,7 +7,8 @@ import {
   Sparkles, 
   SlidersHorizontal, 
   Volume2, 
-  VolumeX
+  VolumeX,
+  CheckCircle2
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 
@@ -150,31 +151,31 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
   };
 
   return (
-    <div className="flex flex-col bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-xl">
+    <div className="flex flex-col bg-[#13151f] rounded-3xl overflow-hidden border border-[#232738] shadow-2xl">
       
       {/* Top Header Bar */}
-      <div className="flex flex-wrap items-center justify-between px-6 py-4 border-b border-slate-200 bg-white gap-4">
+      <div className="flex flex-wrap items-center justify-between px-6 py-4 border-b border-[#232738] bg-[#171926] gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200 shadow-xs">
+          <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20 shadow-md">
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-extrabold text-slate-900 text-base">Inpainting Complete</h3>
-            <p className="text-xs text-slate-500">Drag the center slider to inspect before & after clarity</p>
+            <h3 className="font-extrabold text-white text-base">Inpainting Complete</h3>
+            <p className="text-xs text-slate-400">Drag the center slider to inspect before & after clarity</p>
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           {/* Format selection pills */}
-          <div className="flex items-center bg-slate-100 rounded-xl p-1 border border-slate-200">
+          <div className="flex items-center bg-[#1e2235] rounded-xl p-1 border border-[#2d324c]">
             {(['mp4', 'webm', 'mov'] as const).map((fmt) => (
               <button
                 key={fmt}
                 onClick={() => setDownloadFormat(fmt)}
                 className={`px-3 py-1 text-xs font-black uppercase rounded-lg transition-colors cursor-pointer ${
                   downloadFormat === fmt 
-                    ? 'bg-brand-500 text-white shadow-xs' 
-                    : 'text-slate-500 hover:text-slate-800'
+                    ? 'bg-amber-500 text-black shadow-md' 
+                    : 'text-slate-400 hover:text-white'
                 }`}
               >
                 {fmt}
@@ -185,7 +186,7 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
           <button
             onClick={handleDownload}
             disabled={isDownloading}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 via-orange-500 to-brand-500 hover:opacity-95 text-white font-extrabold text-xs rounded-2xl shadow-md shadow-orange-500/20 transition-all active:scale-[0.98] cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:opacity-95 text-black font-black text-xs rounded-2xl shadow-lg shadow-orange-500/20 transition-all active:scale-[0.98] cursor-pointer"
           >
             <Download className="w-4 h-4" />
             <span>{isDownloading ? 'Downloading HD...' : 'Download Clean HD'}</span>
@@ -196,17 +197,18 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
             variant="secondary"
             size="sm"
             leftIcon={<RotateCcw className="w-4 h-4" />}
+            className="bg-[#1e2235] text-white border-[#2d324c] hover:bg-[#282d45]"
           >
             Edit Another
           </Button>
         </div>
       </div>
 
-      {/* Comparison Viewport with Checkerboard Background */}
-      <div className="relative p-6 sm:p-8 select-none bg-checkerboard flex items-center justify-center">
+      {/* Comparison Viewport with Sleek Dark Studio Stage */}
+      <div className="relative p-6 sm:p-8 select-none bg-[#0a0a0f] flex items-center justify-center">
         <div
           ref={containerRef}
-          className="relative max-h-[65vh] aspect-video w-full max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl border border-slate-300 bg-black cursor-ew-resize group"
+          className="relative max-h-[65vh] aspect-video w-full max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl border border-[#2f354e] bg-black cursor-ew-resize group"
           onMouseDown={(e) => {
             setIsDragging(true);
             handleMove(e.clientX);
@@ -250,20 +252,20 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
           </div>
 
           {/* Floating Badges */}
-          <div className="absolute top-4 left-4 bg-slate-900/90 backdrop-blur-md px-3.5 py-1 rounded-full text-[10px] font-black text-white uppercase tracking-wider pointer-events-none shadow-md border border-white/20">
+          <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-md px-3.5 py-1 rounded-full text-[10px] font-black text-white uppercase tracking-wider pointer-events-none shadow-md border border-white/20">
             ORIGINAL (BEFORE)
           </div>
-          <div className="absolute top-4 right-4 bg-brand-500/90 backdrop-blur-md px-3.5 py-1 rounded-full text-[10px] font-black text-white uppercase tracking-wider pointer-events-none shadow-md border border-brand-300/30">
+          <div className="absolute top-4 right-4 bg-amber-500/90 backdrop-blur-md px-3.5 py-1 rounded-full text-[10px] font-black text-black uppercase tracking-wider pointer-events-none shadow-md border border-amber-300/30">
             AI INPAINTED (AFTER)
           </div>
 
           {/* Center Split Curtain Handle */}
           <div
-            className="absolute top-0 bottom-0 w-1 bg-white shadow-[0_0_12px_rgba(0,0,0,0.8)] flex items-center justify-center pointer-events-none"
+            className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_12px_rgba(255,255,255,0.8)] flex items-center justify-center pointer-events-none"
             style={{ left: `${sliderPosition}%` }}
           >
-            <div className="w-9 h-9 rounded-full bg-white text-slate-800 shadow-2xl flex items-center justify-center -ml-[16px] border-2 border-brand-500">
-              <SlidersHorizontal className="w-4 h-4 rotate-90 text-brand-600" />
+            <div className="w-9 h-9 rounded-full bg-white text-slate-900 shadow-2xl flex items-center justify-center -ml-[16px] border-2 border-amber-500 hover:scale-110 transition-transform">
+              <SlidersHorizontal className="w-4 h-4 rotate-90 text-amber-600" />
             </div>
           </div>
         </div>
@@ -271,7 +273,7 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
 
       {/* Video Playback Scrubber & Controls */}
       <div className="px-6 pb-6 pt-2 space-y-3">
-        <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col space-y-3 shadow-xs">
+        <div className="p-4 bg-[#171926] border border-[#232738] rounded-2xl flex flex-col space-y-3 shadow-md">
           
           {/* Timeline Seekbar */}
           <input
@@ -281,7 +283,7 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
             step="0.05"
             value={currentTime}
             onChange={(e) => handleSeek(parseFloat(e.target.value))}
-            className="w-full accent-brand-500 cursor-pointer h-2 bg-slate-200 rounded-lg appearance-none"
+            className="w-full accent-amber-500 cursor-pointer h-2 bg-[#232738] rounded-lg appearance-none"
           />
 
           <div className="flex items-center justify-between">
@@ -289,24 +291,25 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
             <div className="flex items-center gap-3">
               <button
                 onClick={togglePlay}
-                className="w-9 h-9 rounded-xl bg-brand-500 hover:bg-brand-600 text-white flex items-center justify-center shadow-xs transition-transform active:scale-95 cursor-pointer"
+                className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold flex items-center gap-1.5 shadow-md transition-transform active:scale-95 cursor-pointer text-xs"
               >
                 {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
+                <span>{isPlaying ? 'Pause' : 'Play'}</span>
               </button>
 
-              <span className="font-mono text-xs font-bold text-slate-700">
+              <span className="font-mono text-xs font-bold text-amber-400">
                 {formatTime(currentTime)} / {formatTime(duration)}
               </span>
             </div>
 
             {/* Volume */}
             <div className="flex items-center gap-4 text-xs">
-              <span className="text-slate-500 hidden sm:inline">
+              <span className="text-slate-400 hidden sm:inline">
                 Both video tracks synchronized in real-time
               </span>
               <button
                 onClick={() => setIsMuted(!isMuted)}
-                className="p-2 text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-200/60 transition-colors cursor-pointer"
+                className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-[#232738] transition-colors cursor-pointer"
                 title={isMuted ? 'Unmute' : 'Mute'}
               >
                 {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}

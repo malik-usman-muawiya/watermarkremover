@@ -8,226 +8,58 @@ export interface SampleItem {
   description: string;
 }
 
-// Generate an image with diagonal "PROOF" watermark baked into canvas
-function createProofWatermarkImage(): string {
-  if (typeof document === 'undefined') return '';
-  const canvas = document.createElement('canvas');
-  canvas.width = 600;
-  canvas.height = 800;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return '';
+const MOUNTAIN_PHOTO_URL = 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80';
+const WATCH_PHOTO_URL = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80';
+const VILLA_PHOTO_URL = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80';
 
-  // Draw mountain / aerial sky background
-  const grad = ctx.createLinearGradient(0, 0, 0, 800);
-  grad.addColorStop(0, '#0284c7'); // sky blue
-  grad.addColorStop(0.3, '#38bdf8');
-  grad.addColorStop(0.5, '#e0f2fe'); // clouds
-  grad.addColorStop(0.65, '#1e3a8a'); // mountain peaks
-  grad.addColorStop(0.8, '#0f766e');
-  grad.addColorStop(1, '#064e3b'); // valley
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 600, 800);
+/**
+ * Creates watermarked version of a real photograph by applying semi-transparent text
+ */
+export function createWatermarkedPhotoUrl(photoUrl: string, text: string = 'PROOF'): Promise<string> {
+  return new Promise((resolve) => {
+    if (typeof document === 'undefined') return resolve(photoUrl);
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth || 900;
+      canvas.height = img.naturalHeight || 600;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return resolve(photoUrl);
 
-  // Mountain ridges
-  ctx.fillStyle = '#1e293b';
-  ctx.beginPath();
-  ctx.moveTo(0, 550);
-  ctx.lineTo(150, 420);
-  ctx.lineTo(300, 520);
-  ctx.lineTo(450, 380);
-  ctx.lineTo(600, 490);
-  ctx.lineTo(600, 800);
-  ctx.lineTo(0, 800);
-  ctx.fill();
+      // Draw authentic photograph
+      ctx.drawImage(img, 0, 0);
 
-  // Snow caps
-  ctx.fillStyle = '#f8fafc';
-  ctx.beginPath();
-  ctx.moveTo(150, 420);
-  ctx.lineTo(120, 460);
-  ctx.lineTo(180, 460);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(450, 380);
-  ctx.lineTo(410, 430);
-  ctx.lineTo(490, 430);
-  ctx.fill();
+      // Draw diagonal translucent repeating watermark text
+      ctx.save();
+      ctx.rotate(-35 * Math.PI / 180);
+      ctx.font = 'bold 38px sans-serif';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+      ctx.lineWidth = 1;
 
-  // Fluffy clouds
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-  for (let i = 0; i < 6; i++) {
-    ctx.beginPath();
-    ctx.arc(80 + i * 90, 240 + Math.sin(i) * 30, 60, 0, Math.PI * 2);
-    ctx.fill();
-  }
+      for (let y = -800; y < canvas.height * 2; y += 130) {
+        for (let x = -800; x < canvas.width * 2; x += 240) {
+          ctx.fillText(text, x, y);
+          ctx.strokeText(text, x, y);
+        }
+      }
+      ctx.restore();
 
-  // Draw repeating diagonal "PROOF PROOF PROOF" watermark text
-  ctx.save();
-  ctx.rotate(-35 * Math.PI / 180);
-  ctx.font = 'bold 36px sans-serif';
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
-  ctx.strokeStyle = 'rgba(0, 0, 0, 0.25)';
-  ctx.lineWidth = 1;
-
-  for (let y = -400; y < 1200; y += 110) {
-    for (let x = -600; x < 1000; x += 220) {
-      ctx.fillText('PROOF', x, y);
-      ctx.strokeText('PROOF', x, y);
-    }
-  }
-  ctx.restore();
-
-  return canvas.toDataURL('image/png');
+      resolve(canvas.toDataURL('image/jpeg', 0.9));
+    };
+    img.onerror = () => resolve(photoUrl);
+    img.src = photoUrl;
+  });
 }
 
-// Generate the corresponding 100% pristine clean version without ANY watermark
-function createCleanMountainImage(): string {
-  if (typeof document === 'undefined') return '';
-  const canvas = document.createElement('canvas');
-  canvas.width = 600;
-  canvas.height = 800;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return '';
-
-  // Same sky background without watermark
-  const grad = ctx.createLinearGradient(0, 0, 0, 800);
-  grad.addColorStop(0, '#0284c7');
-  grad.addColorStop(0.3, '#38bdf8');
-  grad.addColorStop(0.5, '#e0f2fe');
-  grad.addColorStop(0.65, '#1e3a8a');
-  grad.addColorStop(0.8, '#0f766e');
-  grad.addColorStop(1, '#064e3b');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 600, 800);
-
-  // Mountain ridges
-  ctx.fillStyle = '#1e293b';
-  ctx.beginPath();
-  ctx.moveTo(0, 550);
-  ctx.lineTo(150, 420);
-  ctx.lineTo(300, 520);
-  ctx.lineTo(450, 380);
-  ctx.lineTo(600, 490);
-  ctx.lineTo(600, 800);
-  ctx.lineTo(0, 800);
-  ctx.fill();
-
-  // Snow caps
-  ctx.fillStyle = '#f8fafc';
-  ctx.beginPath();
-  ctx.moveTo(150, 420);
-  ctx.lineTo(120, 460);
-  ctx.lineTo(180, 460);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(450, 380);
-  ctx.lineTo(410, 430);
-  ctx.lineTo(490, 430);
-  ctx.fill();
-
-  // Fluffy clouds
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-  for (let i = 0; i < 6; i++) {
-    ctx.beginPath();
-    ctx.arc(80 + i * 90, 240 + Math.sin(i) * 30, 60, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  return canvas.toDataURL('image/png');
-}
-
-// Generate Watch with watermark
-function createWatchWatermarkImage(): string {
-  if (typeof document === 'undefined') return '';
-  const canvas = document.createElement('canvas');
-  canvas.width = 700;
-  canvas.height = 500;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return '';
-
-  // Minimal gray background
-  ctx.fillStyle = '#f1f5f9';
-  ctx.fillRect(0, 0, 700, 500);
-
-  // Watch Strap
-  ctx.fillStyle = '#e2e8f0';
-  ctx.fillRect(200, 100, 300, 70);
-  ctx.fillRect(200, 330, 300, 70);
-
-  // Watch Dial
-  ctx.fillStyle = '#1e293b';
-  ctx.beginPath();
-  ctx.arc(350, 250, 100, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.strokeStyle = '#cbd5e1';
-  ctx.lineWidth = 12;
-  ctx.stroke();
-
-  // Hands
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.moveTo(350, 250);
-  ctx.lineTo(350, 190);
-  ctx.moveTo(350, 250);
-  ctx.lineTo(390, 270);
-  ctx.stroke();
-
-  // Watermark text stamp across the top right
-  ctx.fillStyle = 'rgba(239, 68, 68, 0.85)';
-  ctx.fillRect(470, 40, 180, 45);
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 15px sans-serif';
-  ctx.fillText('SAMPLE LOGO', 500, 68);
-
-  return canvas.toDataURL('image/png');
-}
-
-function createCleanWatchImage(): string {
-  if (typeof document === 'undefined') return '';
-  const canvas = document.createElement('canvas');
-  canvas.width = 700;
-  canvas.height = 500;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return '';
-
-  ctx.fillStyle = '#f1f5f9';
-  ctx.fillRect(0, 0, 700, 500);
-
-  ctx.fillStyle = '#e2e8f0';
-  ctx.fillRect(200, 100, 300, 70);
-  ctx.fillRect(200, 330, 300, 70);
-
-  ctx.fillStyle = '#1e293b';
-  ctx.beginPath();
-  ctx.arc(350, 250, 100, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.strokeStyle = '#cbd5e1';
-  ctx.lineWidth = 12;
-  ctx.stroke();
-
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.moveTo(350, 250);
-  ctx.lineTo(350, 190);
-  ctx.moveTo(350, 250);
-  ctx.lineTo(390, 270);
-  ctx.stroke();
-
-  return canvas.toDataURL('image/png');
-}
-
-// Pre-computed sample items with 100% verified Before and After visual difference
 export const SAMPLE_IMAGES: SampleItem[] = [
   {
     id: 'sample-aerial-proof',
     title: 'Aerial Mountain Clouds with PROOF Watermark',
     category: 'text',
-    originalUrl: typeof document !== 'undefined' ? createProofWatermarkImage() : '',
-    cleanUrl: typeof document !== 'undefined' ? createCleanMountainImage() : '',
+    originalUrl: MOUNTAIN_PHOTO_URL,
+    cleanUrl: MOUNTAIN_PHOTO_URL,
     description: 'Erase repeating translucent diagonal "PROOF" watermark lines across sky & mountains.',
     watermarkMask: { x: 10, y: 15, width: 80, height: 70 }
   },
@@ -235,10 +67,19 @@ export const SAMPLE_IMAGES: SampleItem[] = [
     id: 'sample-watch',
     title: 'Minimalist Luxury Watch Product Catalog',
     category: 'watermark',
-    originalUrl: typeof document !== 'undefined' ? createWatchWatermarkImage() : '',
-    cleanUrl: typeof document !== 'undefined' ? createCleanWatchImage() : '',
+    originalUrl: WATCH_PHOTO_URL,
+    cleanUrl: WATCH_PHOTO_URL,
     description: 'Clean up copyright brand text without blurring the watch face or strap details.',
     watermarkMask: { x: 65, y: 8, width: 28, height: 12 }
+  },
+  {
+    id: 'sample-villa',
+    title: 'Modern Architecture Villa with Agency Logo',
+    category: 'watermark',
+    originalUrl: VILLA_PHOTO_URL,
+    cleanUrl: VILLA_PHOTO_URL,
+    description: 'Seamlessly erase intrusive corner agency stamps and transparent logos.',
+    watermarkMask: { x: 15, y: 75, width: 35, height: 15 }
   }
 ];
 
