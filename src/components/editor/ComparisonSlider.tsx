@@ -71,28 +71,28 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-50 rounded-3xl overflow-hidden border border-slate-200 shadow-xl">
+    <div className="flex flex-col h-full bg-[#0e0e11] rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
       {/* Top Header Bar */}
-      <div className="flex flex-wrap items-center justify-between px-6 py-4 border-b border-slate-200 bg-white gap-4">
+      <div className="flex flex-wrap items-center justify-between px-6 py-4 border-b border-white/10 bg-[#121216] gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200 shadow-xs">
+          <div className="w-9 h-9 rounded-2xl bg-amber-500/15 text-amber-400 flex items-center justify-center border border-amber-500/30 shadow-sm">
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-extrabold text-slate-900 text-base">Inpainting Complete</h3>
-            <p className="text-xs text-slate-500">Drag the center slider to inspect before & after clarity</p>
+            <h3 className="font-black text-white text-base">Inpainting Complete</h3>
+            <p className="text-xs text-slate-400">Drag the center slider to inspect before & after clarity</p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
           {/* Format selector */}
-          <div className="flex items-center bg-slate-100 rounded-xl p-1 border border-slate-200">
+          <div className="flex items-center bg-[#18181c] rounded-xl p-1 border border-white/10">
             {(['png', 'jpg', 'webp'] as const).map((fmt) => (
               <button
                 key={fmt}
                 onClick={() => setDownloadFormat(fmt)}
-                className={`px-2.5 py-1 text-xs font-bold uppercase rounded-lg transition-colors cursor-pointer ${
-                  downloadFormat === fmt ? 'bg-brand-500 text-white shadow-xs' : 'text-slate-500 hover:text-slate-800'
+                className={`px-2.5 py-1 text-xs font-bold uppercase rounded-lg transition-all cursor-pointer ${
+                  downloadFormat === fmt ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-xs' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 {fmt}
@@ -100,33 +100,30 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
             ))}
           </div>
 
-          <Button
+          <button
             onClick={handleDownload}
-            variant="primary"
-            size="sm"
-            isLoading={isDownloading}
-            leftIcon={<Download className="w-4 h-4" />}
-            className="bg-brand-500 hover:bg-brand-600 text-white"
+            disabled={isDownloading}
+            className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:opacity-95 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-orange-500/20 transition-all cursor-pointer"
           >
-            Download Clean HD
-          </Button>
+            <Download className="w-3.5 h-3.5" />
+            <span>Download Clean HD</span>
+          </button>
 
-          <Button
+          <button
             onClick={onReset}
-            variant="secondary"
-            size="sm"
-            leftIcon={<RotateCcw className="w-4 h-4" />}
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#18181c] hover:bg-[#22222a] text-slate-200 hover:text-white font-bold text-xs rounded-xl border border-white/15 transition-all cursor-pointer"
           >
-            Edit Another
-          </Button>
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Edit Another</span>
+          </button>
         </div>
       </div>
 
       {/* Comparison Canvas Area */}
-      <div className="relative flex-1 flex items-center justify-center p-4 sm:p-8 select-none overflow-hidden bg-checkerboard">
+      <div className="relative flex-1 flex items-center justify-center p-4 sm:p-8 select-none overflow-hidden bg-[#0a0a0d]">
         <div
           ref={containerRef}
-          className="relative max-h-[70vh] aspect-auto rounded-2xl overflow-hidden shadow-2xl border border-slate-300 cursor-ew-resize"
+          className="relative max-h-[70vh] aspect-auto rounded-2xl overflow-hidden shadow-2xl border border-white/10 cursor-ew-resize"
           onMouseDown={(e) => {
             setIsDragging(true);
             handleMove(e.clientX);
@@ -162,20 +159,20 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
           </div>
 
           {/* Floating Badges */}
-          <div className="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-extrabold text-white uppercase tracking-wider pointer-events-none shadow-md">
+          <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-extrabold text-white uppercase tracking-wider pointer-events-none shadow-md border border-white/15">
             Original (Before)
           </div>
-          <div className="absolute top-4 right-4 bg-brand-500/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-extrabold text-white uppercase tracking-wider pointer-events-none shadow-md">
+          <div className="absolute top-4 right-4 bg-amber-500/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-black text-slate-950 uppercase tracking-wider pointer-events-none shadow-md border border-amber-300/40">
             AI Inpainted (After)
           </div>
 
           {/* Divider Handle */}
           <div
-            className="absolute top-0 bottom-0 w-1 bg-white shadow-[0_0_10px_rgba(0,0,0,0.5)] flex items-center justify-center pointer-events-none"
+            className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_12px_rgba(255,255,255,0.8)] flex items-center justify-center pointer-events-none"
             style={{ left: `${sliderPosition}%` }}
           >
-            <div className="w-8 h-8 rounded-full bg-white text-slate-800 shadow-xl flex items-center justify-center -ml-[14px] border-2 border-brand-500">
-              <SlidersHorizontal className="w-3.5 h-3.5 rotate-90 text-brand-600" />
+            <div className="w-8 h-8 rounded-full bg-white text-slate-950 shadow-2xl flex items-center justify-center -ml-[15px] border-2 border-amber-500 pointer-events-auto cursor-ew-resize hover:scale-110 transition-transform">
+              <SlidersHorizontal className="w-3.5 h-3.5 rotate-90 text-amber-600" />
             </div>
           </div>
         </div>
