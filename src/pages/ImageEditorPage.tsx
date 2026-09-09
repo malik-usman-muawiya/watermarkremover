@@ -60,10 +60,10 @@ export const ImageEditorPage: React.FC = () => {
           status: 'completed',
           removeText: true,
           removeLogo: true,
-          model: 'text',
+          model: 'all',
           qualityPassed: true,
           preservedPercentage: 99.6,
-          regionsCount: 1,
+          regionsCount: 4,
           maskedPixelCount: 420
         }
       ]);
@@ -104,7 +104,7 @@ export const ImageEditorPage: React.FC = () => {
         status: 'processing',
         removeText: true,
         removeLogo: true,
-        model: 'text'
+        model: 'all'
       };
     });
 
@@ -114,7 +114,12 @@ export const ImageEditorPage: React.FC = () => {
     // Asynchronously perform real Localized Inpainting on each file
     for (const item of newItems) {
       try {
-        const result = await autoRemoveImageWatermark(item.originalUrl, { quality: 'high' });
+        const result = await autoRemoveImageWatermark(item.originalUrl, { 
+          quality: 'high',
+          mode: 'all',
+          removeText: true,
+          removeLogo: true
+        });
         setItems(prev => prev.map(it => it.id === item.id ? { 
           ...it, 
           cleanUrl: result.cleanUrl, 
@@ -253,10 +258,10 @@ export const ImageEditorPage: React.FC = () => {
       status: 'completed',
       removeText: true,
       removeLogo: true,
-      model: 'text',
+      model: 'all',
       qualityPassed: true,
       preservedPercentage: 99.5,
-      regionsCount: 1,
+      regionsCount: 4,
       maskedPixelCount: 450
     };
     setItems(prev => [newItem, ...prev]);
