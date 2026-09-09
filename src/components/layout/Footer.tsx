@@ -18,7 +18,7 @@ export const Footer: React.FC = () => {
               </div>
               <div className="flex flex-col">
                 <span className="font-extrabold text-lg text-white tracking-tight leading-none">
-                  CLEANMARK <span className="text-amber-400">AI</span>
+                  WATERMARK <span className="text-amber-400">AI</span> REMOVER
                 </span>
                 <span className="text-[9px] text-amber-400 uppercase tracking-widest font-bold mt-0.5">
                   AI TOOLS SUITE
@@ -31,7 +31,7 @@ export const Footer: React.FC = () => {
             </p>
 
             <div className="pt-2 text-xs text-slate-500">
-              © 2026 CleanMark AI. Free Launch Edition.
+              © 2026 Watermark AI Remover. Free Launch Edition.
             </div>
           </div>
 

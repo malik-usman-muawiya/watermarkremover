@@ -47,10 +47,10 @@ export const Navbar: React.FC = () => {
             </div>
             <div className="flex flex-col">
               <span className="font-black text-xl text-white tracking-tight leading-none flex items-center gap-1">
-                CLEANMARK <span className="text-amber-400">AI</span>
+                WATERMARK <span className="text-amber-400">AI</span> REMOVER
               </span>
               <span className="text-[10px] text-amber-400 uppercase tracking-widest font-extrabold mt-0.5">
-                WATERMARK &bull; COMPRESS &bull; VIDEO
+                IMAGE &bull; VIDEO &bull; COMPRESSOR
               </span>
             </div>
           </Link>
@@ -61,12 +61,12 @@ export const Navbar: React.FC = () => {
           <Link
             to="/"
             className={`px-3.5 py-1.5 text-xs font-bold rounded-full transition-all ${
-              isActive('/') 
+              isActive('/') || isActive('/editor/image')
                 ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30' 
                 : 'text-slate-300 hover:text-white hover:bg-white/5'
             }`}
           >
-            Home
+            Image Remover
           </Link>
 
           {/* AI Tools Dropdown */}

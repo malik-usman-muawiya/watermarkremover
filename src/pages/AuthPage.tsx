@@ -40,7 +40,7 @@ export const AuthPage: React.FC = () => {
             <Sparkles className="w-6 h-6" />
           </div>
           <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-            {isRegister ? 'Join CleanMark AI' : 'Sign In to Studio'}
+            {isRegister ? 'Join Watermark AI Remover' : 'Sign In to Studio'}
           </h2>
           <p className="text-xs text-slate-500">
             {isRegister 

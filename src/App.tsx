@@ -50,9 +50,10 @@ export function App() {
             {/* Main Application Routes */}
             <main className="flex-1">
               <Routes>
-                {/* Core AI Tools */}
-                <Route path="/" element={<LandingPage />} />
+                {/* Core AI Tools - Default Front Page is Image Watermark Remover */}
+                <Route path="/" element={<ImageEditorPage />} />
                 <Route path="/editor/image" element={<ImageEditorPage />} />
+                <Route path="/landing" element={<LandingPage />} />
                 <Route path="/editor/video" element={<VideoEditorPage />} />
                 <Route path="/editor/batch" element={<BatchEditorPage />} />
 

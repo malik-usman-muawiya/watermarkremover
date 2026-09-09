@@ -32,23 +32,23 @@ export const AuthModal: React.FC = () => {
     <Modal isOpen={isAuthModalOpen} onClose={closeAuthModal} maxWidth="md">
       <div className="text-center space-y-4">
         {/* Header Icon & Title */}
-        <div className="w-12 h-12 rounded-2xl bg-teal-50 text-brand-500 border border-teal-200 flex items-center justify-center mx-auto shadow-sm">
+        <div className="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-400 border border-amber-500/30 flex items-center justify-center mx-auto shadow-sm">
           <Sparkles className="w-6 h-6" />
         </div>
 
         <div>
-          <h3 className="text-2xl font-extrabold text-slate-900 tracking-tight">Sign In to Continue</h3>
-          <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+          <h3 className="text-2xl font-black text-white tracking-tight">Sign In to Continue</h3>
+          <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
             {authModalReason}
           </p>
         </div>
 
         {/* Free Launch Offer Banner */}
-        <div className="p-3.5 bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-200 rounded-2xl text-left flex items-start gap-3">
+        <div className="p-3.5 bg-[#121216] border border-amber-500/30 rounded-2xl text-left flex items-start gap-3">
           <span className="text-lg">🎉</span>
-          <div className="text-xs text-slate-700">
-            <strong className="text-brand-600 block font-bold">Grand Launch Celebration!</strong>
-            All AI watermark & video inpainting features are currently <span className="font-bold text-emerald-600">100% Free & Unlimited</span>. Sign in with Google to start right away!
+          <div className="text-xs text-slate-300">
+            <strong className="text-amber-400 block font-bold">Grand Launch Celebration!</strong>
+            All AI watermark & video inpainting features are currently <span className="font-bold text-emerald-400">100% Free & Unlimited</span>. Sign in with Google to start right away!
           </div>
         </div>
 
@@ -57,7 +57,7 @@ export const AuthModal: React.FC = () => {
           <button
             onClick={handleGoogleLogin}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm rounded-xl border border-slate-300 shadow-sm hover:shadow transition-all active:scale-[0.99] cursor-pointer"
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-[#202028] hover:bg-[#282834] text-white font-semibold text-sm rounded-xl border border-white/15 shadow-sm hover:shadow transition-all active:scale-[0.99] cursor-pointer"
           >
             {/* Google G Logo SVG */}
             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -82,15 +82,15 @@ export const AuthModal: React.FC = () => {
           </button>
 
           <div className="relative flex py-2 items-center">
-            <div className="flex-grow border-t border-slate-200"></div>
-            <span className="flex-shrink mx-3 text-xs text-slate-400 font-medium uppercase">Or with email</span>
-            <div className="flex-grow border-t border-slate-200"></div>
+            <div className="flex-grow border-t border-white/10"></div>
+            <span className="flex-shrink mx-3 text-xs text-slate-500 font-medium uppercase">Or with email</span>
+            <div className="flex-grow border-t border-white/10"></div>
           </div>
 
           {!showEmailInput ? (
             <button
               onClick={() => setShowEmailInput(true)}
-              className="text-xs font-semibold text-brand-600 hover:text-brand-700 hover:underline"
+              className="text-xs font-semibold text-amber-400 hover:text-amber-300 hover:underline"
             >
               Sign in with Email & Password
             </button>
@@ -104,19 +104,22 @@ export const AuthModal: React.FC = () => {
                   placeholder="name@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-brand-500"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#121216] border border-white/15 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
                 />
               </div>
-              <Button type="submit" variant="primary" size="sm" className="w-full">
+              <button
+                type="submit"
+                className="w-full py-2.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:opacity-95 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all cursor-pointer"
+              >
                 Continue
-              </Button>
+              </button>
             </form>
           )}
         </div>
 
         {/* Security footer */}
         <div className="pt-2 flex items-center justify-center gap-1.5 text-[11px] text-slate-400">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
           <span>No credit card required. Free instant access.</span>
         </div>
       </div>

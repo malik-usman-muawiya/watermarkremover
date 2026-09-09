@@ -167,17 +167,17 @@ export const LandingPage: React.FC = () => {
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h3 className="text-3xl font-black text-white">Frequently Asked Questions</h3>
-          <p className="text-slate-400 text-sm mt-2">Everything you need to know about CleanMark AI</p>
+          <p className="text-slate-400 text-sm mt-2">Everything you need to know about Watermark AI Remover</p>
         </div>
 
         <div className="space-y-4">
           {[
             {
-              q: 'How does CleanMark AI remove watermarks without blurring the image?',
-              a: 'Instead of traditional simple blur or clone stamps, CleanMark AI uses deep convolutional inpainting diffusion neural networks to reconstruct the underlying background texture, continuity, and lighting based on surrounding pixel context.'
+              q: 'How does Watermark AI Remover remove watermarks without blurring the image?',
+              a: 'Instead of traditional simple blur or clone stamps, Watermark AI Remover uses deep convolutional inpainting diffusion neural networks to reconstruct the underlying background texture, continuity, and lighting based on surrounding pixel context.'
             },
             {
-              q: 'Is CleanMark AI really 100% free with no 5-image limits?',
+              q: 'Is Watermark AI Remover really 100% free with no 5-image limits?',
               a: 'Yes! To celebrate our grand launch, all image and video watermark removal features are 100% free and unlimited. Sign in with Google to start using all tools right away.'
             },
             {
