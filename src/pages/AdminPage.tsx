@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Users, 
   Activity, 
@@ -8,52 +8,109 @@ import {
   HardDrive, 
   UserCheck, 
   LogOut, 
-  KeyRound, 
   ShieldCheck, 
   AlertCircle,
   Server,
   Zap,
-  CheckCircle2
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  Lock
 } from 'lucide-react';
-import { Button } from '../components/ui/Button';
+import { SEO } from '../components/common/SEO';
+import { 
+  isValidAdminSession, 
+  setAdminSession, 
+  clearAdminSession, 
+  getLockoutStatus, 
+  recordFailedAttempt, 
+  sanitizeInput 
+} from '../utils/security';
 
 export const AdminPage: React.FC = () => {
-  // Directly open dashboard on /admin unless user explicitly logged out in current session
+  // Strict session check: only authenticated if valid token exists and hasn't expired
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() => {
-    return sessionStorage.getItem('cleanmark_admin_auth') !== 'logged_out';
+    return isValidAdminSession();
   });
 
   const [usernameInput, setUsernameInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [lockout, setLockout] = useState(() => getLockoutStatus());
   const [activeTab, setActiveTab] = useState<'metrics' | 'workers' | 'users'>('metrics');
+
+  // Lockout countdown timer
+  useEffect(() => {
+    if (!lockout.isLocked) return;
+
+    const timer = setInterval(() => {
+      const status = getLockoutStatus();
+      setLockout(status);
+      if (!status.isLocked) {
+        clearInterval(timer);
+        setAuthError('');
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [lockout.isLocked]);
 
   const handleAdminLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (usernameInput === 'admin' && passwordInput === 'admin123') {
-      sessionStorage.setItem('cleanmark_admin_auth', 'true');
+
+    // Check if locked out
+    const currentLockout = getLockoutStatus();
+    if (currentLockout.isLocked) {
+      setLockout(currentLockout);
+      setAuthError(`Security Lockout: Too many failed attempts. Try again in ${currentLockout.remainingSeconds}s.`);
+      return;
+    }
+
+    setIsSubmitting(true);
+    const sanitizedUsername = sanitizeInput(usernameInput);
+    const sanitizedPassword = passwordInput.trim();
+
+    // Verification against platform admin credentials
+    if (sanitizedUsername === 'admin' && sanitizedPassword === 'admin123') {
+      setAdminSession();
       setIsAdminAuthenticated(true);
       setAuthError('');
+      setUsernameInput('');
+      setPasswordInput('');
     } else {
-      setAuthError('Invalid credentials. Default: admin / admin123');
+      const lockResult = recordFailedAttempt();
+      setLockout(lockResult);
+      if (lockResult.isLocked) {
+        setAuthError(`Account locked due to ${lockResult.attempts} consecutive failed attempts. Wait ${lockResult.remainingSeconds}s.`);
+      } else {
+        const remaining = 5 - lockResult.attempts;
+        setAuthError(`Invalid credentials. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining before temporary lockout.`);
+      }
     }
+    setIsSubmitting(false);
   };
 
   const handleAdminLogout = () => {
-    sessionStorage.setItem('cleanmark_admin_auth', 'logged_out');
+    clearAdminSession();
     setIsAdminAuthenticated(false);
+    setUsernameInput('');
+    setPasswordInput('');
+    setAuthError('');
   };
 
-  // If explicitly logged out, show Login Portal
+  // If not authenticated, show secure Login Portal
   if (!isAdminAuthenticated) {
     return (
       <div className="min-h-[75vh] flex items-center justify-center px-4 py-12">
+        <SEO title="Admin Login — Watermark AI Remover" noIndex={true} />
         <div className="w-full max-w-md bg-[#121216] border border-white/10 rounded-3xl p-8 shadow-2xl space-y-6 animate-in zoom-in-95 duration-200">
           
           {/* Header */}
           <div className="text-center space-y-2">
             <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center mx-auto shadow-sm">
-              <ShieldAlert className="w-7 h-7" />
+              <Lock className="w-7 h-7" />
             </div>
             <h2 className="text-2xl font-black text-white tracking-tight">Admin Portal Login</h2>
             <p className="text-xs text-slate-400">
@@ -61,22 +118,24 @@ export const AdminPage: React.FC = () => {
             </p>
           </div>
 
-          {/* Admin Credentials Callout Badge */}
-          <div className="p-4 bg-[#18181c] border border-amber-500/25 rounded-2xl text-left space-y-2.5">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-amber-400">
-              <KeyRound className="w-4 h-4 text-amber-400" />
-              <span>Admin Credentials:</span>
-            </div>
-            <div className="text-xs text-slate-200 space-y-1 font-mono bg-[#0e0e11] p-3 rounded-xl border border-white/10">
-              <div>Username: <strong className="text-amber-400">admin</strong></div>
-              <div>Password: <strong className="text-amber-400">admin123</strong></div>
-            </div>
-          </div>
-
+          {/* Security Alert Banner */}
           {authError && (
-            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-xs text-red-400 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0" />
+            <div className="p-3.5 bg-red-500/10 border border-red-500/25 rounded-2xl text-xs text-red-300 flex items-start gap-2.5 animate-in fade-in">
+              <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
               <span>{authError}</span>
+            </div>
+          )}
+
+          {/* Lockout Notification Banner */}
+          {lockout.isLocked && (
+            <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl text-center space-y-1">
+              <div className="text-xs font-bold text-amber-400 flex items-center justify-center gap-1.5">
+                <ShieldAlert className="w-4 h-4" />
+                <span>Rate-Limit Security Lockout</span>
+              </div>
+              <p className="text-xs text-slate-300">
+                Please wait <strong className="text-amber-400 font-mono">{lockout.remainingSeconds}s</strong> before trying again.
+              </p>
             </div>
           )}
 
@@ -87,36 +146,57 @@ export const AdminPage: React.FC = () => {
               <input
                 type="text"
                 required
-                placeholder="admin"
+                disabled={lockout.isLocked || isSubmitting}
+                placeholder="Enter admin username"
+                autoComplete="username"
                 value={usernameInput}
                 onChange={(e) => setUsernameInput(e.target.value)}
-                className="w-full px-4 py-2.5 bg-[#18181c] border border-white/15 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
+                className="w-full px-4 py-2.5 bg-[#18181c] border border-white/15 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               />
             </div>
 
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-300">Admin Password</label>
-              <input
-                type="password"
-                required
-                placeholder="admin123"
-                value={passwordInput}
-                onChange={(e) => setPasswordInput(e.target.value)}
-                className="w-full px-4 py-2.5 bg-[#18181c] border border-white/15 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  disabled={lockout.isLocked || isSubmitting}
+                  placeholder="Enter admin password"
+                  autoComplete="current-password"
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  className="w-full px-4 py-2.5 pr-10 bg-[#18181c] border border-white/15 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
+              disabled={lockout.isLocked || isSubmitting}
+              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer active:scale-[0.99]"
             >
-              Sign In to Admin Dashboard
+              {isSubmitting ? 'Authenticating...' : lockout.isLocked ? `Locked (${lockout.remainingSeconds}s)` : 'Sign In to Admin Dashboard'}
             </button>
           </form>
 
-          <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            <span>256-bit encrypted administrative session</span>
+          {/* Security Notice (No Plaintext Password Exposed) */}
+          <div className="p-3.5 bg-[#18181c] border border-white/5 rounded-2xl text-[11px] text-slate-400 space-y-1 text-center">
+            <div className="flex items-center justify-center gap-1.5 font-bold text-slate-300">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Restricted Access Area</span>
+            </div>
+            <p className="text-[10px] text-slate-500">
+              Session is encrypted with brute-force rate-limiting and automatic 2-hour timeout.
+            </p>
           </div>
 
         </div>
@@ -127,6 +207,7 @@ export const AdminPage: React.FC = () => {
   // Logged-in Admin Dashboard
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <SEO title="Admin Dashboard — Watermark AI Remover" noIndex={true} />
       
       {/* Admin Header with Logout */}
       <div className="flex flex-wrap items-center justify-between gap-4 p-6 bg-[#121216] border border-white/10 rounded-3xl shadow-xl">

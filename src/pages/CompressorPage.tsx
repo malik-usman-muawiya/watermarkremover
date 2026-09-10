@@ -1,33 +1,21 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import JSZip from 'jszip';
+import { SEO } from '../components/common/SEO';
 import { 
   compressImageToTargetKB, 
-  resizeImageResolution, 
   formatBytes, 
   type CompressionResult 
 } from '../services/compressionEngine';
 import { 
-  UploadCloud, 
   Sparkles, 
   Download, 
   Trash2, 
   Sliders, 
   CheckCircle2, 
-  Layers, 
-  Zap, 
-  ShieldCheck, 
   Plus, 
   ArrowRight, 
-  HelpCircle, 
-  ChevronDown, 
-  FileText, 
-  Smartphone, 
-  Mail, 
-  Globe, 
-  RefreshCw,
-  Maximize2,
-  FileSpreadsheet
+  ChevronDown
 } from 'lucide-react';
 
 interface CompressItem {
@@ -46,13 +34,11 @@ export const CompressorPage: React.FC = () => {
   // Settings
   const [targetKB, setTargetKB] = useState<number>(50);
   const [isCustomKB, setIsCustomKB] = useState(false);
-  const [quality, setQuality] = useState<number>(80);
   const [scalePercent, setScalePercent] = useState<number>(100);
   const [outputFormat, setOutputFormat] = useState<'image/jpeg' | 'image/png' | 'image/webp'>('image/jpeg');
 
   // Queue
   const [items, setItems] = useState<CompressItem[]>([]);
-  const [isProcessingAll, setIsProcessingAll] = useState(false);
   const [isZipping, setIsZipping] = useState(false);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
 
@@ -215,6 +201,12 @@ export const CompressorPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0e0e11] text-slate-100 py-8 px-4 sm:px-6 lg:px-8 space-y-16">
+      <SEO
+        title="Smart Image Compressor — Reduce File Size Free"
+        description="Compress JPG, PNG, and WebP images to exact target KB or percentage without visible loss. 100% private client-side processing."
+        canonicalPath="/compressor"
+        faqs={faqs}
+      />
       
       {/* Hidden Multi-File Picker */}
       <input

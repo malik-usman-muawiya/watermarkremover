@@ -6,9 +6,10 @@ import {
   Copy, 
   Check, 
   Terminal, 
-  Zap,
-  ShieldCheck
+  Zap, 
+  ShieldCheck 
 } from 'lucide-react';
+import { SEO } from '../components/common/SEO';
 
 export const ApiDocsPage: React.FC = () => {
   const { user } = useAuth();
@@ -80,6 +81,12 @@ console.log('Processed Result:', data.result_url);`,
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+      <SEO
+        title="Developer API Documentation — Watermark AI Remover"
+        description="Integrate AI watermark removal and inpainting into your workflow. Complete REST API endpoints, cURL, Python, and Node.js examples."
+        canonicalPath="/api-docs"
+      />
+
       
       {/* Header Banner */}
       <div className="relative p-8 sm:p-10 bg-[#121216] border border-white/10 rounded-3xl shadow-2xl overflow-hidden backdrop-blur-xl">

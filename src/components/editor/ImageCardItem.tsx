@@ -1,27 +1,23 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { 
   Download, 
-  Sparkles, 
   SlidersHorizontal, 
   X, 
   Edit3, 
-  Copy, 
-  Maximize2, 
-  Smile, 
-  Meh, 
-  Frown, 
   Upload, 
-  Check, 
   CheckCircle2,
   ChevronDown,
   Layers,
-  ArrowRight,
   Video,
   Wand2,
   Maximize,
-  ExternalLink
+  RefreshCw,
+  AlertCircle,
+  ArrowRight
 } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { sanitizeFileName } from '../../utils/fileValidation';
+import { analytics } from '../../services/analytics';
 
 export interface ProcessedImageItem {
   id: string;
@@ -55,13 +51,11 @@ export const ImageCardItem: React.FC<ImageCardItemProps> = ({
   onUploadNext,
   onUpdateSettings
 }) => {
-  const navigate = useNavigate();
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
   const [showMaskPreview, setShowMaskPreview] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [userRating, setUserRating] = useState<'happy' | 'neutral' | 'sad' | null>(null);
-  const [isCopied, setIsCopied] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
   // Drag handlers for Before/After comparison slider
@@ -107,10 +101,12 @@ export const ImageCardItem: React.FC<ImageCardItemProps> = ({
   // Handle Download Image + Redirect to requested URL
   const handleDownload = () => {
     setIsDownloading(true);
+    analytics.trackDownload('single');
 
     const link = document.createElement('a');
     link.href = item.cleanUrl;
-    link.download = `cleanmark_ai_${item.name.replace(/\.[^/.]+$/, "")}_cleaned.png`;
+    const safeBaseName = sanitizeFileName(item.name.replace(/\.[^/.]+$/, ""));
+    link.download = `watermark_ai_${safeBaseName}_cleaned.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -119,22 +115,6 @@ export const ImageCardItem: React.FC<ImageCardItemProps> = ({
       setIsDownloading(false);
       window.open('https://www.ranknexai.com/team', '_blank');
     }, 600);
-  };
-
-  const handleCopyImage = async () => {
-    try {
-      const response = await fetch(item.cleanUrl);
-      const blob = await response.blob();
-      await navigator.clipboard.write([
-        new ClipboardItem({ [blob.type]: blob })
-      ]);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    } catch {
-      navigator.clipboard.writeText(item.cleanUrl);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    }
   };
 
   return (
@@ -269,26 +249,54 @@ export const ImageCardItem: React.FC<ImageCardItemProps> = ({
             </div>
           </div>
 
-          {/* Primary Action Button: Download Image (Vibrant Orange Gradient) */}
-          <button
-            onClick={handleDownload}
-            disabled={isDownloading}
-            className="w-full py-3.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:opacity-95 text-slate-950 font-black text-sm rounded-xl shadow-lg shadow-orange-500/20 transition-all flex items-center justify-center gap-2 active:scale-[0.99] cursor-pointer"
-          >
-            <Download className="w-4 h-4 text-slate-950" />
-            <span>{isDownloading ? 'Downloading Image...' : 'Download Image'}</span>
-          </button>
+          {/* Processing / Failed / Completed State (UX-005, QA-004) */}
+          {item.status === 'failed' && (
+            <div className="p-3 bg-red-500/10 border border-red-500/25 rounded-xl text-xs text-red-300 flex items-center justify-between gap-2 animate-in fade-in">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+                <span>Inpainting encountered an error.</span>
+              </div>
+              <button
+                onClick={() => onUpdateSettings(item.id, {})}
+                className="px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-red-200 font-bold rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
+              >
+                <RefreshCw className="w-3 h-3" />
+                <span>Retry</span>
+              </button>
+            </div>
+          )}
 
-          {/* Quality Check Verification Status Badge */}
-          <div className="space-y-1">
-            <div className="flex items-center justify-center gap-2 text-xs font-bold text-emerald-400">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Watermark removed successfully</span>
+          {item.status === 'processing' && (
+            <div className="w-full py-3.5 px-4 bg-[#23232a] border border-amber-500/30 rounded-xl text-xs text-amber-400 font-bold flex items-center justify-center gap-2 animate-pulse">
+              <RefreshCw className="w-4 h-4 animate-spin text-amber-400" />
+              <span>Neural Inpainting in progress...</span>
             </div>
-            <div className="text-[10px] text-center text-slate-400 font-mono">
-              ✓ Quality Check: 100% Background Preserved (Bit-for-Bit Untouched)
-            </div>
-          </div>
+          )}
+
+          {item.status === 'completed' && (
+            <>
+              {/* Primary Action Button: Download Image (Vibrant Orange Gradient) */}
+              <button
+                onClick={handleDownload}
+                disabled={isDownloading}
+                className="w-full py-3.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:opacity-95 text-slate-950 font-black text-sm rounded-xl shadow-lg shadow-orange-500/20 transition-all flex items-center justify-center gap-2 active:scale-[0.99] cursor-pointer"
+              >
+                <Download className="w-4 h-4 text-slate-950" />
+                <span>{isDownloading ? 'Downloading Image...' : 'Download Image'}</span>
+              </button>
+
+              {/* Quality Check Verification Status Badge */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-center gap-2 text-xs font-bold text-emerald-400">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Watermark removed successfully</span>
+                </div>
+                <div className="text-[10px] text-center text-slate-400 font-mono">
+                  ✓ Quality Check: 100% Background Preserved (Bit-for-Bit Untouched)
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Checkboxes: Remove Text & Remove Logo */}
           <div className="flex items-center justify-center gap-6 text-xs font-semibold text-slate-300">

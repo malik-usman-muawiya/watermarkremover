@@ -1,17 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { compressImageToTargetKB, formatBytes, type CompressionResult } from '../services/compressionEngine';
+import { SEO } from '../components/common/SEO';
 import { 
-  Sparkles, 
   UploadCloud, 
   Download, 
   CheckCircle2, 
-  Plus, 
-  Sliders, 
-  HelpCircle, 
   ChevronDown, 
-  ArrowRight,
-  ShieldCheck,
   FileCheck,
   AlertTriangle
 } from 'lucide-react';
@@ -183,13 +178,11 @@ export const KbLandingPage: React.FC = () => {
   const config = KB_MAP[targetNumber] || KB_MAP[50];
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isCompressing, setIsCompressing] = useState(false);
   const [result, setResult] = useState<CompressionResult | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const handleFile = async (file: File) => {
-    setSelectedFile(file);
     setIsCompressing(true);
     try {
       const res = await compressImageToTargetKB(file, config.targetKB, { format: 'image/jpeg' });
@@ -217,6 +210,12 @@ export const KbLandingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0e0e11] text-slate-100 py-10 px-4 sm:px-6 lg:px-8 space-y-16">
+      <SEO
+        title={config.metaTitle}
+        description={config.metaDesc}
+        canonicalPath={`/compress-image-to-${config.targetKB}kb`}
+        faqs={config.faqs}
+      />
       
       <input
         ref={fileInputRef}

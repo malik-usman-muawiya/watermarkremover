@@ -17,6 +17,23 @@ import {
   Star
 } from 'lucide-react';
 
+import { SEO } from '../components/common/SEO';
+
+const PRICING_FAQS = [
+  {
+    q: 'Is Watermark AI Remover really free during the launch?',
+    a: 'Yes! To celebrate our launch, all watermark removal features (image and video) are 100% free and unlimited. No credit card is required.'
+  },
+  {
+    q: 'Will my free credits expire?',
+    a: 'During the launch window, there are no strict quotas or credit limits. You can process single images, bulk folders, and video clips freely.'
+  },
+  {
+    q: 'Can I cancel or switch subscription plans at any time?',
+    a: 'Yes, once paid commercial plans are officially enabled, you can upgrade, downgrade, or cancel your monthly or yearly plan anytime directly from your dashboard.'
+  }
+];
+
 export const PricingPage: React.FC = () => {
   const { openUpgradeModal } = useCredits();
   const { user, openAuthModal } = useAuth();
@@ -29,6 +46,13 @@ export const PricingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0e0e11] text-slate-100 py-12 px-4 sm:px-6 lg:px-8 space-y-16 selection:bg-amber-500 selection:text-black relative overflow-hidden">
+      <SEO
+        title="Pricing Plans — Watermark AI Remover"
+        description="Explore affordable pricing plans for Watermark AI Remover. Enjoy unlimited AI watermark removal, image compression, and batch tools."
+        canonicalPath="/pricing"
+        faqs={PRICING_FAQS}
+      />
+
       
       {/* Subtle warm ambient background glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[360px] bg-gradient-to-tr from-amber-500/10 via-orange-500/10 to-amber-600/5 blur-[140px] -z-10 rounded-full pointer-events-none" />
