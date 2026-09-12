@@ -16,7 +16,7 @@ interface CreditsContextType {
 const CreditsContext = createContext<CreditsContextType | undefined>(undefined);
 
 export const CreditsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, updateUserPlan } = useAuth();
+  const { user, updateUserPlan, updateUserCredits } = useAuth();
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
 
   const credits = user ? user.credits : 5;
@@ -28,18 +28,17 @@ export const CreditsProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return false;
     }
     if (user) {
-      user.credits -= amount;
-      // trigger save
-      updateUserPlan(user.plan);
+      // Persist via the auth context instead of mutating the user
+      // object returned from the hook directly (that object is React
+      // state — mutating it in place can leave the UI out of sync).
+      updateUserCredits(user.credits - amount, user.maxCredits);
     }
     return true;
   };
 
   const addCredits = (amount: number) => {
     if (user) {
-      user.credits += amount;
-      user.maxCredits += amount;
-      updateUserPlan(user.plan);
+      updateUserCredits(user.credits + amount, user.maxCredits + amount);
       confetti({
         particleCount: 80,
         spread: 60,

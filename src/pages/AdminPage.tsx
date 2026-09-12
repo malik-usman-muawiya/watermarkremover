@@ -72,8 +72,14 @@ export const AdminPage: React.FC = () => {
     const sanitizedUsername = sanitizeInput(usernameInput);
     const sanitizedPassword = passwordInput.trim();
 
-    // Verification against platform admin credentials
-    if (sanitizedUsername === 'admin' && sanitizedPassword === 'admin123') {
+    // Verification against platform admin credentials.
+    // NOTE: This is a client-side check only — anyone can read the
+    // compiled JS bundle or use devtools to bypass it. This is here as
+    // a placeholder until real backend-verified admin auth is wired up;
+    // do not treat this as production-grade protection.
+    const adminUser = import.meta.env.VITE_ADMIN_USERNAME || 'admin';
+    const adminPass = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
+    if (sanitizedUsername === adminUser && sanitizedPassword === adminPass) {
       setAdminSession();
       setIsAdminAuthenticated(true);
       setAuthError('');
@@ -173,6 +179,7 @@ export const AdminPage: React.FC = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
                   tabIndex={-1}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>

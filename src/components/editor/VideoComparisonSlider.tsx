@@ -28,6 +28,19 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
   const [sliderPosition, setSliderPosition] = useState(50); // percentage 0-100
   const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState<number | null>(null);
+
+  // Track container width outside of render (refs must not be read during
+  // render) so the "before" video layer can match the container's size.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const updateWidth = () => setContainerWidth(el.clientWidth);
+    updateWidth();
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // Video playback synchronization
   const originalVideoRef = useRef<HTMLVideoElement>(null);
@@ -241,7 +254,7 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
               src={originalUrl}
               className="max-h-[65vh] h-full object-contain pointer-events-none"
               style={{
-                width: containerRef.current ? `${containerRef.current.clientWidth}px` : '100%',
+                width: containerWidth ? `${containerWidth}px` : '100%',
                 maxWidth: 'none'
               }}
               loop
@@ -311,6 +324,7 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
                 onClick={() => setIsMuted(!isMuted)}
                 className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-[#232738] transition-colors cursor-pointer"
                 title={isMuted ? 'Unmute' : 'Mute'}
+                aria-label={isMuted ? 'Unmute' : 'Mute'}
               >
                 {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
               </button>

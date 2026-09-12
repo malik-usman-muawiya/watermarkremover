@@ -7,6 +7,7 @@ import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { AuthModal } from './components/ui/AuthModal';
 import { UpgradeModal } from './components/ui/UpgradeModal';
+import { ProtectedRoute } from './components/common/ProtectedRoute';
 
 // Primary landing is eager for fastest LCP
 import { ImageEditorPage } from './pages/ImageEditorPage';
@@ -81,11 +82,11 @@ export function App() {
                   <Route path="/pakistan-job-form-photo-size" element={<PakistanFormPhotoHubPage />} />
                   <Route path="/compress-gif" element={<GifCompressorPage />} />
 
-                  {/* User & Admin */}
-                  <Route path="/dashboard" element={<DashboardPage />} />
+                  {/* User & Admin — sign-in required */}
+                  <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
                   <Route path="/pricing" element={<PricingPage />} />
                   <Route path="/api-docs" element={<ApiDocsPage />} />
-                  <Route path="/admin" element={<AdminPage />} />
+                  <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
                   <Route path="/auth" element={<AuthPage />} />
                   <Route path="/legal" element={<LegalPage />} />
                   <Route path="/seo/:slug" element={<SeoLandingPage />} />

@@ -125,6 +125,7 @@ export const ImageCardItem: React.FC<ImageCardItemProps> = ({
         onClick={() => onRemove(item.id)}
         className="absolute -top-3.5 -right-3.5 w-8 h-8 rounded-full bg-[#1e1e24] border-2 border-red-500/80 text-red-400 hover:text-white hover:bg-red-600 hover:border-red-600 flex items-center justify-center transition-all cursor-pointer shadow-lg z-20"
         title="Remove this image"
+        aria-label="Remove this image"
       >
         <X className="w-4 h-4" />
       </button>

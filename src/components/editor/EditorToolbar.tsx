@@ -129,6 +129,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           onClick={onUndo}
           disabled={!canUndo}
           title="Undo (Ctrl+Z)"
+          aria-label="Undo"
           className="p-2 text-slate-500 hover:text-slate-900 disabled:opacity-30 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
         >
           <Undo2 className="w-4 h-4" />
@@ -138,6 +139,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           onClick={onRedo}
           disabled={!canRedo}
           title="Redo (Ctrl+Y)"
+          aria-label="Redo"
           className="p-2 text-slate-500 hover:text-slate-900 disabled:opacity-30 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
         >
           <Redo2 className="w-4 h-4" />
@@ -147,6 +149,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           onClick={onClearMask}
           disabled={!hasMask}
           title="Clear Mask Selection"
+          aria-label="Clear mask selection"
           className="p-2 text-red-500 hover:text-red-700 disabled:opacity-30 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
         >
           <Trash2 className="w-4 h-4" />
@@ -159,6 +162,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           onClick={() => setZoom(z => Math.max(0.2, z - 0.2))}
           className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-200 rounded-lg cursor-pointer"
           title="Zoom Out"
+          aria-label="Zoom out"
         >
           <ZoomOut className="w-3.5 h-3.5" />
         </button>
@@ -167,6 +171,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           onClick={() => setZoom(z => Math.min(4, z + 0.2))}
           className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-200 rounded-lg cursor-pointer"
           title="Zoom In"
+          aria-label="Zoom in"
         >
           <ZoomIn className="w-3.5 h-3.5" />
         </button>
@@ -174,6 +179,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           onClick={onResetZoom}
           className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-200 rounded-lg ml-0.5 cursor-pointer"
           title="Fit View"
+          aria-label="Fit view"
         >
           <Maximize2 className="w-3.5 h-3.5" />
         </button>

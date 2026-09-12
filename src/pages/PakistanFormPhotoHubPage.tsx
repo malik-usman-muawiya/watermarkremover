@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { compressImageToTargetKB, formatBytes, type CompressionResult } from '../services/compressionEngine';
+import { SEO } from '../components/common/SEO';
 import { 
   Building2, 
   UploadCloud, 
@@ -153,7 +154,11 @@ export const PakistanFormPhotoHubPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0e0e11] text-slate-100 py-10 px-4 sm:px-6 lg:px-8 space-y-16">
-      
+      <SEO
+        title="Pakistan Job & Form Photo Size Reducer — CNIC, NTS, PPSC"
+        description="Resize and compress photos to the exact KB size required for Pakistani job forms, CNIC, NTS, PPSC, and FPSC applications — free online tool."
+        canonicalPath="/pakistan-job-form-photo-size"
+      />
       <input
         ref={fileInputRef}
         type="file"

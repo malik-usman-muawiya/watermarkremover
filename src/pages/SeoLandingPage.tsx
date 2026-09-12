@@ -3,10 +3,12 @@ import { useParams, Link } from 'react-router-dom';
 import { ComparisonSlider } from '../components/editor/ComparisonSlider';
 import { SAMPLE_IMAGES } from '../utils/sampleImages';
 import { Button } from '../components/ui/Button';
-import { Sparkles, ArrowRight, CheckCircle2, Gift } from 'lucide-react';
+import { SEO } from '../components/common/SEO';
+import { Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 interface SeoConfig {
   title: string;
+  metaDescription: string;
   badge: string;
   subtitle: string;
   sampleIdx: number;
@@ -16,6 +18,7 @@ interface SeoConfig {
 const SEO_MAP: Record<string, SeoConfig> = {
   'image-watermark-remover': {
     title: 'Free Online AI Image Watermark Remover',
+    metaDescription: 'Remove translucent logos, camera stamps, and copyright watermarks from any photo in full original resolution — free, in your browser.',
     badge: 'Neural Inpainter for Images',
     subtitle: 'Erase translucent logos, camera stamps, and copyright markings in 100% full original resolution without blurring background details.',
     sampleIdx: 0,
@@ -23,6 +26,7 @@ const SEO_MAP: Record<string, SeoConfig> = {
   },
   'video-watermark-remover': {
     title: 'AI Video Watermark & Logo Remover',
+    metaDescription: 'Remove channel overlays, watermarks, and timestamps from MP4 & MOV clips with temporal flicker stabilization — free online tool.',
     badge: 'Temporal Video Inpainting',
     subtitle: 'Remove intrusive channel overlays, watermarks, and timestamps from MP4 & MOV clips with temporal flicker stabilization.',
     sampleIdx: 1,
@@ -30,6 +34,7 @@ const SEO_MAP: Record<string, SeoConfig> = {
   },
   'remove-logo-from-image': {
     title: 'Remove Logos & Brand Stamps from Photos',
+    metaDescription: 'Clean up product imagery, marketplace photos, and catalog assets seamlessly with one-click brush masking.',
     badge: 'E-Commerce Clean Studio',
     subtitle: 'Clean up product imagery, marketplace photos, and catalog assets seamlessly with one-click brush masking.',
     sampleIdx: 2,
@@ -37,6 +42,7 @@ const SEO_MAP: Record<string, SeoConfig> = {
   },
   'remove-text-from-image': {
     title: 'Remove Intrusive Text & Date Stamps from Pictures',
+    metaDescription: 'Restore vintage family portraits, scans, and vacation photos by erasing orange date stamps and printed text — free AI tool.',
     badge: 'OCR & Text Eraser',
     subtitle: 'Restore vintage family portraits, scans, and vacation photos by erasing orange date stamps and printed text.',
     sampleIdx: 3,
@@ -44,6 +50,7 @@ const SEO_MAP: Record<string, SeoConfig> = {
   },
   'ai-object-remover': {
     title: 'AI Object & Photobomber Remover',
+    metaDescription: 'Erase unwanted background people, power lines, trash cans, and distractions from your landscape and travel shots with AI.',
     badge: 'Smart Scene Cleaner',
     subtitle: 'Erase unwanted background people, power lines, trash cans, and distractions from your landscape and travel shots.',
     sampleIdx: 1,
@@ -58,6 +65,11 @@ export const SeoLandingPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+      <SEO
+        title={config.title}
+        description={config.metaDescription}
+        canonicalPath={`/seo/${slug || 'image-watermark-remover'}`}
+      />
       
       {/* Hero */}
       <div className="text-center max-w-4xl mx-auto space-y-6">

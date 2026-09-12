@@ -12,6 +12,7 @@ interface AuthContextType {
   login: (email: string, name?: string) => void;
   logout: () => void;
   updateUserPlan: (plan: PlanType) => void;
+  updateUserCredits: (credits: number, maxCredits: number) => void;
   regenerateApiKey: () => string;
 }
 
@@ -104,6 +105,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   };
 
+  const updateUserCredits = (credits: number, maxCredits: number) => {
+    if (!user) return;
+    setUser({
+      ...user,
+      credits,
+      maxCredits
+    });
+  };
+
   const regenerateApiKey = () => {
     const newKey = `cmk_live_${Math.random().toString(36).substring(2, 12)}_${Math.random().toString(36).substring(2, 12)}`;
     if (user) {
@@ -124,6 +134,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       login,
       logout,
       updateUserPlan,
+      updateUserCredits,
       regenerateApiKey
     }}>
       {children}

@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { resizeImageResolution, formatBytes, type CompressionResult } from '../services/compressionEngine';
+import { SEO } from '../components/common/SEO';
 import { 
   Maximize2, 
   UploadCloud, 
@@ -117,7 +118,11 @@ export const ResolutionReducerPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0e0e11] text-slate-100 py-10 px-4 sm:px-6 lg:px-8 space-y-16">
-      
+      <SEO
+        title="Reduce Image Resolution Online Free — Resize Photos"
+        description="Reduce the pixel resolution of your photos while keeping quality sharp and aspect ratio locked. Free, private, and instant in your browser."
+        canonicalPath="/reduce-image-resolution"
+      />
       <input
         ref={fileInputRef}
         type="file"
@@ -209,6 +214,7 @@ export const ResolutionReducerPage: React.FC = () => {
                       onClick={() => setLockAspect(!lockAspect)}
                       className={`p-2 rounded-xl mt-5 transition-colors border ${lockAspect ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/40' : 'bg-[#18181c] text-slate-500 border-white/10'}`}
                       title="Toggle Aspect Ratio Lock"
+                      aria-label={lockAspect ? 'Unlock aspect ratio' : 'Lock aspect ratio'}
                     >
                       {lockAspect ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
                     </button>

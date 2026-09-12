@@ -1,4 +1,4 @@
-﻿export const SITE_CONFIG = {
+export const SITE_CONFIG = {
   name: 'Watermark AI Remover',
   shortName: 'WatermarkAI',
   description: 'Free AI Watermark & Object Remover. Remove watermarks, logos, timestamps, text, and unwanted objects from images and videos with pixel-exact AI inpainting.',

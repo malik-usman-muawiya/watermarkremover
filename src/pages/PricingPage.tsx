@@ -5,16 +5,10 @@ import {
   Check, 
   Sparkles, 
   Zap, 
-  ShieldCheck, 
   HelpCircle, 
-  CheckCircle2, 
-  X,
   Gift,
   ArrowRight,
-  ChevronRight,
-  Lock,
-  Layers,
-  Star
+  ChevronRight
 } from 'lucide-react';
 
 import { SEO } from '../components/common/SEO';

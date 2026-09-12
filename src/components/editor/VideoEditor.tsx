@@ -640,6 +640,7 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                       togglePlay();
                     }}
                     className="w-14 h-14 rounded-full bg-black/60 backdrop-blur-md border border-white/30 text-white flex items-center justify-center hover:scale-110 hover:bg-amber-500 hover:text-black transition-all shadow-2xl cursor-pointer"
+                    aria-label={isPlaying ? 'Pause video' : 'Play video'}
                   >
                     {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-0.5" />}
                   </button>
@@ -655,6 +656,7 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                   <button 
                     onClick={() => setIsMuted(!isMuted)} 
                     className="text-slate-400 hover:text-white p-1 cursor-pointer"
+                    aria-label={isMuted ? 'Unmute' : 'Mute'}
                   >
                     {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                   </button>
@@ -740,6 +742,7 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                         <button
                           onClick={(e) => deleteRegion(r.id || '', e)}
                           className="p-1 text-slate-500 hover:text-red-400 rounded cursor-pointer"
+                          aria-label="Delete watermark region"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

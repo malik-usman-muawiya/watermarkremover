@@ -117,6 +117,7 @@ console.log('Processed Result:', data.result_url);`,
                 onClick={handleCopyKey}
                 className="ml-2 text-slate-400 hover:text-white cursor-pointer transition-colors p-1"
                 title="Copy API Key"
+                aria-label="Copy API key"
               >
                 {copiedKey ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
               </button>

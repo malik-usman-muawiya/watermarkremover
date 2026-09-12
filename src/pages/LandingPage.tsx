@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { SAMPLE_IMAGES } from '../utils/sampleImages';
 import { ComparisonSlider } from '../components/editor/ComparisonSlider';
 import { useAuth } from '../context/AuthContext';
+import { SEO } from '../components/common/SEO';
 import { 
   Sparkles, 
   Video, 
@@ -12,13 +13,8 @@ import {
   Lock, 
   Gift, 
   ChevronRight, 
-  ShieldCheck, 
   HelpCircle,
-  Zap,
-  Star,
-  FileStack,
-  Layers,
-  Wand2
+  FileStack
 } from 'lucide-react';
 
 export const LandingPage: React.FC = () => {
@@ -37,6 +33,11 @@ export const LandingPage: React.FC = () => {
 
   return (
     <div className="space-y-24 pb-24 bg-[#0e0e11] text-slate-100 min-h-screen selection:bg-amber-500 selection:text-black">
+      <SEO
+        title="Watermark AI Remover — Free AI Watermark & Object Removal Tool"
+        description="Remove watermarks, logos, timestamps, and unwanted objects from images and videos with AI-powered inpainting. 100% free, no signup required for the launch."
+        canonicalPath="/landing"
+      />
       
       {/* Hero Section */}
       <section className="relative pt-12 sm:pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">

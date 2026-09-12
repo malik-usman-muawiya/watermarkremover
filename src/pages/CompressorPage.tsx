@@ -204,7 +204,7 @@ export const CompressorPage: React.FC = () => {
       <SEO
         title="Smart Image Compressor — Reduce File Size Free"
         description="Compress JPG, PNG, and WebP images to exact target KB or percentage without visible loss. 100% private client-side processing."
-        canonicalPath="/compressor"
+        canonicalPath="/compress-image"
         faqs={faqs}
       />
       
@@ -412,6 +412,7 @@ export const CompressorPage: React.FC = () => {
                   onClick={clearAll}
                   className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-colors cursor-pointer"
                   title="Clear Queue"
+                  aria-label="Clear queue"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -468,6 +469,7 @@ export const CompressorPage: React.FC = () => {
                     <button
                       onClick={() => removeItem(item.id)}
                       className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-colors cursor-pointer"
+                      aria-label="Remove from queue"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>

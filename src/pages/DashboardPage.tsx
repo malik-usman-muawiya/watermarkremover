@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useCredits } from '../context/CreditsContext';
 import { ApiService } from '../services/api';
 import type { Job } from '../types';
 import { Link } from 'react-router-dom';
@@ -16,21 +15,15 @@ import {
   Key, 
   RefreshCw, 
   Gift,
-  ShieldCheck,
   Check
 } from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
   const { user, regenerateApiKey } = useAuth();
-  const { openUpgradeModal } = useCredits();
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobs, setJobs] = useState<Job[]>(() => ApiService.getJobs());
   const [filterType, setFilterType] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [apiKeyCopied, setApiKeyCopied] = useState(false);
-
-  useEffect(() => {
-    setJobs(ApiService.getJobs());
-  }, []);
 
   const handleDeleteJob = (id: string) => {
     ApiService.deleteJob(id);
@@ -169,6 +162,7 @@ export const DashboardPage: React.FC = () => {
           <button
             onClick={regenerateApiKey}
             title="Regenerate API Token"
+            aria-label="Regenerate API token"
             className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
           >
             <RefreshCw className="w-4 h-4" />
@@ -267,6 +261,7 @@ export const DashboardPage: React.FC = () => {
                   <button
                     onClick={() => handleDeleteJob(job.id)}
                     title="Delete permanently from storage"
+                    aria-label="Delete job permanently"
                     className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-colors cursor-pointer"
                   >
                     <Trash2 className="w-4 h-4" />

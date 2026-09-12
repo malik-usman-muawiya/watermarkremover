@@ -11,6 +11,7 @@ import {
   ArrowRight,
   Sliders
 } from 'lucide-react';
+import { SEO } from '../components/common/SEO';
 
 export const GifCompressorPage: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -59,6 +60,11 @@ export const GifCompressorPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0e0e11] text-slate-100 py-10 px-4 sm:px-6 lg:px-8 space-y-16">
+      <SEO
+        title="Compress GIF Online Free — Reduce GIF File Size"
+        description="Shrink animated GIFs for Discord, WhatsApp, and email while keeping the animation smooth. Free browser-based GIF compressor, no upload limits."
+        canonicalPath="/compress-gif"
+      />
       <input
         ref={fileInputRef}
         type="file"
