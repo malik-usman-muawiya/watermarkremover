@@ -92,11 +92,6 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/compress-gif" className="hover:text-white transition-colors">
-                  Animated GIF Compressor
-                </Link>
-              </li>
-              <li>
                 <Link to="/editor/batch" className="hover:text-white transition-colors">
                   Batch Multi-File Inpaint
                 </Link>

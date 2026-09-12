@@ -20,7 +20,7 @@ const CompressorPage = lazy(() => import('./pages/CompressorPage').then(m => ({ 
 const KbLandingPage = lazy(() => import('./pages/KbLandingPage').then(m => ({ default: m.KbLandingPage })));
 const PakistanFormPhotoHubPage = lazy(() => import('./pages/PakistanFormPhotoHubPage').then(m => ({ default: m.PakistanFormPhotoHubPage })));
 const ResolutionReducerPage = lazy(() => import('./pages/ResolutionReducerPage').then(m => ({ default: m.ResolutionReducerPage })));
-const GifCompressorPage = lazy(() => import('./pages/GifCompressorPage').then(m => ({ default: m.GifCompressorPage })));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then(m => ({ default: m.NotFoundPage })));
 const DashboardPage = lazy(() => import('./pages/DashboardPage').then(m => ({ default: m.DashboardPage })));
 const PricingPage = lazy(() => import('./pages/PricingPage').then(m => ({ default: m.PricingPage })));
 const ApiDocsPage = lazy(() => import('./pages/ApiDocsPage').then(m => ({ default: m.ApiDocsPage })));
@@ -28,7 +28,6 @@ const AdminPage = lazy(() => import('./pages/AdminPage').then(m => ({ default: m
 const AuthPage = lazy(() => import('./pages/AuthPage').then(m => ({ default: m.AuthPage })));
 const LegalPage = lazy(() => import('./pages/LegalPage').then(m => ({ default: m.LegalPage })));
 const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage').then(m => ({ default: m.SeoLandingPage })));
-const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then(m => ({ default: m.NotFoundPage })));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -83,7 +82,6 @@ export function App() {
                   <Route path="/compress-image-to-300kb" element={<KbLandingPage key="300kb" />} />
                   <Route path="/reduce-image-resolution" element={<ResolutionReducerPage />} />
                   <Route path="/pakistan-job-form-photo-size" element={<PakistanFormPhotoHubPage />} />
-                  <Route path="/compress-gif" element={<GifCompressorPage />} />
 
                   {/* User & Admin — sign-in required */}
                   <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />

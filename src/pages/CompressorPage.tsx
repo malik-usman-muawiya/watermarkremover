@@ -190,10 +190,6 @@ export const CompressorPage: React.FC = () => {
       a: 'Simply upload your photo, select the 50KB target preset button, and our binary search engine will automatically compress your image to under 50KB in milliseconds, ready for job portals and admission forms.'
     },
     {
-      q: 'Does this tool support GIF compression?',
-      a: 'Yes! For animated GIFs, you can visit our dedicated GIF Compressor at /compress-gif to optimize frame rates, palette depth, and file size.'
-    },
-    {
       q: 'Are my uploaded photos safe and private?',
       a: '100% yes. All image compression runs directly inside your web browser using HTML5 Canvas & WebAssembly. Your photos are never uploaded to public servers or stored.'
     }
