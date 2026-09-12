@@ -1,6 +1,5 @@
 import React from 'react';
-import { Sparkles, Zap, Gift, Tag } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Tag } from 'lucide-react';
 
 export const PromoBanner: React.FC = () => {
   return (

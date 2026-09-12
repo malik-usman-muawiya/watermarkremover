@@ -73,11 +73,14 @@ export function App() {
 
                   {/* Image Compressor Suite */}
                   <Route path="/compress-image" element={<CompressorPage />} />
-                  <Route path="/compress-image-to-20kb" element={<KbLandingPage />} />
-                  <Route path="/compress-image-to-50kb" element={<KbLandingPage />} />
-                  <Route path="/compress-image-to-100kb" element={<KbLandingPage />} />
-                  <Route path="/compress-image-to-200kb" element={<KbLandingPage />} />
-                  <Route path="/compress-image-to-300kb" element={<KbLandingPage />} />
+                  {/* key=path forces a clean remount when navigating between
+                      these sibling KB-target pages, since React Router
+                      reuses the component instance for same-element routes */}
+                  <Route path="/compress-image-to-20kb" element={<KbLandingPage key="20kb" />} />
+                  <Route path="/compress-image-to-50kb" element={<KbLandingPage key="50kb" />} />
+                  <Route path="/compress-image-to-100kb" element={<KbLandingPage key="100kb" />} />
+                  <Route path="/compress-image-to-200kb" element={<KbLandingPage key="200kb" />} />
+                  <Route path="/compress-image-to-300kb" element={<KbLandingPage key="300kb" />} />
                   <Route path="/reduce-image-resolution" element={<ResolutionReducerPage />} />
                   <Route path="/pakistan-job-form-photo-size" element={<PakistanFormPhotoHubPage />} />
                   <Route path="/compress-gif" element={<GifCompressorPage />} />

@@ -37,6 +37,8 @@ export const SEO: React.FC<SEOProps> = ({
   const canonicalUrl = `${SITE_CONFIG.url}${canonicalPath.startsWith('/') ? canonicalPath : '/' + canonicalPath}`;
   const fullOgImage = ogImage.startsWith('http') ? ogImage : `${SITE_CONFIG.url}${ogImage}`;
 
+  const faqsSignature = JSON.stringify(faqs);
+
   useEffect(() => {
     document.title = fullTitle;
 
@@ -131,7 +133,7 @@ export const SEO: React.FC<SEOProps> = ({
     }
     scriptTag.textContent = JSON.stringify(structuredDataArray, null, 2);
 
-  }, [fullTitle, description, canonicalUrl, fullOgImage, ogType, effectiveNoIndex, JSON.stringify(faqs)]);
+  }, [fullTitle, description, canonicalUrl, fullOgImage, ogType, effectiveNoIndex, faqsSignature]);
 
   return null;
 };

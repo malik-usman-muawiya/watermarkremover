@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Modal } from './Modal';
-import { Button } from './Button';
-import { Sparkles, ShieldCheck, Mail, Lock, ArrowRight, X } from 'lucide-react';
+import { Sparkles, ShieldCheck, Mail } from 'lucide-react';
 
 export const AuthModal: React.FC = () => {
   const { isAuthModalOpen, closeAuthModal, authModalReason, loginWithGoogle, login } = useAuth();

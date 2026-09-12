@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useCredits } from '../context/CreditsContext';
 import { useAuth } from '../context/AuthContext';
 import { 
   Check, 
@@ -29,8 +28,7 @@ const PRICING_FAQS = [
 ];
 
 export const PricingPage: React.FC = () => {
-  const { openUpgradeModal } = useCredits();
-  const { user, openAuthModal } = useAuth();
+  const { openAuthModal } = useAuth();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
 

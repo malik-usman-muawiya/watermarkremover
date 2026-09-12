@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { compressImageToTargetKB, formatBytes, type CompressionResult } from '../services/compressionEngine';
 import { SEO } from '../components/common/SEO';
 import { 
@@ -173,8 +173,14 @@ const KB_MAP: Record<number, KbConfig> = {
 };
 
 export const KbLandingPage: React.FC = () => {
-  const { kb } = useParams<{ kb?: string }>();
-  const targetNumber = parseInt(kb || '50') || 50;
+  // The routes for this page are static literal paths
+  // (/compress-image-to-20kb, /compress-image-to-50kb, ...), not a
+  // parameterized route, so the target size must be read from the
+  // current URL rather than useParams() (which would always be empty
+  // and silently fall back to the same 50KB config on every page).
+  const { pathname } = useLocation();
+  const match = pathname.match(/(\d+)kb/i);
+  const targetNumber = (match && parseInt(match[1], 10)) || 50;
   const config = KB_MAP[targetNumber] || KB_MAP[50];
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -203,9 +209,9 @@ export const KbLandingPage: React.FC = () => {
     link.click();
     document.body.removeChild(link);
 
-    setTimeout(() => {
-      window.open('https://www.ranknexai.com/team', '_blank');
-    }, 600);
+    // Open synchronously (not inside setTimeout) so browsers still treat
+    // this as part of the user's click and don't block the popup.
+    window.open('https://www.ranknexai.com/team', '_blank');
   };
 
   return (

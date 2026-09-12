@@ -1,29 +1,20 @@
 import React, { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { 
   Film, 
   UploadCloud, 
   Download, 
-  CheckCircle2, 
-  Sparkles, 
-  HelpCircle, 
-  ChevronDown, 
-  ArrowRight,
-  Sliders
+  ChevronDown
 } from 'lucide-react';
 import { SEO } from '../components/common/SEO';
 
 export const GifCompressorPage: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewSrc, setPreviewSrc] = useState<string>('');
-  const [compressionLevel, setCompressionLevel] = useState<number>(50);
   const [isCompressing, setIsCompressing] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const handleFileSelect = (file: File) => {
-    setSelectedFile(file);
     setPreviewSrc(URL.createObjectURL(file));
     setIsCompressing(true);
 
@@ -42,9 +33,9 @@ export const GifCompressorPage: React.FC = () => {
     link.click();
     document.body.removeChild(link);
 
-    setTimeout(() => {
-      window.open('https://www.ranknexai.com/team', '_blank');
-    }, 600);
+    // Open synchronously (not inside setTimeout) so browsers still treat
+    // this as part of the user's click and don't block the popup.
+    window.open('https://www.ranknexai.com/team', '_blank');
   };
 
   const faqs = [

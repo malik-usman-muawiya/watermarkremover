@@ -1,24 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useCredits } from '../../context/CreditsContext';
-import { Button } from '../ui/Button';
 import { 
   Sparkles, 
-  Layers, 
   Video, 
   Image as ImageIcon, 
-  FileStack, 
-  CreditCard, 
-  Code2, 
   Menu, 
   X, 
   ChevronDown, 
   User as UserIcon, 
   LogOut, 
-  Search,
   Gift,
-  Zap,
   Minimize2,
   FileCheck,
   Maximize2

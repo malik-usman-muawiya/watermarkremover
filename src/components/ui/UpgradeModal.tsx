@@ -3,7 +3,7 @@ import { Modal } from './Modal';
 import { Button } from './Button';
 import { useCredits } from '../../context/CreditsContext';
 import { useAuth } from '../../context/AuthContext';
-import { Check, Zap, Sparkles, ShieldCheck, CreditCard } from 'lucide-react';
+import { Check, Zap, ShieldCheck, CreditCard } from 'lucide-react';
 
 export const UpgradeModal: React.FC = () => {
   const { isUpgradeModalOpen, closeUpgradeModal, upgradePlan, addCredits } = useCredits();

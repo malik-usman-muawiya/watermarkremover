@@ -8,8 +8,7 @@ import {
   UploadCloud, 
   Trash2, 
   Download, 
-  Sparkles,
-  Gift
+  Sparkles
 } from 'lucide-react';
 
 export const BatchQueue: React.FC = () => {

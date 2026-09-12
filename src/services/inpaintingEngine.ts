@@ -100,8 +100,6 @@ export function autoRemoveImageWatermark(
         lum[i] = 0.299 * origData[i * 4] + 0.587 * origData[i * 4 + 1] + 0.114 * origData[i * 4 + 2];
       }
 
-      const rawMask = new Uint8Array(width * height);
-
       // =========================================================================
       // 2. FULL-IMAGE MULTI-DIRECTIONAL WATERMARK STROKE DETECTION
       // Scans across all 4 axes (Vertical, Horizontal, 45°, 135°) with strict

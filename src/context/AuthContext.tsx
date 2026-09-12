@@ -16,18 +16,6 @@ interface AuthContextType {
   regenerateApiKey: () => string;
 }
 
-const DEFAULT_GOOGLE_USER: User = {
-  id: 'usr_google_10293',
-  name: 'Alex Vance',
-  email: 'alex.creator@gmail.com',
-  plan: 'pro',
-  credits: 9999,
-  maxCredits: 9999,
-  apiKey: 'cmk_live_9f823a10b48c772e564d12903ab84',
-  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
-  createdAt: '2026-01-15T10:00:00Z'
-};
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

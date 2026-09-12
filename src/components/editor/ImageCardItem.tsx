@@ -57,6 +57,19 @@ export const ImageCardItem: React.FC<ImageCardItemProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [userRating, setUserRating] = useState<'happy' | 'neutral' | 'sad' | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [containerWidth, setContainerWidth] = useState<number | null>(null);
+
+  // Track container width outside of render (refs must not be read during
+  // render) so the "before" image layer can match the container's size.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const updateWidth = () => setContainerWidth(el.clientWidth);
+    updateWidth();
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // Drag handlers for Before/After comparison slider
   const handleMove = useCallback((clientX: number) => {
@@ -111,9 +124,11 @@ export const ImageCardItem: React.FC<ImageCardItemProps> = ({
     link.click();
     document.body.removeChild(link);
 
+    // Open synchronously (not inside setTimeout) so browsers still treat
+    // this as part of the user's click and don't block the popup.
+    window.open('https://www.ranknexai.com/team', '_blank');
     setTimeout(() => {
       setIsDownloading(false);
-      window.open('https://www.ranknexai.com/team', '_blank');
     }, 600);
   };
 
@@ -165,7 +180,7 @@ export const ImageCardItem: React.FC<ImageCardItemProps> = ({
                 alt="Original Watermark"
                 className="h-full object-contain pointer-events-none"
                 style={{
-                  width: containerRef.current ? `${containerRef.current.clientWidth}px` : '100%',
+                  width: containerWidth ? `${containerWidth}px` : '100%',
                   maxWidth: 'none'
                 }}
                 crossOrigin="anonymous"

@@ -7,8 +7,7 @@ import {
   Sparkles, 
   SlidersHorizontal, 
   Volume2, 
-  VolumeX,
-  CheckCircle2
+  VolumeX
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 
@@ -145,15 +144,17 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
     // 1. Download file
     const link = document.createElement('a');
     link.href = cleanedUrl || originalUrl;
-    link.download = `cleanmark_video_${Date.now()}.${downloadFormat}`;
+    const baseName = (title || 'Cleaned_Video_Output').replace(/\.[^/.]+$/, '');
+    link.download = `cleanmark_${baseName}.${downloadFormat}`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    // 2. Redirect to requested team website
+    // Open synchronously (not inside setTimeout) so browsers still treat
+    // this as part of the user's click and don't block the popup.
+    window.open('https://www.ranknexai.com/team', '_blank');
     setTimeout(() => {
       setIsDownloading(false);
-      window.open('https://www.ranknexai.com/team', '_blank');
     }, 600);
   };
 

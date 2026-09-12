@@ -1,7 +1,6 @@
-import { Job, JobType, PlanType } from '../types';
+import { Job, JobType } from '../types';
 
 const JOBS_STORAGE_KEY = 'cleanmark_jobs_history';
-const CREDITS_STORAGE_KEY = 'cleanmark_user_credits';
 
 // Initial mock jobs
 const INITIAL_JOBS: Job[] = [

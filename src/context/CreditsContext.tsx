@@ -1,6 +1,14 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useAuth } from './AuthContext';
-import confetti from 'canvas-confetti';
+import type confetti from 'canvas-confetti';
+
+// canvas-confetti is only needed for a couple of celebratory moments,
+// so it's loaded on demand instead of being bundled into every page
+// (CreditsProvider wraps the whole app).
+const fireConfetti = async (options: Parameters<typeof confetti>[0]) => {
+  const { default: confettiFn } = await import('canvas-confetti');
+  confettiFn(options);
+};
 
 interface CreditsContextType {
   credits: number;
@@ -39,7 +47,7 @@ export const CreditsProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const addCredits = (amount: number) => {
     if (user) {
       updateUserCredits(user.credits + amount, user.maxCredits + amount);
-      confetti({
+      fireConfetti({
         particleCount: 80,
         spread: 60,
         origin: { y: 0.6 }
@@ -50,7 +58,7 @@ export const CreditsProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const upgradePlan = (plan: 'free' | 'pro' | 'business') => {
     updateUserPlan(plan);
     setIsUpgradeModalOpen(false);
-    confetti({
+    fireConfetti({
       particleCount: 120,
       spread: 70,
       origin: { y: 0.5 }

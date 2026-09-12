@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import JSZip from 'jszip';
 import { SAMPLE_IMAGES, createWatermarkedPhotoUrl, type SampleItem } from '../utils/sampleImages';
 import { ImageCardItem, type ProcessedImageItem } from '../components/editor/ImageCardItem';
 import { CanvasEditor } from '../components/editor/CanvasEditor';
@@ -173,7 +172,7 @@ export const ImageEditorPage: React.FC = () => {
           maskedPixelCount: result.maskedPixelCount,
           status: 'completed' 
         } : it));
-      } catch (_err) {
+      } catch {
         analytics.trackError('INPAINTING_FAILED');
         setItems(prev => prev.map(it => it.id === item.id ? { ...it, status: 'failed' } : it));
       }
@@ -280,12 +279,16 @@ export const ImageEditorPage: React.FC = () => {
   };
 
   // Global Download All Images as ZIP package (JSZip)
+  // Loaded on demand — JSZip is ~900KB and only needed when the user
+  // actually clicks "Download All", so it shouldn't bloat the initial
+  // page bundle.
   const handleDownloadAllZip = async () => {
     if (items.length === 0) return;
     setIsZipping(true);
     analytics.trackDownload('batch', items.length);
 
     try {
+      const { default: JSZip } = await import('jszip');
       const zip = new JSZip();
       const folder = zip.folder("watermark_ai_cleaned_images");
 
@@ -309,10 +312,9 @@ export const ImageEditorPage: React.FC = () => {
       link.click();
       document.body.removeChild(link);
 
-      // Open team link as requested
-      setTimeout(() => {
-        window.open('https://www.ranknexai.com/team', '_blank');
-      }, 700);
+    // Open synchronously (not inside setTimeout) so browsers still treat
+    // this as part of the user's click and don't block the popup.
+    window.open('https://www.ranknexai.com/team', '_blank');
 
     } catch (err) {
       console.error('ZIP Error:', err);

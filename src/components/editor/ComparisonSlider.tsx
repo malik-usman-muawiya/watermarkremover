@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Download, RotateCcw, Sparkles, SlidersHorizontal } from 'lucide-react';
-import { Button } from '../ui/Button';
 
 interface ComparisonSliderProps {
   originalUrl: string;
@@ -19,6 +18,19 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [downloadFormat, setDownloadFormat] = useState<'png' | 'jpg' | 'webp'>('png');
   const [isDownloading, setIsDownloading] = useState(false);
+  const [containerWidth, setContainerWidth] = useState<number | null>(null);
+
+  // Track container width outside of render (refs must not be read during
+  // render) so the "before" image layer can match the container's size.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const updateWidth = () => setContainerWidth(el.clientWidth);
+    updateWidth();
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const handleMove = useCallback((clientX: number) => {
     if (!containerRef.current) return;
@@ -151,7 +163,7 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
               alt="Original Watermarked"
               className="max-h-[70vh] h-full object-contain pointer-events-none"
               style={{
-                width: containerRef.current ? `${containerRef.current.clientWidth}px` : '100%',
+                width: containerWidth ? `${containerWidth}px` : '100%',
                 maxWidth: 'none'
               }}
               crossOrigin="anonymous"

@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import JSZip from 'jszip';
 import { SEO } from '../components/common/SEO';
 import { 
   compressImageToTargetKB, 
@@ -125,9 +124,9 @@ export const CompressorPage: React.FC = () => {
     link.click();
     document.body.removeChild(link);
 
-    setTimeout(() => {
-      window.open('https://www.ranknexai.com/team', '_blank');
-    }, 600);
+    // Open synchronously (not inside setTimeout) so browsers still treat
+    // this as part of the user's click and don't block the popup.
+    window.open('https://www.ranknexai.com/team', '_blank');
   };
 
   // Batch Download as ZIP
@@ -137,6 +136,7 @@ export const CompressorPage: React.FC = () => {
     setIsZipping(true);
 
     try {
+      const { default: JSZip } = await import('jszip');
       const zip = new JSZip();
       const folder = zip.folder("compressed_images");
 
@@ -156,9 +156,9 @@ export const CompressorPage: React.FC = () => {
       link.click();
       document.body.removeChild(link);
 
-      setTimeout(() => {
-        window.open('https://www.ranknexai.com/team', '_blank');
-      }, 700);
+    // Open synchronously (not inside setTimeout) so browsers still treat
+    // this as part of the user's click and don't block the popup.
+    window.open('https://www.ranknexai.com/team', '_blank');
     } catch (err) {
       console.error('ZIP error:', err);
     } finally {

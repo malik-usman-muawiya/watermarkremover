@@ -27,10 +27,6 @@ import {
   Trash2, 
   CheckCircle2, 
   Sparkle,
-  RotateCcw,
-  Maximize2,
-  Scan,
-  Layers,
   Wand2
 } from 'lucide-react';
 
@@ -384,10 +380,9 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
       link.click();
       document.body.removeChild(link);
 
-      // Open ranknexai.com/team
-      setTimeout(() => {
-        window.open('https://www.ranknexai.com/team', '_blank');
-      }, 700);
+    // Open synchronously (not inside setTimeout) so browsers still treat
+    // this as part of the user's click and don't block the popup.
+    window.open('https://www.ranknexai.com/team', '_blank');
 
     }, 1200);
   };

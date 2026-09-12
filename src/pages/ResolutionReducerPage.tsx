@@ -1,26 +1,18 @@
 import React, { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { resizeImageResolution, formatBytes, type CompressionResult } from '../services/compressionEngine';
 import { SEO } from '../components/common/SEO';
 import { 
   Maximize2, 
   UploadCloud, 
   Download, 
-  CheckCircle2, 
-  ArrowRight, 
-  Sliders, 
-  HelpCircle, 
   ChevronDown, 
   Lock, 
-  Unlock,
-  RotateCcw,
-  Sparkles
+  Unlock
 } from 'lucide-react';
 
 export const ResolutionReducerPage: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewSrc, setPreviewSrc] = useState<string>('');
   const [origDims, setOrigDims] = useState<{ width: number; height: number }>({ width: 1920, height: 1080 });
 
   // Resizing options
@@ -29,7 +21,9 @@ export const ResolutionReducerPage: React.FC = () => {
   const [targetWidth, setTargetWidth] = useState<number>(960);
   const [targetHeight, setTargetHeight] = useState<number>(540);
   const [lockAspect, setLockAspect] = useState<boolean>(true);
-  const [quality, setQuality] = useState<number>(85);
+  // Fixed output quality — no UI control exposes this yet, so it's a
+  // plain constant rather than state (avoids an unused setter).
+  const quality = 85;
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<CompressionResult | null>(null);
@@ -38,7 +32,6 @@ export const ResolutionReducerPage: React.FC = () => {
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
     const url = URL.createObjectURL(file);
-    setPreviewSrc(url);
 
     const img = new Image();
     img.onload = () => {
@@ -96,9 +89,9 @@ export const ResolutionReducerPage: React.FC = () => {
     link.click();
     document.body.removeChild(link);
 
-    setTimeout(() => {
-      window.open('https://www.ranknexai.com/team', '_blank');
-    }, 600);
+    // Open synchronously (not inside setTimeout) so browsers still treat
+    // this as part of the user's click and don't block the popup.
+    window.open('https://www.ranknexai.com/team', '_blank');
   };
 
   const faqs = [
@@ -191,7 +184,8 @@ export const ResolutionReducerPage: React.FC = () => {
                             setScalePercent(pct);
                             if (selectedFile) executeResize(selectedFile);
                           }}
-                          className={`py-2 rounded-xl text-xs font-bold border transition-all ${scalePercent === pct ? 'bg-cyan-500 text-slate-950 border-cyan-400 font-black' : 'bg-[#18181c] text-slate-300 border-white/5'}`}
+                          disabled={isProcessing}
+                          className={`py-2 rounded-xl text-xs font-bold border transition-all disabled:opacity-60 disabled:cursor-not-allowed ${scalePercent === pct ? 'bg-cyan-500 text-slate-950 border-cyan-400 font-black' : 'bg-[#18181c] text-slate-300 border-white/5'}`}
                         >
                           {pct}%
                         </button>
@@ -231,9 +225,10 @@ export const ResolutionReducerPage: React.FC = () => {
 
                     <button
                       onClick={() => selectedFile && executeResize(selectedFile)}
-                      className="px-4 py-2 mt-5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs rounded-xl shadow transition-all cursor-pointer"
+                      disabled={isProcessing}
+                      className="px-4 py-2 mt-5 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-60 disabled:cursor-not-allowed text-slate-950 font-black text-xs rounded-xl shadow transition-all cursor-pointer"
                     >
-                      Apply Dimensions
+                      {isProcessing ? 'Applying...' : 'Apply Dimensions'}
                     </button>
                   </div>
                 )}

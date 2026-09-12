@@ -1,19 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { compressImageToTargetKB, formatBytes, type CompressionResult } from '../services/compressionEngine';
 import { SEO } from '../components/common/SEO';
 import { 
-  Building2, 
   UploadCloud, 
   Download, 
-  CheckCircle2, 
-  ArrowRight, 
-  ShieldCheck, 
-  Sparkles, 
   Clock, 
-  FileText, 
   AlertCircle,
-  HelpCircle,
   ChevronDown
 } from 'lucide-react';
 
@@ -132,9 +124,9 @@ export const PakistanFormPhotoHubPage: React.FC = () => {
     link.click();
     document.body.removeChild(link);
 
-    setTimeout(() => {
-      window.open('https://www.ranknexai.com/team', '_blank');
-    }, 600);
+    // Open synchronously (not inside setTimeout) so browsers still treat
+    // this as part of the user's click and don't block the popup.
+    window.open('https://www.ranknexai.com/team', '_blank');
   };
 
   const faqs = [

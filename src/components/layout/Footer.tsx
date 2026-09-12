@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Shield, Lock, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Sparkles, Shield, ArrowRight } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
