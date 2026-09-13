@@ -52,7 +52,7 @@ export function App() {
       <CreditsProvider>
         <Router>
           <ScrollToTop />
-          <div className="min-h-screen flex flex-col bg-[#0e0e11] text-slate-100 selection:bg-amber-500 selection:text-black">
+          <div className="min-h-screen flex flex-col bg-[#0e0e11] text-slate-100 selection:bg-amber-500 selection:text-black overflow-x-hidden">
             {/* Top Launch Alert Continuous Marquee Ticker */}
             <PromoBanner />
 

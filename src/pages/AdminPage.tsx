@@ -118,7 +118,7 @@ export const AdminPage: React.FC = () => {
             <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center mx-auto shadow-sm">
               <Lock className="w-7 h-7" />
             </div>
-            <h2 className="text-2xl font-black text-white tracking-tight">Admin Portal Login</h2>
+            <h1 className="text-2xl font-black text-white tracking-tight">Admin Portal Login</h1>
             <p className="text-xs text-slate-400">
               Restricted management portal for Watermark AI Remover infrastructure & cluster metrics.
             </p>
@@ -148,8 +148,9 @@ export const AdminPage: React.FC = () => {
           {/* Login Form */}
           <form onSubmit={handleAdminLogin} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-300">Admin Username</label>
+              <label htmlFor="admin-username" className="text-xs font-bold text-slate-300">Admin Username</label>
               <input
+                id="admin-username"
                 type="text"
                 required
                 disabled={lockout.isLocked || isSubmitting}
@@ -162,9 +163,10 @@ export const AdminPage: React.FC = () => {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-300">Admin Password</label>
+              <label htmlFor="admin-password" className="text-xs font-bold text-slate-300">Admin Password</label>
               <div className="relative">
                 <input
+                  id="admin-password"
                   type={showPassword ? 'text' : 'password'}
                   required
                   disabled={lockout.isLocked || isSubmitting}
@@ -325,10 +327,10 @@ export const AdminPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 p-6 bg-[#121216] border border-white/10 rounded-3xl shadow-lg space-y-6">
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-white text-base flex items-center gap-2">
+              <h2 className="font-bold text-white text-base flex items-center gap-2">
                 <Cpu className="w-4 h-4 text-amber-400" />
                 Live Inpainting Worker Throughput
-              </h3>
+              </h2>
               <span className="text-xs text-emerald-400 font-bold flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Live Telemetry
               </span>
@@ -345,7 +347,7 @@ export const AdminPage: React.FC = () => {
               ))}
             </div>
 
-            <div className="grid grid-cols-3 gap-4 text-xs text-slate-400">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-400">
               <div>Avg Photo Inpaint: <strong className="text-white">0.82s</strong></div>
               <div>Avg Video Removal: <strong className="text-white">8.4s</strong></div>
               <div>GPU Backlog: <strong className="text-emerald-400 font-bold">0 pending</strong></div>
@@ -353,10 +355,10 @@ export const AdminPage: React.FC = () => {
           </div>
 
           <div className="p-6 bg-[#121216] border border-white/10 rounded-3xl shadow-lg space-y-4">
-            <h3 className="font-bold text-white text-base flex items-center gap-2">
+            <h2 className="font-bold text-white text-base flex items-center gap-2">
               <Server className="w-4 h-4 text-amber-400" />
               Cluster Controls
-            </h3>
+            </h2>
             
             <div className="space-y-3 text-xs">
               <button className="w-full p-3.5 bg-[#18181c] hover:bg-[#202026] rounded-2xl border border-white/10 text-left font-bold text-slate-200 flex items-center justify-between transition-all cursor-pointer">
@@ -380,10 +382,10 @@ export const AdminPage: React.FC = () => {
 
       {activeTab === 'workers' && (
         <div className="p-6 bg-[#121216] border border-white/10 rounded-3xl shadow-lg space-y-4">
-          <h3 className="font-bold text-white text-base flex items-center gap-2">
+          <h2 className="font-bold text-white text-base flex items-center gap-2">
             <Zap className="w-4 h-4 text-amber-400" />
             Active GPU Cluster Nodes
-          </h3>
+          </h2>
           
           <div className="divide-y divide-white/10 text-xs text-slate-300">
             {[
@@ -411,10 +413,10 @@ export const AdminPage: React.FC = () => {
 
       {activeTab === 'users' && (
         <div className="p-6 bg-[#121216] border border-white/10 rounded-3xl shadow-lg space-y-4">
-          <h3 className="font-bold text-white text-base flex items-center gap-2">
+          <h2 className="font-bold text-white text-base flex items-center gap-2">
             <Users className="w-4 h-4 text-amber-400" />
             Active Launch Users
-          </h3>
+          </h2>
           
           <div className="divide-y divide-white/10 text-xs text-slate-300">
             {[

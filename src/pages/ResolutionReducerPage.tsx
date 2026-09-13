@@ -195,8 +195,9 @@ export const ResolutionReducerPage: React.FC = () => {
                 ) : (
                   <div className="flex flex-wrap items-center gap-4 text-xs">
                     <div className="space-y-1">
-                      <label className="text-slate-400 font-bold block">Width (px)</label>
+                      <label htmlFor="resize-width-input" className="text-slate-400 font-bold block">Width (px)</label>
                       <input
+                        id="resize-width-input"
                         type="number"
                         value={targetWidth}
                         onChange={(e) => handleWidthChange(parseInt(e.target.value) || 100)}
@@ -214,8 +215,9 @@ export const ResolutionReducerPage: React.FC = () => {
                     </button>
 
                     <div className="space-y-1">
-                      <label className="text-slate-400 font-bold block">Height (px)</label>
+                      <label htmlFor="resize-height-input" className="text-slate-400 font-bold block">Height (px)</label>
                       <input
+                        id="resize-height-input"
                         type="number"
                         value={targetHeight}
                         onChange={(e) => handleHeightChange(parseInt(e.target.value) || 100)}
@@ -285,7 +287,7 @@ export const ResolutionReducerPage: React.FC = () => {
 
         {/* FAQs */}
         <div className="space-y-4 pt-6">
-          <h3 className="text-xl font-black text-white text-center">Frequently Asked Questions</h3>
+          <h2 className="text-xl font-black text-white text-center">Frequently Asked Questions</h2>
           <div className="space-y-3">
             {faqs.map((faq, i) => (
               <div key={i} className="bg-[#18181c] border border-white/10 rounded-2xl overflow-hidden">

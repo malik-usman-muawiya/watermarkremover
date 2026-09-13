@@ -297,6 +297,7 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
             step="0.05"
             value={currentTime}
             onChange={(e) => handleSeek(parseFloat(e.target.value))}
+            aria-label="Video playback position"
             className="w-full accent-amber-500 cursor-pointer h-2 bg-[#232738] rounded-lg appearance-none"
           />
 

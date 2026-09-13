@@ -168,10 +168,10 @@ console.log('Processed Result:', data.result_url);`,
         {/* Right: API Response & Schema */}
         <div className="space-y-6">
           <div className="p-6 bg-[#121216] border border-white/10 rounded-3xl shadow-xl space-y-3">
-            <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+            <h2 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
               <Terminal className="w-4 h-4 text-emerald-400" />
               <span>Example 200 OK Response</span>
-            </h4>
+            </h2>
 
             <pre className="p-4 bg-[#0b0b0e] rounded-2xl border border-white/10 font-mono text-xs text-emerald-400 overflow-x-auto leading-relaxed">
 {`{
@@ -187,10 +187,10 @@ console.log('Processed Result:', data.result_url);`,
           </div>
 
           <div className="p-6 bg-[#121216] border border-white/10 rounded-3xl shadow-xl space-y-3">
-            <h4 className="text-sm font-bold text-white flex items-center gap-2">
+            <h2 className="text-sm font-bold text-white flex items-center gap-2">
               <Zap className="w-4 h-4 text-amber-400" />
               <span>Rate Limits & Concurrency</span>
-            </h4>
+            </h2>
             <p className="text-xs text-slate-300 leading-relaxed">
               Standard accounts support up to <strong className="text-amber-400 font-bold">120 requests / min</strong>. Enterprise accounts support private GPU clusters scaling to over <strong className="text-amber-400 font-bold">2,500 requests / min</strong> with dedicated SLAs.
             </p>

@@ -117,6 +117,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
             max="100"
             value={brushSize}
             onChange={(e) => setBrushSize(Number(e.target.value))}
+            aria-label="Brush size"
             className="w-24 accent-brand-500 cursor-pointer h-1.5 bg-slate-200 rounded-lg appearance-none"
           />
           <div className="w-6 text-right font-mono font-bold text-brand-600">{brushSize}px</div>

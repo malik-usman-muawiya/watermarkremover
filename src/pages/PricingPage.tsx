@@ -59,12 +59,12 @@ export const PricingPage: React.FC = () => {
             <Gift className="w-6 h-6 text-amber-400" />
           </div>
           <div>
-            <h3 className="text-lg font-black text-white tracking-tight flex items-center gap-2">
+            <p className="text-lg font-black text-white tracking-tight flex items-center gap-2">
               <span>Grand Launch: 100% Free Unlimited Access</span>
               <span className="bg-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase px-2 py-0.5 rounded-full border border-emerald-500/30">
                 Live Now
               </span>
-            </h3>
+            </p>
             <p className="text-xs text-slate-300 mt-0.5">
               All plans are currently unlocked for everyone. Sign in with Google to use all tools free of charge!
             </p>
@@ -124,7 +124,7 @@ export const PricingPage: React.FC = () => {
         <div className="p-8 rounded-3xl bg-[#121216] border border-white/10 flex flex-col justify-between hover:border-white/20 hover:shadow-2xl transition-all group">
           <div>
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-black text-white">Starter Launch</h3>
+              <h2 className="text-xl font-black text-white">Starter Launch</h2>
               <span className="text-[10px] font-bold text-slate-400 uppercase bg-white/5 px-2.5 py-1 rounded-full border border-white/10">
                 Free Forever
               </span>
@@ -176,10 +176,10 @@ export const PricingPage: React.FC = () => {
 
           <div>
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-black text-white flex items-center gap-1.5">
+              <h2 className="text-xl font-black text-white flex items-center gap-1.5">
                 <span>Pro Creator</span>
                 <Sparkles className="w-4 h-4 text-amber-400" />
-              </h3>
+              </h2>
               <span className="text-[10px] font-black text-amber-400 uppercase bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
                 Unlocked
               </span>
@@ -228,7 +228,7 @@ export const PricingPage: React.FC = () => {
         <div className="p-8 rounded-3xl bg-[#121216] border border-white/10 flex flex-col justify-between hover:border-amber-500/40 hover:shadow-2xl transition-all group">
           <div>
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-black text-white">Enterprise / API</h3>
+              <h2 className="text-xl font-black text-white">Enterprise / API</h2>
               <span className="text-[10px] font-bold text-slate-400 uppercase bg-white/5 px-2.5 py-1 rounded-full border border-white/10">
                 Commercial
               </span>
@@ -277,7 +277,7 @@ export const PricingPage: React.FC = () => {
       {/* Pricing FAQs */}
       <div className="max-w-4xl mx-auto space-y-6 pt-10">
         <div className="text-center space-y-2">
-          <h3 className="text-2xl font-black text-white">Pricing & Account FAQs</h3>
+          <h2 className="text-2xl font-black text-white">Pricing & Account FAQs</h2>
           <p className="text-xs text-slate-400">Common questions regarding plans, credits, and billing</p>
         </div>
 

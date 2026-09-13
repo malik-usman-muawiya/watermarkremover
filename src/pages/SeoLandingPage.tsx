@@ -123,7 +123,7 @@ export const SeoLandingPage: React.FC = () => {
 
       {/* Action CTA */}
       <div className="text-center p-12 bg-white border border-slate-200 rounded-3xl space-y-4 shadow-xs">
-        <h3 className="text-2xl font-bold text-slate-900">Clean Your Media in 3 Seconds</h3>
+        <h2 className="text-2xl font-bold text-slate-900">Clean Your Media in 3 Seconds</h2>
         <p className="text-xs text-slate-500 max-w-md mx-auto">
           No installation or technical skills required. Runs right in your browser with AI acceleration.
         </p>

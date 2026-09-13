@@ -86,10 +86,11 @@ export const AuthPage: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {isRegister && (
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-300">Full Name</label>
+              <label htmlFor="auth-name" className="text-xs font-bold text-slate-300">Full Name</label>
               <div className="relative">
                 <UserIcon className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
+                  id="auth-name"
                   type="text"
                   placeholder="John Doe"
                   value={name}
@@ -101,10 +102,11 @@ export const AuthPage: React.FC = () => {
           )}
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-300">Email Address</label>
+            <label htmlFor="auth-email" className="text-xs font-bold text-slate-300">Email Address</label>
             <div className="relative">
               <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
+                id="auth-email"
                 type="email"
                 required
                 placeholder="creator@watermarkai.com"
@@ -117,7 +119,7 @@ export const AuthPage: React.FC = () => {
 
           <div className="space-y-1">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-300">Password</label>
+              <label htmlFor="auth-password" className="text-xs font-bold text-slate-300">Password</label>
               {!isRegister && (
                 <button type="button" className="text-[11px] text-amber-400 hover:underline">
                   Forgot?
@@ -127,6 +129,7 @@ export const AuthPage: React.FC = () => {
             <div className="relative">
               <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
+                id="auth-password"
                 type="password"
                 required
                 placeholder="••••••••"

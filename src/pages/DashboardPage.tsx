@@ -59,7 +59,9 @@ export const DashboardPage: React.FC = () => {
         canonicalPath="/dashboard"
         noindex={true}
       />
-      
+
+      <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">Media Dashboard</h1>
+
       {/* Top Stats Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
@@ -143,7 +145,7 @@ export const DashboardPage: React.FC = () => {
             <Key className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="font-bold text-white text-sm">Developer REST API Token</h4>
+            <h2 className="font-bold text-white text-sm">Developer REST API Token</h2>
             <p className="text-xs text-slate-400">Use this token to authenticate programmatic inpainting requests</p>
           </div>
         </div>
@@ -176,10 +178,10 @@ export const DashboardPage: React.FC = () => {
         {/* Table Controls */}
         <div className="p-6 border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h3 className="font-extrabold text-white text-base flex items-center gap-2">
+            <h2 className="font-extrabold text-white text-base flex items-center gap-2">
               <History className="w-4 h-4 text-amber-400" />
               Recent Media History
-            </h3>
+            </h2>
             <p className="text-xs text-slate-400">Files are kept in encrypted storage for 24h before automatic expiration</p>
           </div>
 
@@ -233,7 +235,7 @@ export const DashboardPage: React.FC = () => {
                   </div>
 
                   <div className="min-w-0">
-                    <h5 className="font-bold text-white text-sm truncate max-w-xs sm:max-w-md">{job.title}</h5>
+                    <p className="font-bold text-white text-sm truncate max-w-xs sm:max-w-md">{job.title}</p>
                     <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-slate-400">
                       <span>{job.inputSize}</span>
                       <span>•</span>

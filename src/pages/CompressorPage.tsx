@@ -277,13 +277,14 @@ export const CompressorPage: React.FC = () => {
           {isCustomKB && (
             <div className="p-4 bg-[#23232a] rounded-2xl border border-white/10 flex flex-wrap items-center justify-between gap-4 animate-in fade-in">
               <div className="flex items-center gap-3">
-                <span className="text-xs font-bold text-slate-200">Custom Target:</span>
+                <span id="custom-kb-label" className="text-xs font-bold text-slate-200">Custom Target:</span>
                 <input
                   type="number"
                   min="5"
                   max="2000"
                   value={targetKB}
                   onChange={(e) => handleRecompressAll(parseInt(e.target.value) || 50)}
+                  aria-labelledby="custom-kb-label"
                   className="w-24 px-3 py-1.5 bg-[#18181c] border border-amber-500/50 rounded-xl text-xs font-black text-amber-400 focus:outline-none"
                 />
                 <span className="text-xs font-bold text-slate-400">KB</span>
@@ -294,6 +295,7 @@ export const CompressorPage: React.FC = () => {
                 min="10"
                 max="500"
                 value={targetKB}
+                aria-label="Custom target size in KB"
                 onChange={(e) => handleRecompressAll(parseInt(e.target.value))}
                 className="w-full sm:w-64 accent-amber-500 cursor-pointer"
               />
@@ -303,8 +305,9 @@ export const CompressorPage: React.FC = () => {
           {/* Secondary Resolution & Format Bar */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-white/5 text-xs">
             <div>
-              <label className="text-slate-400 font-bold block mb-1.5">Output Format:</label>
+              <label htmlFor="output-format-select" className="text-slate-400 font-bold block mb-1.5">Output Format:</label>
               <select
+                id="output-format-select"
                 value={outputFormat}
                 onChange={(e) => setOutputFormat(e.target.value as any)}
                 className="w-full px-3 py-2 bg-[#23232a] border border-white/10 rounded-xl text-xs font-bold text-slate-200 cursor-pointer"
@@ -316,8 +319,9 @@ export const CompressorPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="text-slate-400 font-bold block mb-1.5">Scale Resolution:</label>
+              <label htmlFor="scale-resolution-select" className="text-slate-400 font-bold block mb-1.5">Scale Resolution:</label>
               <select
+                id="scale-resolution-select"
                 value={scalePercent}
                 onChange={(e) => setScalePercent(parseInt(e.target.value))}
                 className="w-full px-3 py-2 bg-[#23232a] border border-white/10 rounded-xl text-xs font-bold text-slate-200 cursor-pointer"
@@ -428,7 +432,7 @@ export const CompressorPage: React.FC = () => {
                     </div>
 
                     <div className="min-w-0 space-y-1">
-                      <h4 className="font-bold text-sm text-slate-200 truncate max-w-xs sm:max-w-md">{item.name}</h4>
+                      <p className="font-bold text-sm text-slate-200 truncate max-w-xs sm:max-w-md">{item.name}</p>
                       <div className="flex flex-wrap items-center gap-2 text-xs">
                         <span className="text-slate-400">Original: <strong className="text-slate-300">{formatBytes(item.originalSize)}</strong></span>
                         <span className="text-slate-600">&rarr;</span>
@@ -478,7 +482,7 @@ export const CompressorPage: React.FC = () => {
 
         {/* Use-Case Presets Hub Grid */}
         <div className="pt-8 space-y-4">
-          <h3 className="text-lg font-black text-white">Popular Target Size Presets</h3>
+          <h2 className="text-lg font-black text-white">Popular Target Size Presets</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <Link
               to="/compress-image-to-20kb"
@@ -525,7 +529,7 @@ export const CompressorPage: React.FC = () => {
               <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-black">
                 1
               </div>
-              <h4 className="font-extrabold text-white">Upload Your Photos</h4>
+              <h3 className="font-extrabold text-white">Upload Your Photos</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
                 Drag and drop single or multiple JPG, PNG, or WebP images into the upload box or select files from your phone or PC.
               </p>
@@ -535,7 +539,7 @@ export const CompressorPage: React.FC = () => {
               <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-black">
                 2
               </div>
-              <h4 className="font-extrabold text-white">Pick Target KB or Quality</h4>
+              <h3 className="font-extrabold text-white">Pick Target KB or Quality</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
                 Select 20KB, 50KB, 100KB, 200KB or set a custom target. Our smart engine optimizes resolution and quality automatically.
               </p>
@@ -545,7 +549,7 @@ export const CompressorPage: React.FC = () => {
               <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-black">
                 3
               </div>
-              <h4 className="font-extrabold text-white">Download Compressed Image</h4>
+              <h3 className="font-extrabold text-white">Download Compressed Image</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
                 Preview your reduction savings (e.g. -90%) and download your optimized photo individually or as a complete batch ZIP.
               </p>

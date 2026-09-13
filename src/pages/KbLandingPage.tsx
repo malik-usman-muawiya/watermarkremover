@@ -309,7 +309,7 @@ export const KbLandingPage: React.FC = () => {
         {/* Why 50KB Limit & Use Cases */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
           <div className="p-6 bg-[#18181c] border border-white/10 rounded-2xl space-y-3">
-            <h3 className="font-extrabold text-white text-base">Why is the {config.targetKB}KB Limit Used?</h3>
+            <h2 className="font-extrabold text-white text-base">Why is the {config.targetKB}KB Limit Used?</h2>
             <p className="text-xs text-slate-400 leading-relaxed">
               {config.whyLimit}
             </p>
@@ -320,7 +320,7 @@ export const KbLandingPage: React.FC = () => {
           </div>
 
           <div className="p-6 bg-[#18181c] border border-white/10 rounded-2xl space-y-3">
-            <h3 className="font-extrabold text-white text-base">Top Use Cases for {config.targetKB}KB:</h3>
+            <h2 className="font-extrabold text-white text-base">Top Use Cases for {config.targetKB}KB:</h2>
             <ul className="space-y-2 text-xs text-slate-400">
               {config.useCases.map((uc, i) => (
                 <li key={i} className="flex items-start gap-2">
@@ -335,10 +335,10 @@ export const KbLandingPage: React.FC = () => {
         {/* Troubleshooting (if present) */}
         {config.troubleshooting.length > 0 && (
           <div className="p-6 bg-[#18181c] border border-white/10 rounded-2xl space-y-4">
-            <h3 className="font-extrabold text-white text-base flex items-center gap-2">
+            <h2 className="font-extrabold text-white text-base flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-amber-400" />
               Troubleshooting {config.targetKB}KB Compression
-            </h3>
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               {config.troubleshooting.map((tb, i) => (
                 <div key={i} className="p-4 bg-[#23232a] rounded-xl border border-white/5 space-y-1.5">
@@ -352,7 +352,7 @@ export const KbLandingPage: React.FC = () => {
 
         {/* Related Targets Matrix */}
         <div className="space-y-3 pt-4">
-          <h3 className="font-extrabold text-white text-base">Related Size Targets</h3>
+          <h2 className="font-extrabold text-white text-base">Related Size Targets</h2>
           <div className="flex flex-wrap gap-2">
             {[20, 50, 100, 200, 300].map((k) => (
               <Link
@@ -378,7 +378,7 @@ export const KbLandingPage: React.FC = () => {
 
         {/* FAQ */}
         <div className="space-y-4 pt-6">
-          <h3 className="text-xl font-black text-white text-center">Frequently Asked Questions</h3>
+          <h2 className="text-xl font-black text-white text-center">Frequently Asked Questions</h2>
           <div className="space-y-3">
             {config.faqs.map((faq, i) => (
               <div key={i} className="bg-[#18181c] border border-white/10 rounded-2xl overflow-hidden">
