@@ -160,6 +160,24 @@ export const Footer: React.FC = () => {
 
         </div>
       </div>
+
+      {/* Bottom credit bar */}
+      <div className="border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 text-center">
+          <p className="text-xs text-slate-500">
+            This project is created by{' '}
+            <a
+              href="https://www.ranknexai.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-amber-400 hover:text-amber-300 font-bold transition-colors"
+            >
+              RankNex AI
+            </a>
+            {' '}agency.
+          </p>
+        </div>
+      </div>
     </footer>
   );
 };
