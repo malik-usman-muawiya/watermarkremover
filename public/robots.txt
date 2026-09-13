@@ -4,4 +4,4 @@ Disallow: /admin
 Disallow: /dashboard
 Disallow: /auth
 
-Sitemap: https://watermarkai.com/sitemap.xml
+Sitemap: https://watermarkairemover.com/sitemap.xml

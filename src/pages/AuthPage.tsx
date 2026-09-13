@@ -109,7 +109,7 @@ export const AuthPage: React.FC = () => {
                 id="auth-email"
                 type="email"
                 required
-                placeholder="creator@watermarkai.com"
+                placeholder="creator@watermarkairemover.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 bg-[#18181c] border border-white/15 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"

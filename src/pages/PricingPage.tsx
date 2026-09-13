@@ -104,7 +104,10 @@ export const PricingPage: React.FC = () => {
           </span>
           <button
             onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'yearly' : 'monthly')}
-            className="w-12 h-6 bg-[#18181c] rounded-full p-1 border border-white/20 relative transition-colors focus:outline-none cursor-pointer"
+            role="switch"
+            aria-checked={billingCycle === 'yearly'}
+            aria-label="Toggle annual billing"
+            className="w-12 h-6 bg-[#18181c] rounded-full p-1 border border-white/20 relative transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-[#0e0e11] cursor-pointer"
           >
             <div className={`w-4 h-4 bg-amber-500 rounded-full transition-transform ${billingCycle === 'yearly' ? 'translate-x-6' : 'translate-x-0'}`} />
           </button>

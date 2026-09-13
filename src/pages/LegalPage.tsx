@@ -118,7 +118,7 @@ export const LegalPage: React.FC = () => {
               Watermark AI Remover complies with the Digital Millennium Copyright Act (17 U.S.C. § 512). If you believe your copyrighted work is being hosted or infringed without authorization, please notify our designated copyright agent:
             </p>
             <div className="p-4 bg-[#18181c] rounded-2xl border border-white/10 text-xs font-mono text-slate-300">
-              Email: support@watermarkai.com<br />
+              Email: support@watermarkairemover.com<br />
               Subject: DMCA Notice - [Media / Account Reference]<br />
               Agent: Copyright Compliance Office, Watermark AI Media Labs
             </div>
