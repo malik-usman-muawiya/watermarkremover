@@ -30,9 +30,11 @@ export const SEO: React.FC<SEOProps> = ({
   noIndex = false,
 }) => {
   const effectiveNoIndex = noindex || noIndex;
-  const fullTitle = title 
-    ? (title.includes('Watermark AI') ? title : `${title} | ${SITE_CONFIG.name}`)
-    : `${SITE_CONFIG.name} - Free AI Watermark & Object Remover`;
+  // Every page already provides a complete, well-formed title — no need
+  // to (and previously buggy to) auto-append the site name, which was
+  // silently pushing most pages' titles past Google's ~60-character
+  // truncation point.
+  const fullTitle = title || `${SITE_CONFIG.name} - Free AI Watermark & Object Remover`;
 
   const canonicalUrl = `${SITE_CONFIG.url}${canonicalPath.startsWith('/') ? canonicalPath : '/' + canonicalPath}`;
   const fullOgImage = ogImage.startsWith('http') ? ogImage : `${SITE_CONFIG.url}${ogImage}`;

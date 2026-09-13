@@ -346,7 +346,7 @@ export const ImageEditorPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#0e0e11] text-slate-100 py-8 px-4 sm:px-6 lg:px-8 space-y-12">
       <SEO 
-        title="AI Watermark Remover — Remove Watermark from Image Free Online"
+        title="AI Watermark Remover — Remove Watermarks from Photos Free"
         description="Effortlessly remove watermarks, logos, timestamps, text, and unwanted objects from images with pixel-exact AI inpainting. 100% free with HD download."
         canonicalPath="/"
         faqs={FAQ_LIST}
