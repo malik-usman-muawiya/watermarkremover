@@ -24,33 +24,47 @@ import {
   Cpu,
   Lock,
   Layers,
-  Video
+  Video,
+  Wand2,
+  ArrowRight
 } from 'lucide-react';
 
 const FAQ_LIST: FAQItem[] = [
   {
     question: 'How does AI watermark removal work?',
-    answer: 'Our neural inpainting engine analyzes your image to detect watermark edges, text ridges, and logo contours across multiple axes. It isolates the watermark mask while strictly preserving 100% of the surrounding unmasked background, then uses 2D Laplace relaxation to seamlessly reconstruct the original texture with zero blur.'
+    answer: 'Our neural inpainting engine analyzes your image to detect watermark edges, text ridges, and logo contours across multiple axes. It isolates the watermark mask while strictly preserving 100% of the surrounding unmasked background, then rebuilds the covered area from the surrounding texture, lighting, and color instead of blurring or cropping it out.'
   },
   {
-    question: 'Are my uploaded images kept private?',
-    answer: 'Yes, absolutely. Inpainting processing executes 100% client-side inside your browser via HTML5 Canvas and mathematical shaders. Your images are never transmitted to external cloud servers or used to train artificial intelligence models.'
+    question: 'Is it free to remove a watermark with this tool?',
+    answer: 'Yes. Basic watermark and object removal is free to use, with no sign-up required and no artificial daily caps or degraded download resolution.'
   },
   {
-    question: 'What file formats and image sizes are supported?',
-    answer: 'We support PNG, JPEG, JPG, and WebP images up to 25 MB per file and resolutions up to 5000 x 5000 pixels.'
+    question: 'Do you keep my uploaded photos or videos?',
+    answer: 'No. Processing runs entirely inside your own browser — your files are never uploaded to a server or used to train AI models. Anything you see in your Dashboard (job history) is also stored only on your own device and can be cleared at any time.'
   },
   {
-    question: 'Can I remove watermarks from multiple images at once?',
-    answer: 'Yes! You can drag and drop multiple images simultaneously or use our dedicated Batch Editor to queue and process up to 50 photos at once, then download them as a ZIP archive.'
+    question: 'Does removing a watermark reduce image quality?',
+    answer: "No. The tool rebuilds only the marked area to match the surrounding texture and color — the rest of the image stays untouched at full original resolution."
   },
   {
-    question: 'Is this watermark remover completely free to use?',
-    answer: 'Yes, our Launch Edition provides 100% free, unlimited access without artificial daily caps, forced signups, or degraded download resolutions.'
+    question: 'Can I remove a watermark from a video, not just a photo?',
+    answer: 'Yes. The same AI model processes video frame-by-frame, tracking watermarks even as they move, and works with MP4, MOV, and WebM files.'
   },
   {
-    question: 'Can I also remove watermarks from videos?',
-    answer: 'Yes! Navigate to our Video Watermark Remover tab to clean moving logos, timestamps, and watermarks from video clips.'
+    question: 'Is it legal to remove a watermark from an image?',
+    answer: "It depends on who owns the image. Removing a watermark from a photo or video you own or have the rights to is fine. Removing a copyright or ownership watermark from an image that belongs to someone else — for example, a stock photo you haven't licensed — can infringe that person's copyright. When in doubt, only use this on your own content or content you've properly licensed."
+  },
+  {
+    question: 'What file formats are supported?',
+    answer: 'PNG, JPEG/JPG, and WebP for images (up to 25 MB, up to 5000 × 5000 pixels). MP4, MOV, and WebM for video (up to 100 MB).'
+  },
+  {
+    question: 'Can I remove more than one watermark from the same image?',
+    answer: 'Yes — mark each area you want removed and the AI processes all of them in the same pass. You can also use the Batch Editor to queue and clean up to 50 photos at once, then download them as a ZIP archive.'
+  },
+  {
+    question: 'Does this work on transparent or semi-transparent watermarks?',
+    answer: "Yes. The AI detects the watermark's boundary even when it's partially see-through and rebuilds the area underneath it."
   }
 ];
 
@@ -346,8 +360,8 @@ export const ImageEditorPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#0e0e11] text-slate-100 py-8 px-4 sm:px-6 lg:px-8 space-y-12">
       <SEO 
-        title="AI Watermark Remover — Remove Watermarks from Photos Free"
-        description="Effortlessly remove watermarks, logos, timestamps, text, and unwanted objects from images with pixel-exact AI inpainting. 100% free with HD download."
+        title="AI Watermark Remover – Remove Watermarks from Photos & Video"
+        description="Remove watermarks, logos, text, timestamps, and unwanted objects from any photo or video free with AI. No sign-up. Pixel-exact results in seconds."
         canonicalPath="/"
         faqs={FAQ_LIST}
       />
@@ -403,7 +417,7 @@ export const ImageEditorPage: React.FC = () => {
             AI Watermark Remover — <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-amber-200">Remove Watermarks Free</span>
           </h1>
           <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            Erase watermark overlays, text stamps, brand logos, dates, and unwanted objects from images with zero quality loss. Fast, automatic, and 100% private in your browser.
+            Erase watermarks, logos, timestamps, text, and unwanted objects from any photo or video — AI rebuilds the covered area from scratch instead of blurring or cropping it out, so the result looks like it was never there.
           </p>
         </div>
 
@@ -433,6 +447,7 @@ export const ImageEditorPage: React.FC = () => {
 
         {/* 2. Large Centered Upload Panel */}
         <div
+          id="editor-top"
           onDragOver={(e) => { e.preventDefault(); setIsDraggingOver(true); }}
           onDragLeave={() => setIsDraggingOver(false)}
           onDrop={handleDrop}
@@ -584,6 +599,26 @@ export const ImageEditorPage: React.FC = () => {
               </p>
             </div>
           </div>
+        </div>
+
+        {/* Object Remover Callout */}
+        <div className="rounded-3xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-transparent border border-amber-500/20 p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 text-left">
+          <div className="w-14 h-14 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center shrink-0">
+            <Wand2 className="w-7 h-7 text-amber-400" />
+          </div>
+          <div className="flex-1 space-y-1.5">
+            <h2 className="text-lg sm:text-xl font-black text-white">Object Remover, Not Just Watermarks</h2>
+            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+              This isn't only a watermark tool — the same AI engine works as a full object remover. Erase people, text, clutter, or any distracting element from a photo, and it fills in the space naturally using the surrounding background.
+            </p>
+          </div>
+          <button
+            onClick={() => document.getElementById('editor-top')?.scrollIntoView({ behavior: 'smooth' })}
+            className="flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-2xl shadow-lg shadow-amber-500/20 transition-all active:scale-[0.98] cursor-pointer shrink-0 whitespace-nowrap"
+          >
+            <span>Try the Object Remover</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </div>
 
         {/* 6. Key Features (AUD-008, CONTENT-001) */}

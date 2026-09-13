@@ -89,9 +89,9 @@ export const LegalPage: React.FC = () => {
               We guarantee that your uploaded photos, video clips, and generated masks are NEVER used to train, retrain, or fine-tune public artificial intelligence models. Your original creative assets remain exclusively yours.
             </p>
 
-            <h3 className="text-base font-bold text-white pt-2">Server-Side Data Retention Policy</h3>
+            <h3 className="text-base font-bold text-white pt-2">Video Processing Is Also Local</h3>
             <p>
-              For asynchronous background tasks (such as high-resolution video watermark extraction), temporary files are stored in private encrypted storage and permanently automatically deleted after exactly <strong>24 hours</strong>. You may also purge all history immediately from your User Dashboard.
+              Video watermark removal works the same way as photos: frames are decoded and re-rendered entirely inside your browser (via HTML5 Canvas and the MediaRecorder API), and the source clip is never uploaded to a server. Because nothing is ever transmitted, there is no server-side copy of your files to retain or delete. Any job history shown in your Dashboard is stored only in your browser and can be cleared at any time from that page.
             </p>
           </div>
         )}

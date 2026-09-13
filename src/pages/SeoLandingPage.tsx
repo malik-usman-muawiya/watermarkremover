@@ -22,7 +22,7 @@ const SEO_MAP: Record<string, SeoConfig> = {
     badge: 'Neural Inpainter for Images',
     subtitle: 'Erase translucent logos, camera stamps, and copyright markings in 100% full original resolution without blurring background details.',
     sampleIdx: 0,
-    benefits: ['Lossless 4K export quality', 'Intelligent texture synthesis', 'Auto-delete after 24 hours']
+    benefits: ['Lossless 4K export quality', 'Intelligent texture synthesis', 'Never uploaded — 100% in-browser']
   },
   'video-watermark-remover': {
     title: 'AI Video Watermark & Logo Remover',

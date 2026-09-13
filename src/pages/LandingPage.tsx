@@ -187,7 +187,7 @@ export const LandingPage: React.FC = () => {
             },
             {
               q: 'How long are uploaded files retained on your servers?',
-              a: 'Privacy and security are our core principles. All uploaded source images, videos, and results are automatically purged from our private encrypted storage after 24 hours.'
+              a: "They're not — processing runs entirely inside your own browser, so photos and videos are never uploaded to a server in the first place. Your job history in the Dashboard is also stored only on your device and can be cleared at any time."
             }
           ].map((item, idx) => (
             <div

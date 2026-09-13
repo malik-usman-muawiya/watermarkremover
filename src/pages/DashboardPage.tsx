@@ -15,7 +15,8 @@ import {
   Key, 
   RefreshCw, 
   Gift,
-  Check
+  Check,
+  Lock
 } from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
@@ -108,8 +109,8 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
           <div className="my-3">
-            <div className="text-2xl font-black text-white">24 Hours</div>
-            <div className="text-xs text-slate-400 mt-1">Auto-purge privacy guarantee</div>
+            <div className="text-2xl font-black text-white">Local Only</div>
+            <div className="text-xs text-slate-400 mt-1">Never uploaded — stored only on this device</div>
           </div>
           <button 
             onClick={handleClearAll}
@@ -182,7 +183,7 @@ export const DashboardPage: React.FC = () => {
               <History className="w-4 h-4 text-amber-400" />
               Recent Media History
             </h2>
-            <p className="text-xs text-slate-400">Files are kept in encrypted storage for 24h before automatic expiration</p>
+            <p className="text-xs text-slate-400">Never uploaded — history is stored only in this browser</p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -242,7 +243,7 @@ export const DashboardPage: React.FC = () => {
                       <span>{job.resolution || 'HD'}</span>
                       <span>•</span>
                       <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> Auto-purges in 22h
+                        <Lock className="w-3 h-3" /> Processed on your device
                       </span>
                     </div>
                   </div>
