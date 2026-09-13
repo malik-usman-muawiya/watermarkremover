@@ -388,16 +388,34 @@ export async function processAndExportCleanVideo(
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return resolve(videoElement.src);
 
-    const stream = canvas.captureStream(30);
-    let mediaRecorder: MediaRecorder;
+    const canvasStream = canvas.captureStream(30);
+
+    // Pull the audio track from the source <video> itself (canvas streams
+    // never carry audio) and combine it with the rendered video track so
+    // the export isn't silent.
+    let combinedStream: MediaStream = canvasStream;
     try {
-      mediaRecorder = new MediaRecorder(stream, { 
-        mimeType: 'video/webm;codecs=vp9',
+      const sourceStream = (videoElement as HTMLVideoElement & { captureStream?: () => MediaStream }).captureStream?.();
+      const audioTracks = sourceStream?.getAudioTracks() || [];
+      if (audioTracks.length > 0) {
+        combinedStream = new MediaStream([...canvasStream.getVideoTracks(), ...audioTracks]);
+      }
+    } catch {
+      // No audio track available (e.g. muted source or unsupported browser) —
+      // fall back to video-only rather than failing the export.
+    }
+
+    let mediaRecorder: MediaRecorder;
+    let mimeType = 'video/webm;codecs=vp9,opus';
+    try {
+      mediaRecorder = new MediaRecorder(combinedStream, {
+        mimeType,
         videoBitsPerSecond: 12000000 // 12 Mbps HD quality
       });
     } catch {
       try {
-        mediaRecorder = new MediaRecorder(stream, { videoBitsPerSecond: 10000000 });
+        mimeType = 'video/webm';
+        mediaRecorder = new MediaRecorder(combinedStream, { mimeType, videoBitsPerSecond: 10000000 });
       } catch {
         return resolve(videoElement.src);
       }
@@ -409,7 +427,10 @@ export async function processAndExportCleanVideo(
     };
 
     mediaRecorder.onstop = () => {
-      const blob = new Blob(chunks, { type: 'video/mp4' });
+      // The recorder only ever produces WebM (browsers can't natively
+      // encode MP4/MOV) — label the blob honestly instead of claiming a
+      // container format that isn't actually inside it.
+      const blob = new Blob(chunks, { type: 'video/webm' });
       resolve(URL.createObjectURL(blob));
     };
 
@@ -420,7 +441,10 @@ export async function processAndExportCleanVideo(
     videoElement.play().catch(() => {});
 
     const startTime = Date.now();
-    const renderDurationMs = Math.min(15000, (durationSeconds || 5) * 1000);
+    // Process the actual clip length rather than an artificial short
+    // preview — capped at 5 minutes as a safety ceiling so an extremely
+    // long upload can't hang the tab indefinitely.
+    const renderDurationMs = Math.min(300000, (durationSeconds || videoElement.duration || 5) * 1000);
 
     function renderLoop() {
       if (!ctx) return;

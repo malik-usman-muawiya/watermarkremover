@@ -21,7 +21,7 @@ interface VideoComparisonSliderProps {
 export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
   originalUrl,
   cleanedUrl,
-  title = 'Cleaned_Video_Output.mp4',
+  title = 'Cleaned_Video_Output.webm',
   onReset
 }) => {
   const [sliderPosition, setSliderPosition] = useState(50); // percentage 0-100
@@ -49,7 +49,6 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(6);
   const [isMuted, setIsMuted] = useState(false);
-  const [downloadFormat, setDownloadFormat] = useState<'mp4' | 'webm' | 'mov'>('mp4');
   const [isDownloading, setIsDownloading] = useState(false);
 
   // Sync play / pause
@@ -145,7 +144,7 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
     const link = document.createElement('a');
     link.href = cleanedUrl || originalUrl;
     const baseName = (title || 'Cleaned_Video_Output').replace(/\.[^/.]+$/, '');
-    link.download = `cleanmark_${baseName}.${downloadFormat}`;
+    link.download = `cleanmark_${baseName}.webm`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -180,21 +179,12 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          {/* Format selection pills */}
-          <div className="flex items-center bg-[#1e2235] rounded-xl p-1 border border-[#2d324c]">
-            {(['mp4', 'webm', 'mov'] as const).map((fmt) => (
-              <button
-                key={fmt}
-                onClick={() => setDownloadFormat(fmt)}
-                className={`px-3 py-1 text-xs font-black uppercase rounded-lg transition-colors cursor-pointer ${
-                  downloadFormat === fmt 
-                    ? 'bg-amber-500 text-black shadow-md' 
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                {fmt}
-              </button>
-            ))}
+          {/* Output is always WebM (the only format browsers can natively
+              encode client-side) — labeling it honestly instead of a fake
+              MP4/MOV picker that produced mislabeled files. */}
+          <div className="flex items-center gap-2 bg-[#1e2235] rounded-xl px-3 py-2 border border-[#2d324c]">
+            <span className="text-xs font-black uppercase text-amber-400">WebM</span>
+            <span className="text-[10px] text-slate-500">HD output</span>
           </div>
 
           <button

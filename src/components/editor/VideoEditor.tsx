@@ -357,7 +357,9 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
     let cleanedBlob = selectedVideo;
     if (videoRef.current) {
       try {
-        cleanedBlob = await processAndExportCleanVideo(videoRef.current, regions, Math.min(10, duration));
+        // Export the full clip (function itself applies a 5-minute safety
+        // ceiling) instead of silently truncating every download to 10s.
+        cleanedBlob = await processAndExportCleanVideo(videoRef.current, regions, duration);
       } catch (err) {
         console.warn('Video export fallback:', err);
       }
@@ -371,18 +373,9 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
       setCleanedVideoBlobUrl(cleanedBlob);
 
       ApiService.createJob('video', videoTitle, selectedVideo, 0, '18.5 MB');
-
-      // Download file
-      const link = document.createElement('a');
-      link.href = cleanedBlob;
-      link.download = `cleanmark_${videoTitle.replace(/\.[^/.]+$/, "")}_clean.mp4`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-    // Open synchronously (not inside setTimeout) so browsers still treat
-    // this as part of the user's click and don't block the popup.
-    window.open('https://www.ranknexai.com/team', '_blank');
+      // Downloading now happens from the "Download Clean HD" button in the
+      // comparison view below — triggering it automatically here as well
+      // caused a surprise duplicate download on every completed job.
 
     }, 1200);
   };
