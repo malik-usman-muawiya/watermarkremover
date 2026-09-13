@@ -23,7 +23,7 @@ export const ApiDocsPage: React.FC = () => {
     python: `import requests
 
 API_KEY = "${apiKey}"
-API_URL = "https://api.watermarkairemover.com/v1/image/process"
+API_URL = "https://api.watermarksairemover.com/v1/image/process"
 
 # Upload source image and mask for inpainting
 files = {
@@ -49,7 +49,7 @@ const form = new FormData();
 form.append('image', fs.createReadStream('watermarked_photo.jpg'));
 form.append('mask', fs.createReadStream('mask_overlay.png'));
 
-const response = await fetch('https://api.watermarkairemover.com/v1/image/process', {
+const response = await fetch('https://api.watermarksairemover.com/v1/image/process', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer ${apiKey}',
@@ -61,7 +61,7 @@ const response = await fetch('https://api.watermarkairemover.com/v1/image/proces
 const data = await response.json();
 console.log('Processed Result:', data.result_url);`,
 
-    curl: `curl -X POST https://api.watermarkairemover.com/v1/image/process \\
+    curl: `curl -X POST https://api.watermarksairemover.com/v1/image/process \\
   -H "Authorization: Bearer ${apiKey}" \\
   -F "image=@watermarked_photo.jpg" \\
   -F "mask=@mask_overlay.png"`
@@ -177,7 +177,7 @@ console.log('Processed Result:', data.result_url);`,
 {`{
   "status": "completed",
   "job_id": "job_inp_84920194",
-  "result_url": "https://storage.watermarkairemover.com/outputs/clean_photo_8492.png",
+  "result_url": "https://storage.watermarksairemover.com/outputs/clean_photo_8492.png",
   "processing_time_ms": 780,
   "resolution": "4096x2160",
   "confidence_score": 0.998,
