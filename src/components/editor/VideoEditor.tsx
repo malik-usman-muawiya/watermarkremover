@@ -719,6 +719,16 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                       setSelectedRegionId(r.id || '');
                       setViewMode('edit');
                     }}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedRegionId(r.id || '');
+                        setViewMode('edit');
+                      }
+                    }}
+                    aria-label={`Select ${r.label || `Watermark Region ${i + 1}`}`}
                     className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-between transition-all cursor-pointer ${
                       selectedRegionId === r.id 
                         ? 'bg-amber-500/15 border-amber-500/50 text-white' 

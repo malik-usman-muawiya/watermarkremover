@@ -301,18 +301,22 @@ export const PricingPage: React.FC = () => {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="p-5 bg-[#121216] border border-white/10 rounded-2xl cursor-pointer hover:border-amber-500/40 hover:bg-[#16161c] transition-all"
-              onClick={() => toggleFaq(idx)}
+              className="p-5 bg-[#121216] border border-white/10 rounded-2xl hover:border-amber-500/40 hover:bg-[#16161c] transition-all"
             >
-              <div className="flex items-center justify-between font-bold text-white text-sm">
+              <button
+                type="button"
+                onClick={() => toggleFaq(idx)}
+                aria-expanded={activeFaq === idx}
+                className="w-full flex items-center justify-between font-bold text-white text-sm text-left cursor-pointer"
+              >
                 <div className="flex items-center gap-3">
                   <div className="w-6 h-6 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 text-xs">
                     <HelpCircle className="w-3.5 h-3.5" />
                   </div>
                   <span>{item.q}</span>
                 </div>
-                <ChevronRight className={`w-4 h-4 text-amber-400 transition-transform duration-200 ${activeFaq === idx ? 'rotate-90' : ''}`} />
-              </div>
+                <ChevronRight className={`w-4 h-4 text-amber-400 transition-transform duration-200 shrink-0 ${activeFaq === idx ? 'rotate-90' : ''}`} />
+              </button>
               {activeFaq === idx && (
                 <p className="text-xs text-slate-300 mt-3 leading-relaxed border-t border-white/10 pt-3 animate-in fade-in">
                   {item.a}

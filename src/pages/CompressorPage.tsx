@@ -285,7 +285,7 @@ export const CompressorPage: React.FC = () => {
                   value={targetKB}
                   onChange={(e) => handleRecompressAll(parseInt(e.target.value) || 50)}
                   aria-labelledby="custom-kb-label"
-                  className="w-24 px-3 py-1.5 bg-[#18181c] border border-amber-500/50 rounded-xl text-xs font-black text-amber-400 focus:outline-none"
+                  className="w-24 px-3 py-1.5 bg-[#18181c] border border-amber-500/50 rounded-xl text-xs font-black text-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400"
                 />
                 <span className="text-xs font-bold text-slate-400">KB</span>
               </div>

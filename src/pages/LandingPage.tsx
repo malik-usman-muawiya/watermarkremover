@@ -192,18 +192,22 @@ export const LandingPage: React.FC = () => {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="p-6 bg-[#121216] border border-white/10 rounded-2xl cursor-pointer hover:border-amber-500/40 hover:bg-[#16161c] transition-all"
-              onClick={() => toggleFaq(idx)}
+              className="p-6 bg-[#121216] border border-white/10 rounded-2xl hover:border-amber-500/40 hover:bg-[#16161c] transition-all"
             >
-              <div className="flex items-center justify-between font-bold text-white text-base">
+              <button
+                type="button"
+                onClick={() => toggleFaq(idx)}
+                aria-expanded={activeFaq === idx}
+                className="w-full flex items-center justify-between font-bold text-white text-base text-left cursor-pointer"
+              >
                 <div className="flex items-center gap-3">
                   <div className="w-7 h-7 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
                     <HelpCircle className="w-4 h-4" />
                   </div>
                   <span>{item.q}</span>
                 </div>
-                <ChevronRight className={`w-5 h-5 text-amber-400 transition-transform duration-200 ${activeFaq === idx ? 'rotate-90' : ''}`} />
-              </div>
+                <ChevronRight className={`w-5 h-5 text-amber-400 transition-transform duration-200 shrink-0 ${activeFaq === idx ? 'rotate-90' : ''}`} />
+              </button>
               {activeFaq === idx && (
                 <p className="text-sm text-slate-300 mt-4 leading-relaxed border-t border-white/10 pt-4 animate-in fade-in">
                   {item.a}
