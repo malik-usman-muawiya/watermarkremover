@@ -67,10 +67,10 @@ export const DashboardPage: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Card 1: Launch Status */}
-        <div className="p-5 bg-[#121216] border border-white/10 rounded-3xl shadow-lg flex flex-col justify-between">
+        <div className="p-5 bg-[#0D1527] border border-white/10 rounded-3xl shadow-lg flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-400">Plan Quota</span>
-            <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-teal-500/10 text-teal-400 flex items-center justify-center">
               <Gift className="w-4 h-4" />
             </div>
           </div>
@@ -78,16 +78,16 @@ export const DashboardPage: React.FC = () => {
             <div className="text-2xl font-black text-white">Unlimited Free</div>
             <div className="text-xs text-emerald-400 font-bold mt-1">● Grand Launch Active</div>
           </div>
-          <Link to="/editor/image" className="text-xs font-bold text-amber-400 hover:text-amber-300">
+          <Link to="/editor/image" className="text-xs font-bold text-teal-400 hover:text-teal-300">
             Start Cleaning &rarr;
           </Link>
         </div>
 
         {/* Card 2: Current Subscription Plan */}
-        <div className="p-5 bg-[#121216] border border-white/10 rounded-3xl shadow-lg flex flex-col justify-between">
+        <div className="p-5 bg-[#0D1527] border border-white/10 rounded-3xl shadow-lg flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-400">Account Type</span>
-            <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-teal-500/10 text-teal-400 flex items-center justify-center">
               <Sparkles className="w-4 h-4" />
             </div>
           </div>
@@ -95,13 +95,13 @@ export const DashboardPage: React.FC = () => {
             <div className="text-2xl font-black text-white">Verified Session</div>
             <div className="text-xs text-slate-400 mt-1 truncate">{user?.email || 'Active guest session'}</div>
           </div>
-          <Link to="/pricing" className="text-xs font-bold text-amber-400 hover:text-amber-300">
+          <Link to="/pricing" className="text-xs font-bold text-teal-400 hover:text-teal-300">
             View All Features &rarr;
           </Link>
         </div>
 
         {/* Card 3: Retention Privacy SLA */}
-        <div className="p-5 bg-[#121216] border border-white/10 rounded-3xl shadow-lg flex flex-col justify-between">
+        <div className="p-5 bg-[#0D1527] border border-white/10 rounded-3xl shadow-lg flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-400">Storage Retention</span>
             <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
@@ -121,7 +121,7 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         {/* Card 4: Total Inpaintings */}
-        <div className="p-5 bg-[#121216] border border-white/10 rounded-3xl shadow-lg flex flex-col justify-between">
+        <div className="p-5 bg-[#0D1527] border border-white/10 rounded-3xl shadow-lg flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-400">Total Media Cleaned</span>
             <div className="w-8 h-8 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
@@ -132,7 +132,7 @@ export const DashboardPage: React.FC = () => {
             <div className="text-2xl font-black text-white">{jobs.length} Items</div>
             <div className="text-xs text-slate-400 mt-1">Images, Objects & Videos</div>
           </div>
-          <Link to="/editor/video" className="text-xs font-bold text-amber-400 hover:text-amber-300">
+          <Link to="/editor/video" className="text-xs font-bold text-teal-400 hover:text-teal-300">
             Clean Video Clip &rarr;
           </Link>
         </div>
@@ -140,9 +140,9 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* Developer API Key Section */}
-      <div className="p-6 bg-[#121216] border border-white/10 rounded-3xl shadow-lg flex flex-wrap items-center justify-between gap-4">
+      <div className="p-6 bg-[#0D1527] border border-white/10 rounded-3xl shadow-lg flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+          <div className="p-3 rounded-2xl bg-teal-500/10 text-teal-400 border border-teal-500/20">
             <Key className="w-5 h-5" />
           </div>
           <div>
@@ -152,12 +152,12 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <code className="px-3.5 py-2 bg-[#18181c] border border-white/15 rounded-xl font-mono text-xs text-amber-400 font-bold">
+          <code className="px-3.5 py-2 bg-[#111A2E] border border-white/15 rounded-xl font-mono text-xs text-teal-400 font-bold">
             {user?.apiKey || 'wm_live_demo_key_789456'}
           </code>
           <button 
             onClick={handleCopyKey}
-            className="px-3 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold text-xs rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
+            className="px-3 py-2 bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 font-black text-xs rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
           >
             {apiKeyCopied ? <Check className="w-3.5 h-3.5" /> : null}
             <span>{apiKeyCopied ? 'Copied!' : 'Copy Token'}</span>
@@ -174,13 +174,13 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* Processing History & Storage Manager */}
-      <div className="bg-[#121216] border border-white/10 rounded-3xl overflow-hidden shadow-lg space-y-4">
+      <div className="bg-[#0D1527] border border-white/10 rounded-3xl overflow-hidden shadow-lg space-y-4">
         
         {/* Table Controls */}
         <div className="p-6 border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
           <div>
             <h2 className="font-extrabold text-white text-base flex items-center gap-2">
-              <History className="w-4 h-4 text-amber-400" />
+              <History className="w-4 h-4 text-teal-400" />
               Recent Media History
             </h2>
             <p className="text-xs text-slate-400">Never uploaded — history is stored only in this browser</p>
@@ -195,19 +195,19 @@ export const DashboardPage: React.FC = () => {
                 placeholder="Search history..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 bg-[#18181c] border border-white/15 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                className="pl-8 pr-3 py-1.5 bg-[#111A2E] border border-white/15 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-400"
               />
             </div>
 
             {/* Filter Buttons */}
-            <div className="bg-[#18181c] p-1 rounded-xl border border-white/10 flex items-center text-xs">
+            <div className="bg-[#111A2E] p-1 rounded-xl border border-white/10 flex items-center text-xs">
               {['all', 'image', 'video', 'object'].map((t) => (
                 <button
                   key={t}
                   onClick={() => setFilterType(t)}
                   className={`px-3 py-1 rounded-lg capitalize font-bold transition-colors cursor-pointer ${
                     filterType === t 
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-extrabold' 
+                      ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 font-black' 
                       : 'text-slate-400 hover:text-white'
                   }`}
                 >
@@ -230,7 +230,7 @@ export const DashboardPage: React.FC = () => {
                 <div className="flex items-center gap-4 min-w-0">
                   <div className="w-14 h-14 rounded-2xl overflow-hidden bg-black border border-white/10 shrink-0 relative shadow-xs">
                     <img src={job.resultUrl || job.originalUrl} alt={job.title} className="w-full h-full object-cover" />
-                    <span className="absolute bottom-0.5 right-0.5 bg-black/90 text-[9px] font-bold text-amber-400 px-1.5 py-0.2 rounded uppercase">
+                    <span className="absolute bottom-0.5 right-0.5 bg-black/90 text-[9px] font-bold text-teal-400 px-1.5 py-0.2 rounded uppercase">
                       {job.type}
                     </span>
                   </div>
@@ -254,9 +254,9 @@ export const DashboardPage: React.FC = () => {
                     <a
                       href={job.resultUrl}
                       download={`watermark_ai_${sanitizeFileName(job.title)}`}
-                      className="px-3.5 py-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 rounded-xl border border-amber-500/20 transition-colors flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer"
+                      className="px-3.5 py-2 bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 rounded-xl border border-teal-500/20 transition-colors flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer"
                     >
-                      <Download className="w-3.5 h-3.5 text-amber-400" />
+                      <Download className="w-3.5 h-3.5 text-teal-400" />
                       <span>Download</span>
                     </a>
                   )}

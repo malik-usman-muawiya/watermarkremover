@@ -4,18 +4,35 @@
 
 @layer base {
   body {
-    @apply bg-[#0e0e11] text-slate-100 antialiased;
+    @apply bg-[#070B14] text-slate-100 antialiased selection:bg-teal-500 selection:text-slate-950;
     font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
   }
+}
+
+/* RankNex signature theme styles */
+.gradient-text-teal {
+  background: linear-gradient(135deg, #00C9A7 0%, #00D2D2 50%, #38BDF8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glow-teal {
+  box-shadow: 0 0 25px rgba(0, 201, 167, 0.2);
+}
+
+.glass-ranknex {
+  background: rgba(10, 15, 30, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 201, 167, 0.18);
 }
 
 /* Checkerboard transparent background */
 .bg-checkerboard {
   background-image: 
-    linear-gradient(45deg, #1a1c28 25%, transparent 25%), 
-    linear-gradient(-45deg, #1a1c28 25%, transparent 25%), 
-    linear-gradient(45deg, transparent 75%, #1a1c28 75%), 
-    linear-gradient(-45deg, transparent 75%, #1a1c28 75%);
+    linear-gradient(45deg, #0d1527 25%, transparent 25%), 
+    linear-gradient(-45deg, #0d1527 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, #0d1527 75%), 
+    linear-gradient(-45deg, transparent 75%, #0d1527 75%);
   background-size: 20px 20px;
   background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
 }
@@ -27,16 +44,16 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #0e0e11;
+  background: #070B14;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #232738;
+  background: #152238;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #f59e0b;
+  background: #00C9A7;
 }
 
 @keyframes marquee {

@@ -182,15 +182,15 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
           {/* Output is always WebM (the only format browsers can natively
               encode client-side) — labeling it honestly instead of a fake
               MP4/MOV picker that produced mislabeled files. */}
-          <div className="flex items-center gap-2 bg-[#1e2235] rounded-xl px-3 py-2 border border-[#2d324c]">
-            <span className="text-xs font-black uppercase text-amber-400">WebM</span>
-            <span className="text-[10px] text-slate-500">HD output</span>
+          <div className="flex items-center gap-2 bg-[#0D1527] rounded-xl px-3 py-2 border border-teal-500/20">
+            <span className="text-xs font-black uppercase text-teal-400">WebM</span>
+            <span className="text-[10px] text-slate-400">HD output</span>
           </div>
 
           <button
             onClick={handleDownload}
             disabled={isDownloading}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:opacity-95 text-black font-black text-xs rounded-2xl shadow-lg shadow-orange-500/20 transition-all active:scale-[0.98] cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-teal-400 via-teal-500 to-cyan-500 hover:opacity-95 text-slate-950 font-black text-xs rounded-2xl shadow-lg shadow-teal-500/20 transition-all active:scale-[0.98] cursor-pointer"
           >
             <Download className="w-4 h-4" />
             <span>{isDownloading ? 'Downloading HD...' : 'Download Clean HD'}</span>
@@ -259,7 +259,7 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
           <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-md px-3.5 py-1 rounded-full text-[10px] font-black text-white uppercase tracking-wider pointer-events-none shadow-md border border-white/20">
             ORIGINAL (BEFORE)
           </div>
-          <div className="absolute top-4 right-4 bg-amber-500/90 backdrop-blur-md px-3.5 py-1 rounded-full text-[10px] font-black text-black uppercase tracking-wider pointer-events-none shadow-md border border-amber-300/30">
+          <div className="absolute top-4 right-4 bg-teal-500/90 backdrop-blur-md px-3.5 py-1 rounded-full text-[10px] font-black text-slate-950 uppercase tracking-wider pointer-events-none shadow-md border border-teal-300/30">
             AI INPAINTED (AFTER)
           </div>
 
@@ -268,8 +268,8 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
             className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_12px_rgba(255,255,255,0.8)] flex items-center justify-center pointer-events-none"
             style={{ left: `${sliderPosition}%` }}
           >
-            <div className="w-9 h-9 rounded-full bg-white text-slate-900 shadow-2xl flex items-center justify-center -ml-[16px] border-2 border-amber-500 hover:scale-110 transition-transform">
-              <SlidersHorizontal className="w-4 h-4 rotate-90 text-amber-600" />
+            <div className="w-9 h-9 rounded-full bg-white text-slate-900 shadow-2xl flex items-center justify-center -ml-[16px] border-2 border-teal-500 hover:scale-110 transition-transform">
+              <SlidersHorizontal className="w-4 h-4 rotate-90 text-teal-600" />
             </div>
           </div>
         </div>
@@ -277,7 +277,7 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
 
       {/* Video Playback Scrubber & Controls */}
       <div className="px-6 pb-6 pt-2 space-y-3">
-        <div className="p-4 bg-[#171926] border border-[#232738] rounded-2xl flex flex-col space-y-3 shadow-md">
+        <div className="p-4 bg-[#0D1527] border border-teal-500/20 rounded-2xl flex flex-col space-y-3 shadow-md">
           
           {/* Timeline Seekbar */}
           <input
@@ -288,7 +288,7 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
             value={currentTime}
             onChange={(e) => handleSeek(parseFloat(e.target.value))}
             aria-label="Video playback position"
-            className="w-full accent-amber-500 cursor-pointer h-2 bg-[#232738] rounded-lg appearance-none"
+            className="w-full accent-teal-400 cursor-pointer h-2 bg-[#070B14] rounded-lg appearance-none"
           />
 
           <div className="flex items-center justify-between">
@@ -296,13 +296,13 @@ export const VideoComparisonSlider: React.FC<VideoComparisonSliderProps> = ({
             <div className="flex items-center gap-3">
               <button
                 onClick={togglePlay}
-                className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold flex items-center gap-1.5 shadow-md transition-transform active:scale-95 cursor-pointer text-xs"
+                className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-cyan-500 hover:opacity-95 text-slate-950 font-black flex items-center gap-1.5 shadow-md transition-transform active:scale-95 cursor-pointer text-xs"
               >
                 {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
                 <span>{isPlaying ? 'Pause' : 'Play'}</span>
               </button>
 
-              <span className="font-mono text-xs font-bold text-amber-400">
+              <span className="font-mono text-xs font-bold text-teal-400">
                 {formatTime(currentTime)} / {formatTime(duration)}
               </span>
             </div>

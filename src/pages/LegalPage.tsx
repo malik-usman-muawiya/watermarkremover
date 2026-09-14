@@ -18,8 +18,8 @@ export const LegalPage: React.FC = () => {
       
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs font-bold text-amber-400">
-          <Shield className="w-3.5 h-3.5 text-amber-400" />
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-xs font-bold text-teal-400">
+          <Shield className="w-3.5 h-3.5 text-teal-400" />
           <span>Trust & Compliance Center</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">Legal & Compliance Terms</h1>
@@ -42,8 +42,8 @@ export const LegalPage: React.FC = () => {
                 onClick={() => setTab(t.id as any)}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   tab === t.id
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-md font-extrabold'
-                    : 'bg-[#18181c] border border-white/10 text-slate-300 hover:text-white'
+                    ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 shadow-md font-extrabold shadow-teal-500/20'
+                    : 'bg-[#0D1527] border border-teal-500/20 text-slate-300 hover:text-white hover:bg-[#111A2E]'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -55,7 +55,7 @@ export const LegalPage: React.FC = () => {
       </div>
 
       {/* Content Container */}
-      <div className="p-8 bg-[#121216] border border-white/10 rounded-3xl text-slate-300 text-sm leading-relaxed space-y-6 shadow-2xl">
+      <div className="p-8 bg-[#0D1527] border border-teal-500/20 rounded-3xl text-slate-300 text-sm leading-relaxed space-y-6 shadow-2xl">
         
         {tab === 'terms' && (
           <div className="space-y-4">
@@ -77,10 +77,10 @@ export const LegalPage: React.FC = () => {
         {tab === 'privacy' && (
           <div className="space-y-4">
             <h2 className="text-xl font-bold text-white">Privacy Policy & Client-Side Execution Guarantee</h2>
-            <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-start gap-3">
-              <Lock className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+            <div className="p-4 bg-teal-500/10 border border-teal-500/20 rounded-2xl flex items-start gap-3">
+              <Lock className="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />
               <div className="text-xs text-slate-200">
-                <strong className="text-amber-400">Zero Cloud Upload for Image Inpainting:</strong> Standard photo inpainting executes locally inside your browser sandbox via HTML5 Canvas. Your photos are not transmitted to remote servers.
+                <strong className="text-teal-400">Zero Cloud Upload for Image Inpainting:</strong> Standard photo inpainting executes locally inside your browser sandbox via HTML5 Canvas. Your photos are not transmitted to remote servers.
               </div>
             </div>
 
@@ -117,7 +117,7 @@ export const LegalPage: React.FC = () => {
             <p>
               Watermark AI Remover complies with the Digital Millennium Copyright Act (17 U.S.C. § 512). If you believe your copyrighted work is being hosted or infringed without authorization, please notify our designated copyright agent:
             </p>
-            <div className="p-4 bg-[#18181c] rounded-2xl border border-white/10 text-xs font-mono text-slate-300">
+            <div className="p-4 bg-[#111A2E] rounded-2xl border border-teal-500/10 text-xs font-mono text-slate-300">
               Email: support@watermarksairemover.com<br />
               Subject: DMCA Notice - [Media / Account Reference]<br />
               Agent: Copyright Compliance Office, Watermark AI Media Labs

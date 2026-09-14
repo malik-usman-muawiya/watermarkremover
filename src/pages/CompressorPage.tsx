@@ -196,7 +196,7 @@ export const CompressorPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0e0e11] text-slate-100 py-8 px-4 sm:px-6 lg:px-8 space-y-16">
+    <div className="min-h-screen bg-[#070B14] text-slate-100 py-8 px-4 sm:px-6 lg:px-8 space-y-16">
       <SEO
         title="Smart Image Compressor — Reduce File Size Free"
         description="Compress JPG, PNG, and WebP images to exact target KB or percentage without visible loss. 100% private client-side processing."
@@ -219,7 +219,7 @@ export const CompressorPage: React.FC = () => {
         
         {/* Header / Value Proposition */}
         <div className="text-center space-y-3 max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-500/10 text-teal-400 text-xs font-bold border border-teal-500/20">
             <Sparkles className="w-3.5 h-3.5" />
             <span>AI Smart Compression Suite</span>
           </div>
@@ -233,12 +233,12 @@ export const CompressorPage: React.FC = () => {
         </div>
 
         {/* Compression Settings Controls Bar */}
-        <div className="p-6 bg-[#18181c] border border-white/10 rounded-3xl shadow-xl space-y-6">
+        <div className="p-6 bg-[#0D1527] border border-white/10 rounded-3xl shadow-xl space-y-6">
           
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="space-y-1">
               <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-                <Sliders className="w-4 h-4 text-amber-400" />
+                <Sliders className="w-4 h-4 text-teal-400" />
                 Select Target File Size (KB):
               </span>
               <p className="text-[11px] text-slate-500">Pick an exact KB target for job forms, passport photos or email</p>
@@ -252,8 +252,8 @@ export const CompressorPage: React.FC = () => {
                   onClick={() => { setIsCustomKB(false); handleRecompressAll(kb); }}
                   className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
                     targetKB === kb && !isCustomKB
-                      ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-md shadow-orange-500/20'
-                      : 'bg-[#23232a] text-slate-300 hover:text-white border border-white/5 hover:border-white/20'
+                      ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 shadow-md shadow-teal-500/20'
+                      : 'bg-[#111A2E] text-slate-300 hover:text-white border border-white/5 hover:border-white/20'
                   }`}
                 >
                   {kb} KB
@@ -264,8 +264,8 @@ export const CompressorPage: React.FC = () => {
                 onClick={() => setIsCustomKB(true)}
                 className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
                   isCustomKB
-                    ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-md'
-                    : 'bg-[#23232a] text-slate-300 hover:text-white border border-white/5'
+                    ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 shadow-md'
+                    : 'bg-[#111A2E] text-slate-300 hover:text-white border border-white/5'
                 }`}
               >
                 Custom KB
@@ -275,7 +275,7 @@ export const CompressorPage: React.FC = () => {
 
           {/* Custom KB Input Slider */}
           {isCustomKB && (
-            <div className="p-4 bg-[#23232a] rounded-2xl border border-white/10 flex flex-wrap items-center justify-between gap-4 animate-in fade-in">
+            <div className="p-4 bg-[#111A2E] rounded-2xl border border-white/10 flex flex-wrap items-center justify-between gap-4 animate-in fade-in">
               <div className="flex items-center gap-3">
                 <span id="custom-kb-label" className="text-xs font-bold text-slate-200">Custom Target:</span>
                 <input
@@ -285,7 +285,7 @@ export const CompressorPage: React.FC = () => {
                   value={targetKB}
                   onChange={(e) => handleRecompressAll(parseInt(e.target.value) || 50)}
                   aria-labelledby="custom-kb-label"
-                  className="w-24 px-3 py-1.5 bg-[#18181c] border border-amber-500/50 rounded-xl text-xs font-black text-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  className="w-24 px-3 py-1.5 bg-[#0D1527] border border-teal-500/50 rounded-xl text-xs font-black text-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-400"
                 />
                 <span className="text-xs font-bold text-slate-400">KB</span>
               </div>
@@ -297,7 +297,7 @@ export const CompressorPage: React.FC = () => {
                 value={targetKB}
                 aria-label="Custom target size in KB"
                 onChange={(e) => handleRecompressAll(parseInt(e.target.value))}
-                className="w-full sm:w-64 accent-amber-500 cursor-pointer"
+                className="w-full sm:w-64 accent-teal-400 cursor-pointer"
               />
             </div>
           )}
@@ -310,7 +310,7 @@ export const CompressorPage: React.FC = () => {
                 id="output-format-select"
                 value={outputFormat}
                 onChange={(e) => setOutputFormat(e.target.value as any)}
-                className="w-full px-3 py-2 bg-[#23232a] border border-white/10 rounded-xl text-xs font-bold text-slate-200 cursor-pointer"
+                className="w-full px-3 py-2 bg-[#111A2E] border border-white/10 rounded-xl text-xs font-bold text-slate-200 cursor-pointer"
               >
                 <option value="image/jpeg">JPG / JPEG (Best for Photos & Forms)</option>
                 <option value="image/webp">WebP (Modern Next-Gen Web)</option>
@@ -324,7 +324,7 @@ export const CompressorPage: React.FC = () => {
                 id="scale-resolution-select"
                 value={scalePercent}
                 onChange={(e) => setScalePercent(parseInt(e.target.value))}
-                className="w-full px-3 py-2 bg-[#23232a] border border-white/10 rounded-xl text-xs font-bold text-slate-200 cursor-pointer"
+                className="w-full px-3 py-2 bg-[#111A2E] border border-white/10 rounded-xl text-xs font-bold text-slate-200 cursor-pointer"
               >
                 <option value="100">100% Original Dimensions</option>
                 <option value="75">75% Medium Downscale</option>
@@ -351,14 +351,14 @@ export const CompressorPage: React.FC = () => {
           onDragOver={(e) => { e.preventDefault(); setIsDraggingOver(true); }}
           onDragLeave={() => setIsDraggingOver(false)}
           onDrop={handleDrop}
-          className={`p-10 sm:p-14 bg-[#18181c] border-2 rounded-3xl text-center space-y-5 shadow-2xl transition-all relative overflow-hidden ${
-            isDraggingOver ? 'border-amber-500 bg-amber-500/5 ring-4 ring-amber-500/20' : 'border-white/10 hover:border-white/20'
+          className={`p-10 sm:p-14 bg-[#0D1527] border-2 rounded-3xl text-center space-y-5 shadow-2xl transition-all relative overflow-hidden ${
+            isDraggingOver ? 'border-teal-500 bg-teal-500/5 ring-4 ring-teal-500/20' : 'border-white/10 hover:border-white/20'
           }`}
         >
           <div className="space-y-3">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="px-9 py-4 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:opacity-95 text-slate-950 font-black text-base rounded-2xl shadow-xl shadow-orange-500/25 transition-all flex items-center justify-center gap-2.5 mx-auto active:scale-[0.98] cursor-pointer"
+              className="px-9 py-4 bg-gradient-to-r from-teal-400 via-teal-500 to-cyan-400 hover:opacity-95 text-slate-950 font-black text-base rounded-2xl shadow-xl shadow-teal-500/25 transition-all flex items-center justify-center gap-2.5 mx-auto active:scale-[0.98] cursor-pointer"
             >
               <Plus className="w-5 h-5 stroke-[3]" />
               <span>Upload Images to Compress</span>
@@ -378,7 +378,7 @@ export const CompressorPage: React.FC = () => {
         {items.length > 0 && (
           <div className="space-y-4 animate-in fade-in">
             {/* Global Summary Bar */}
-            <div className="p-4 bg-[#18181c] border border-white/10 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-lg">
+            <div className="p-4 bg-[#0D1527] border border-white/10 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-lg">
               <div className="flex items-center gap-3">
                 <span className="font-bold text-sm text-slate-200">
                   {items.length} {items.length === 1 ? 'image' : 'images'} in queue
@@ -394,7 +394,7 @@ export const CompressorPage: React.FC = () => {
                 <button
                   onClick={handleDownloadAllZip}
                   disabled={isZipping}
-                  className="px-5 py-2.5 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:opacity-95 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer active:scale-95"
+                  className="px-5 py-2.5 bg-gradient-to-r from-teal-400 via-teal-500 to-cyan-400 hover:opacity-95 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer active:scale-95"
                 >
                   <Download className="w-4 h-4 text-slate-950" />
                   <span>{isZipping ? 'Packaging ZIP...' : `Download All (${items.length} ZIP)`}</span>
@@ -402,7 +402,7 @@ export const CompressorPage: React.FC = () => {
 
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="px-4 py-2.5 bg-[#23232a] hover:bg-[#2c2c36] text-slate-200 border border-white/10 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="px-4 py-2.5 bg-[#111A2E] hover:bg-[#18243e] text-slate-200 border border-white/10 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add More</span>
@@ -424,7 +424,7 @@ export const CompressorPage: React.FC = () => {
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className="p-5 bg-[#18181c] border border-white/10 rounded-2xl flex flex-wrap items-center justify-between gap-4 hover:border-white/20 transition-all"
+                  className="p-5 bg-[#0D1527] border border-white/10 rounded-2xl flex flex-wrap items-center justify-between gap-4 hover:border-white/20 transition-all"
                 >
                   <div className="flex items-center gap-4 min-w-0">
                     <div className="w-16 h-16 rounded-xl overflow-hidden bg-black border border-white/10 shrink-0">
@@ -449,7 +449,7 @@ export const CompressorPage: React.FC = () => {
                             </span>
                           </>
                         ) : (
-                          <span className="text-amber-400 animate-pulse font-semibold">Compressing to {targetKB}KB...</span>
+                          <span className="text-teal-400 animate-pulse font-semibold">Compressing to {targetKB}KB...</span>
                         )}
                       </div>
                     </div>
@@ -459,7 +459,7 @@ export const CompressorPage: React.FC = () => {
                     {item.status === 'completed' && (
                       <button
                         onClick={() => handleDownloadItem(item)}
-                        className="px-4 py-2 bg-gradient-to-r from-amber-400 to-orange-500 hover:opacity-95 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+                        className="px-4 py-2 bg-gradient-to-r from-teal-400 to-cyan-500 hover:opacity-95 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
                       >
                         <Download className="w-3.5 h-3.5 text-slate-950" />
                         <span>Download</span>
@@ -486,47 +486,47 @@ export const CompressorPage: React.FC = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <Link
               to="/compress-image-to-20kb"
-              className="p-4 rounded-2xl bg-[#18181c] border border-white/10 hover:border-amber-500/50 transition-all space-y-1 group"
+              className="p-4 rounded-2xl bg-[#0D1527] border border-white/10 hover:border-teal-500/50 transition-all space-y-1 group"
             >
-              <div className="font-extrabold text-sm text-white group-hover:text-amber-400">Compress to 20KB</div>
+              <div className="font-extrabold text-sm text-white group-hover:text-teal-400">Compress to 20KB</div>
               <p className="text-[11px] text-slate-400">Strict signature & document portals</p>
             </Link>
 
             <Link
               to="/compress-image-to-50kb"
-              className="p-4 rounded-2xl bg-[#18181c] border border-white/10 hover:border-amber-500/50 transition-all space-y-1 group"
+              className="p-4 rounded-2xl bg-[#0D1527] border border-white/10 hover:border-teal-500/50 transition-all space-y-1 group"
             >
-              <div className="font-extrabold text-sm text-white group-hover:text-amber-400">Compress to 50KB</div>
+              <div className="font-extrabold text-sm text-white group-hover:text-teal-400">Compress to 50KB</div>
               <p className="text-[11px] text-slate-400">Standard job forms & admissions</p>
             </Link>
 
             <Link
               to="/compress-image-to-100kb"
-              className="p-4 rounded-2xl bg-[#18181c] border border-white/10 hover:border-amber-500/50 transition-all space-y-1 group"
+              className="p-4 rounded-2xl bg-[#0D1527] border border-white/10 hover:border-teal-500/50 transition-all space-y-1 group"
             >
-              <div className="font-extrabold text-sm text-white group-hover:text-amber-400">Compress to 100KB</div>
+              <div className="font-extrabold text-sm text-white group-hover:text-teal-400">Compress to 100KB</div>
               <p className="text-[11px] text-slate-400">High quality web profile photos</p>
             </Link>
 
             <Link
               to="/reduce-image-resolution"
-              className="p-4 rounded-2xl bg-[#18181c] border border-white/10 hover:border-amber-500/50 transition-all space-y-1 group"
+              className="p-4 rounded-2xl bg-[#0D1527] border border-white/10 hover:border-teal-500/50 transition-all space-y-1 group"
             >
-              <div className="font-extrabold text-sm text-white group-hover:text-amber-400">Reduce Resolution</div>
+              <div className="font-extrabold text-sm text-white group-hover:text-teal-400">Reduce Resolution</div>
               <p className="text-[11px] text-slate-400">Scale width, height & dimensions</p>
             </Link>
           </div>
         </div>
 
         {/* Step-by-Step How It Works Section */}
-        <div className="p-8 bg-[#18181c] border border-white/10 rounded-3xl space-y-6">
+        <div className="p-8 bg-[#0D1527] border border-white/10 rounded-3xl space-y-6">
           <h2 className="text-xl sm:text-2xl font-black text-white">
             How to Compress Images Online in 3 Simple Steps
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
-            <div className="p-5 rounded-2xl bg-[#23232a] space-y-2 border border-white/5">
-              <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-black">
+            <div className="p-5 rounded-2xl bg-[#111A2E] space-y-2 border border-white/5">
+              <div className="w-8 h-8 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center font-black">
                 1
               </div>
               <h3 className="font-extrabold text-white">Upload Your Photos</h3>
@@ -535,8 +535,8 @@ export const CompressorPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#23232a] space-y-2 border border-white/5">
-              <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-black">
+            <div className="p-5 rounded-2xl bg-[#111A2E] space-y-2 border border-white/5">
+              <div className="w-8 h-8 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center font-black">
                 2
               </div>
               <h3 className="font-extrabold text-white">Pick Target KB or Quality</h3>
@@ -545,8 +545,8 @@ export const CompressorPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#23232a] space-y-2 border border-white/5">
-              <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-black">
+            <div className="p-5 rounded-2xl bg-[#111A2E] space-y-2 border border-white/5">
+              <div className="w-8 h-8 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center font-black">
                 3
               </div>
               <h3 className="font-extrabold text-white">Download Compressed Image</h3>
@@ -564,14 +564,14 @@ export const CompressorPage: React.FC = () => {
             {faqs.map((faq, idx) => (
               <div
                 key={idx}
-                className="bg-[#18181c] border border-white/10 rounded-2xl overflow-hidden transition-colors"
+                className="bg-[#0D1527] border border-white/10 rounded-2xl overflow-hidden transition-colors"
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                   className="w-full p-5 text-left font-bold text-sm text-slate-200 flex items-center justify-between gap-4 cursor-pointer"
                 >
                   <span>{faq.q}</span>
-                  <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${openFaq === idx ? 'rotate-180 text-amber-400' : ''}`} />
+                  <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${openFaq === idx ? 'rotate-180 text-teal-400' : ''}`} />
                 </button>
                 {openFaq === idx && (
                   <div className="px-5 pb-5 text-xs text-slate-400 leading-relaxed border-t border-white/5 pt-3 animate-in fade-in">

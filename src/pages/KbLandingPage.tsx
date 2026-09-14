@@ -215,7 +215,7 @@ export const KbLandingPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0e0e11] text-slate-100 py-10 px-4 sm:px-6 lg:px-8 space-y-16">
+    <div className="min-h-screen bg-[#070B14] text-slate-100 py-10 px-4 sm:px-6 lg:px-8 space-y-16">
       <SEO
         title={config.metaTitle}
         description={config.metaDesc}
@@ -235,7 +235,7 @@ export const KbLandingPage: React.FC = () => {
         
         {/* Hero */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 text-teal-400 text-xs font-bold border border-teal-500/20">
             <FileCheck className="w-3.5 h-3.5" />
             <span>Target Size: {config.targetKB} KB Exact</span>
           </div>
@@ -250,11 +250,11 @@ export const KbLandingPage: React.FC = () => {
         </div>
 
         {/* Interactive Compressor Box (Placed directly near top) */}
-        <div className="p-8 sm:p-10 bg-[#18181c] border border-white/10 rounded-3xl shadow-2xl space-y-6 text-center">
+        <div className="p-8 sm:p-10 bg-[#0D1527] border border-teal-500/20 rounded-3xl shadow-2xl space-y-6 text-center">
           
           {result ? (
             <div className="space-y-6 animate-in fade-in">
-              <div className="p-6 bg-[#23232a] rounded-2xl border border-white/10 flex flex-wrap items-center justify-between gap-6">
+              <div className="p-6 bg-[#111A2E] rounded-2xl border border-teal-500/20 flex flex-wrap items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
                   <div className="w-20 h-20 rounded-xl overflow-hidden bg-black border border-white/10 shrink-0">
                     <img src={result.dataUrl} alt="Compressed" className="w-full h-full object-cover" />
@@ -262,9 +262,9 @@ export const KbLandingPage: React.FC = () => {
                   <div className="text-left space-y-1">
                     <span className="font-bold text-sm text-white">Compression Complete</span>
                     <div className="text-xs text-slate-400">
-                      Original: <strong className="text-slate-200">{formatBytes(result.originalSize)}</strong> &rarr; Target: <strong className="text-emerald-400">{formatBytes(result.compressedSize)}</strong>
+                      Original: <strong className="text-slate-200">{formatBytes(result.originalSize)}</strong> &rarr; Target: <strong className="text-teal-400">{formatBytes(result.compressedSize)}</strong>
                     </div>
-                    <div className="text-xs text-emerald-400 font-bold">
+                    <div className="text-xs text-teal-400 font-bold">
                       Saved {result.savedPercent}% &bull; {result.dimensions.width}x{result.dimensions.height}px
                     </div>
                   </div>
@@ -273,7 +273,7 @@ export const KbLandingPage: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <button
                     onClick={handleDownload}
-                    className="px-6 py-3 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black text-xs rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer active:scale-95"
+                    className="px-6 py-3 bg-gradient-to-r from-teal-400 to-cyan-500 hover:from-teal-300 hover:to-cyan-400 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-teal-500/20 transition-all flex items-center gap-2 cursor-pointer active:scale-95"
                   >
                     <Download className="w-4 h-4 text-slate-950" />
                     <span>Download {config.targetKB}KB Image</span>
@@ -281,7 +281,7 @@ export const KbLandingPage: React.FC = () => {
 
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-4 py-3 bg-[#18181c] hover:bg-[#282830] text-slate-300 border border-white/10 text-xs font-bold rounded-xl transition-all"
+                    className="px-4 py-3 bg-[#0D1527] hover:bg-[#111A2E] text-slate-300 border border-teal-500/20 text-xs font-bold rounded-xl transition-all"
                   >
                     Compress Another
                   </button>
@@ -293,7 +293,7 @@ export const KbLandingPage: React.FC = () => {
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isCompressing}
-                className="px-9 py-4 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:opacity-95 text-slate-950 font-black text-base rounded-2xl shadow-xl shadow-orange-500/25 transition-all flex items-center justify-center gap-2.5 mx-auto active:scale-[0.98] cursor-pointer"
+                className="px-9 py-4 bg-gradient-to-r from-teal-400 to-cyan-500 hover:from-teal-300 hover:to-cyan-400 text-slate-950 font-black text-base rounded-2xl shadow-xl shadow-teal-500/25 transition-all flex items-center justify-center gap-2.5 mx-auto active:scale-[0.98] cursor-pointer"
               >
                 <UploadCloud className="w-5 h-5" />
                 <span>{isCompressing ? 'Compressing to ' + config.targetKB + 'KB...' : 'Select Photo to Compress to ' + config.targetKB + 'KB'}</span>
@@ -308,23 +308,23 @@ export const KbLandingPage: React.FC = () => {
 
         {/* Why 50KB Limit & Use Cases */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-          <div className="p-6 bg-[#18181c] border border-white/10 rounded-2xl space-y-3">
+          <div className="p-6 bg-[#0D1527] border border-teal-500/20 rounded-2xl space-y-3">
             <h2 className="font-extrabold text-white text-base">Why is the {config.targetKB}KB Limit Used?</h2>
             <p className="text-xs text-slate-400 leading-relaxed">
               {config.whyLimit}
             </p>
             <div className="pt-2 border-t border-white/5">
               <span className="text-xs text-slate-500 font-bold block mb-1">Recommended Dimensions:</span>
-              <code className="text-xs text-amber-400 font-mono">{config.recommendedDimensions}</code>
+              <code className="text-xs text-teal-400 font-mono">{config.recommendedDimensions}</code>
             </div>
           </div>
 
-          <div className="p-6 bg-[#18181c] border border-white/10 rounded-2xl space-y-3">
+          <div className="p-6 bg-[#0D1527] border border-teal-500/20 rounded-2xl space-y-3">
             <h2 className="font-extrabold text-white text-base">Top Use Cases for {config.targetKB}KB:</h2>
             <ul className="space-y-2 text-xs text-slate-400">
               {config.useCases.map((uc, i) => (
                 <li key={i} className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-teal-400 shrink-0 mt-0.5" />
                   <span>{uc}</span>
                 </li>
               ))}
@@ -334,14 +334,14 @@ export const KbLandingPage: React.FC = () => {
 
         {/* Troubleshooting (if present) */}
         {config.troubleshooting.length > 0 && (
-          <div className="p-6 bg-[#18181c] border border-white/10 rounded-2xl space-y-4">
+          <div className="p-6 bg-[#0D1527] border border-teal-500/20 rounded-2xl space-y-4">
             <h2 className="font-extrabold text-white text-base flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-400" />
+              <AlertTriangle className="w-4 h-4 text-teal-400" />
               Troubleshooting {config.targetKB}KB Compression
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               {config.troubleshooting.map((tb, i) => (
-                <div key={i} className="p-4 bg-[#23232a] rounded-xl border border-white/5 space-y-1.5">
+                <div key={i} className="p-4 bg-[#111A2E] rounded-xl border border-teal-500/10 space-y-1.5">
                   <strong className="text-slate-200 block">{tb.problem}</strong>
                   <p className="text-slate-400">{tb.solution}</p>
                 </div>
@@ -360,8 +360,8 @@ export const KbLandingPage: React.FC = () => {
                 to={`/compress-image-to-${k}kb`}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                   k === config.targetKB
-                    ? 'bg-amber-500 text-slate-950 font-black'
-                    : 'bg-[#18181c] hover:bg-[#23232a] text-slate-300 border border-white/10'
+                    ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 font-black'
+                    : 'bg-[#0D1527] hover:bg-[#111A2E] text-slate-300 border border-teal-500/20'
                 }`}
               >
                 Compress to {k}KB &rarr;
@@ -369,7 +369,7 @@ export const KbLandingPage: React.FC = () => {
             ))}
             <Link
               to="/reduce-image-resolution"
-              className="px-4 py-2 bg-[#18181c] hover:bg-[#23232a] text-slate-300 border border-white/10 rounded-xl text-xs font-bold"
+              className="px-4 py-2 bg-[#0D1527] hover:bg-[#111A2E] text-slate-300 border border-teal-500/20 rounded-xl text-xs font-bold"
             >
               Reduce Resolution &rarr;
             </Link>
@@ -381,13 +381,13 @@ export const KbLandingPage: React.FC = () => {
           <h2 className="text-xl font-black text-white text-center">Frequently Asked Questions</h2>
           <div className="space-y-3">
             {config.faqs.map((faq, i) => (
-              <div key={i} className="bg-[#18181c] border border-white/10 rounded-2xl overflow-hidden">
+              <div key={i} className="bg-[#0D1527] border border-teal-500/20 rounded-2xl overflow-hidden">
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   className="w-full p-4 text-left text-xs font-bold text-slate-200 flex items-center justify-between"
                 >
                   <span>{faq.q}</span>
-                  <ChevronDown className={`w-4 h-4 text-slate-400 ${openFaq === i ? 'rotate-180 text-amber-400' : ''}`} />
+                  <ChevronDown className={`w-4 h-4 text-slate-400 ${openFaq === i ? 'rotate-180 text-teal-400' : ''}`} />
                 </button>
                 {openFaq === i && (
                   <div className="px-4 pb-4 text-xs text-slate-400 border-t border-white/5 pt-2">

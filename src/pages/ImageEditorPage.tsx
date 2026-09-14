@@ -5,6 +5,7 @@ import { CanvasEditor } from '../components/editor/CanvasEditor';
 import { autoRemoveImageWatermark } from '../services/inpaintingEngine';
 import { ApiService } from '../services/api';
 import { Link } from 'react-router-dom';
+import { EditorTabBar } from '../components/layout/EditorTabBar';
 import { SEO, type FAQItem } from '../components/common/SEO';
 import { validateImageFile } from '../utils/fileValidation';
 import { inpaintingRateLimiter } from '../utils/rateLimiter';
@@ -70,9 +71,6 @@ const FAQ_LIST: FAQItem[] = [
 
 export const ImageEditorPage: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Active Tool Tab
-  const [activeTab, setActiveTab] = useState<'image' | 'video' | 'batch'>('image');
 
   // Multi-Image Processed Stack
   const [items, setItems] = useState<ProcessedImageItem[]>([]);
@@ -358,11 +356,32 @@ export const ImageEditorPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0e0e11] text-slate-100 py-8 px-4 sm:px-6 lg:px-8 space-y-12">
+    <div className="min-h-screen bg-[#070B14] text-slate-100 py-8 px-4 sm:px-6 lg:px-8 space-y-12">
       <SEO 
-        title="AI Watermark Remover – Remove Watermarks from Photos & Video"
-        description="Remove watermarks, logos, text, timestamps, and unwanted objects from any photo or video free with AI. No sign-up. Pixel-exact results in seconds."
+        title="AI Watermark Remover — Free Online Watermark Image Remover"
+        description="Free AI watermark remover to remove watermarks, logos, stamps, and text from photos and videos online with neural inpainting. 100% free, no signup required."
         canonicalPath="/"
+        keywords={[
+          'watermark remover',
+          'ai watermark remover',
+          'watermark image remover',
+          'remove watermark from image',
+          'free watermark remover',
+          'remove watermark online',
+          'photo watermark remover',
+          'watermark remover free',
+          'ai watermark remover online',
+          'image watermark remover',
+          'remove logo from image',
+          'remove text from photo',
+          'picture watermark remover',
+          'video watermark remover',
+          'erase watermark from photo',
+          'ai object remover',
+          'clean watermark ai',
+          'watermark eraser online',
+          'best watermark remover'
+        ]}
         faqs={FAQ_LIST}
       />
 
@@ -379,42 +398,12 @@ export const ImageEditorPage: React.FC = () => {
       <div className="max-w-5xl mx-auto space-y-8">
         
         {/* 1. Centered Tool Navigation Tabs */}
-        <div className="flex items-center justify-center">
-          <div className="inline-flex items-center p-1.5 bg-[#18181c] border border-white/10 rounded-full shadow-lg">
-            <button
-              onClick={() => setActiveTab('image')}
-              className={`px-5 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'image'
-                  ? 'bg-[#282830] text-white shadow-md border border-white/15'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Image watermark remover
-            </button>
-
-            <Link
-              to="/editor/video"
-              className="flex items-center gap-1.5 px-5 py-2 rounded-full text-xs font-bold text-slate-400 hover:text-white transition-all cursor-pointer"
-            >
-              <span>Video watermark remover</span>
-              <span className="bg-amber-500 text-slate-950 text-[9px] font-black uppercase px-1.5 py-0.2 rounded-full">
-                New
-              </span>
-            </Link>
-
-            <Link
-              to="/editor/batch"
-              className="px-5 py-2 rounded-full text-xs font-bold text-slate-400 hover:text-white transition-all cursor-pointer"
-            >
-              Batch multi-image inpaint
-            </Link>
-          </div>
-        </div>
+        <EditorTabBar activeTab="image" />
 
         {/* Hero Title & Value Proposition (AUD-008, UX-001) */}
         <div className="text-center space-y-3 pt-2">
           <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
-            AI Watermark Remover — <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-amber-200">Remove Watermarks Free</span>
+            AI Watermark Remover — <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-teal-400 to-cyan-300 drop-shadow-[0_2px_20px_rgba(0,201,167,0.25)]">Remove Watermarks Free</span>
           </h1>
           <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
             Erase watermarks, logos, timestamps, text, and unwanted objects from any photo or video — AI rebuilds the covered area from scratch instead of blurring or cropping it out, so the result looks like it was never there.
@@ -451,14 +440,14 @@ export const ImageEditorPage: React.FC = () => {
           onDragOver={(e) => { e.preventDefault(); setIsDraggingOver(true); }}
           onDragLeave={() => setIsDraggingOver(false)}
           onDrop={handleDrop}
-          className={`p-10 sm:p-14 bg-[#18181c] border-2 rounded-3xl text-center space-y-6 shadow-2xl transition-all relative overflow-hidden ${
-            isDraggingOver ? 'border-amber-500 bg-amber-500/5 ring-4 ring-amber-500/20' : 'border-white/10 hover:border-white/20'
+          className={`p-10 sm:p-14 bg-[#0D1527] border-2 rounded-3xl text-center space-y-6 shadow-2xl transition-all relative overflow-hidden ${
+            isDraggingOver ? 'border-teal-500 bg-teal-500/5 ring-4 ring-teal-500/20' : 'border-white/10 hover:border-teal-500/30'
           }`}
         >
           <div className="space-y-3">
             <button
               onClick={handleUploadNext}
-              className="px-9 py-4 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:opacity-95 text-slate-950 font-black text-base rounded-2xl shadow-xl shadow-orange-500/25 transition-all flex items-center justify-center gap-2.5 mx-auto active:scale-[0.98] cursor-pointer"
+              className="px-9 py-4 bg-gradient-to-r from-teal-400 via-teal-500 to-cyan-400 hover:opacity-95 text-slate-950 font-black text-base rounded-2xl shadow-xl shadow-teal-500/25 transition-all flex items-center justify-center gap-2.5 mx-auto active:scale-[0.98] cursor-pointer"
               aria-label="Upload an image to remove watermarks"
             >
               <Plus className="w-5 h-5 stroke-[3]" />
@@ -479,9 +468,9 @@ export const ImageEditorPage: React.FC = () => {
 
           <p className="text-[11px] text-slate-500 max-w-md mx-auto pt-2 border-t border-white/5">
             By uploading an image, you agree to our{' '}
-            <Link to="/legal?tab=terms" className="text-amber-400 underline hover:text-amber-300">Terms of Use</Link>{' '}
+            <Link to="/legal?tab=terms" className="text-teal-400 underline hover:text-teal-300">Terms of Use</Link>{' '}
             and{' '}
-            <Link to="/legal?tab=privacy" className="text-amber-400 underline hover:text-amber-300">Privacy Policy</Link>.
+            <Link to="/legal?tab=privacy" className="text-teal-400 underline hover:text-teal-300">Privacy Policy</Link>.
           </p>
 
           <div className="pt-2 flex flex-wrap items-center justify-center gap-2">
@@ -490,7 +479,7 @@ export const ImageEditorPage: React.FC = () => {
               <button
                 key={s.id}
                 onClick={() => loadSample(s)}
-                className="px-3 py-1 bg-[#23232a] hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/40 rounded-xl text-xs font-bold text-slate-300 transition-all cursor-pointer flex items-center gap-1.5"
+                className="px-3 py-1 bg-[#121C33] hover:bg-teal-500/20 border border-white/10 hover:border-teal-500/40 rounded-xl text-xs font-bold text-slate-300 transition-all cursor-pointer flex items-center gap-1.5"
               >
                 <span>{s.category === 'text' ? '🌄' : '⌚'}</span>
                 <span>{s.title.split(' ')[0]} {s.title.split(' ')[1]}</span>
@@ -501,7 +490,7 @@ export const ImageEditorPage: React.FC = () => {
 
         {/* 3. Global Batch Bar */}
         {items.length > 0 && (
-          <div className="p-4 bg-[#18181c] border border-white/10 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-lg animate-in fade-in">
+          <div className="p-4 bg-[#0D1527] border border-white/10 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-lg animate-in fade-in">
             <div className="flex items-center gap-3">
               <span className="font-bold text-sm text-slate-200">
                 {items.length} {items.length === 1 ? 'image' : 'images'} in queue
@@ -517,7 +506,7 @@ export const ImageEditorPage: React.FC = () => {
               <button
                 onClick={handleDownloadAllZip}
                 disabled={isZipping}
-                className="px-5 py-2.5 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:opacity-95 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer active:scale-95"
+                className="px-5 py-2.5 bg-gradient-to-r from-teal-400 via-teal-500 to-cyan-400 hover:opacity-95 text-slate-950 font-black text-xs rounded-xl shadow-md shadow-teal-500/20 transition-all flex items-center gap-2 cursor-pointer active:scale-95"
               >
                 <Download className="w-4 h-4 text-slate-950" />
                 <span>{isZipping ? 'Generating ZIP...' : `Download All Images (${items.length} ZIP)`}</span>
@@ -569,8 +558,8 @@ export const ImageEditorPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-            <div className="p-6 rounded-3xl bg-[#18181c] border border-white/10 space-y-3">
-              <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center font-black text-base border border-amber-500/20">
+            <div className="p-6 rounded-3xl bg-[#0D1527] border border-white/10 space-y-3">
+              <div className="w-10 h-10 rounded-2xl bg-teal-500/10 text-teal-400 flex items-center justify-center font-black text-base border border-teal-500/20">
                 1
               </div>
               <h3 className="text-base font-bold text-white">Upload Your Photo</h3>
@@ -579,8 +568,8 @@ export const ImageEditorPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="p-6 rounded-3xl bg-[#18181c] border border-white/10 space-y-3">
-              <div className="w-10 h-10 rounded-2xl bg-orange-500/10 text-orange-400 flex items-center justify-center font-black text-base border border-orange-500/20">
+            <div className="p-6 rounded-3xl bg-[#0D1527] border border-white/10 space-y-3">
+              <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center font-black text-base border border-cyan-500/20">
                 2
               </div>
               <h3 className="text-base font-bold text-white">Automated AI Inpainting</h3>
@@ -589,8 +578,8 @@ export const ImageEditorPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="p-6 rounded-3xl bg-[#18181c] border border-white/10 space-y-3">
-              <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-black text-base border border-emerald-500/20">
+            <div className="p-6 rounded-3xl bg-[#0D1527] border border-white/10 space-y-3">
+              <div className="w-10 h-10 rounded-2xl bg-teal-500/10 text-teal-400 flex items-center justify-center font-black text-base border border-teal-500/20">
                 3
               </div>
               <h3 className="text-base font-bold text-white">Download Clean HD Result</h3>
@@ -602,9 +591,9 @@ export const ImageEditorPage: React.FC = () => {
         </div>
 
         {/* Object Remover Callout */}
-        <div className="rounded-3xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-transparent border border-amber-500/20 p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 text-left">
-          <div className="w-14 h-14 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center shrink-0">
-            <Wand2 className="w-7 h-7 text-amber-400" />
+        <div className="rounded-3xl bg-gradient-to-r from-teal-500/10 via-cyan-500/10 to-transparent border border-teal-500/20 p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 text-left">
+          <div className="w-14 h-14 rounded-2xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center shrink-0">
+            <Wand2 className="w-7 h-7 text-teal-400" />
           </div>
           <div className="flex-1 space-y-1.5">
             <h2 className="text-lg sm:text-xl font-black text-white">Object Remover, Not Just Watermarks</h2>
@@ -614,7 +603,7 @@ export const ImageEditorPage: React.FC = () => {
           </div>
           <button
             onClick={() => document.getElementById('editor-top')?.scrollIntoView({ behavior: 'smooth' })}
-            className="flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-2xl shadow-lg shadow-amber-500/20 transition-all active:scale-[0.98] cursor-pointer shrink-0 whitespace-nowrap"
+            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-teal-400 via-teal-500 to-cyan-400 hover:opacity-95 text-slate-950 font-black text-xs rounded-2xl shadow-lg shadow-teal-500/20 transition-all active:scale-[0.98] cursor-pointer shrink-0 whitespace-nowrap"
           >
             <span>Try the Object Remover</span>
             <ArrowRight className="w-4 h-4" />
@@ -633,8 +622,8 @@ export const ImageEditorPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
-            <div className="p-5 rounded-3xl bg-[#18181c] border border-white/10 space-y-2">
-              <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
+            <div className="p-5 rounded-3xl bg-[#0D1527] border border-white/10 space-y-2">
+              <div className="w-9 h-9 rounded-xl bg-teal-500/10 text-teal-400 flex items-center justify-center">
                 <Sparkles className="w-4 h-4" />
               </div>
               <h3 className="text-sm font-bold text-white">Full-Resolution HD</h3>
@@ -676,23 +665,64 @@ export const ImageEditorPage: React.FC = () => {
         </div>
 
         {/* 7. Supported Formats & Limits (AUD-008, CONTENT-003) */}
-        <div className="pt-6 p-8 bg-[#18181c] border border-white/10 rounded-3xl space-y-4">
+        <div className="pt-6 p-8 bg-[#0D1527] border border-white/10 rounded-3xl space-y-4">
           <h2 className="text-xl sm:text-2xl font-black text-white">
             Supported Media Formats & Specifications
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-300">
-            <div className="p-4 bg-[#121216] border border-white/10 rounded-2xl space-y-1">
-              <div className="font-bold text-amber-400">Supported Image Types</div>
+            <div className="p-4 bg-[#0A0F1E] border border-white/10 rounded-2xl space-y-1">
+              <div className="font-bold text-teal-400">Supported Image Types</div>
               <p className="font-mono text-slate-400">PNG, JPEG, JPG, WebP</p>
             </div>
-            <div className="p-4 bg-[#121216] border border-white/10 rounded-2xl space-y-1">
+            <div className="p-4 bg-[#0A0F1E] border border-white/10 rounded-2xl space-y-1">
               <div className="font-bold text-emerald-400">Maximum File Size</div>
               <p className="text-slate-400">Up to 25 MB per image (100 MB for Video)</p>
             </div>
-            <div className="p-4 bg-[#121216] border border-white/10 rounded-2xl space-y-1">
+            <div className="p-4 bg-[#0A0F1E] border border-white/10 rounded-2xl space-y-1">
               <div className="font-bold text-cyan-400">Maximum Dimensions</div>
               <p className="text-slate-400">Up to 5000 x 5000 pixels</p>
             </div>
+          </div>
+        </div>
+
+        {/* SEO Keywords & Popular Search Topics */}
+        <div className="pt-6 p-8 bg-[#0D1527] border border-teal-500/20 rounded-3xl space-y-5">
+          <div className="text-center sm:text-left space-y-1">
+            <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2 justify-center sm:justify-start">
+              <Sparkles className="w-5 h-5 text-teal-400" />
+              <span>AI Watermark Remover & Photo Cleaner Suite</span>
+            </h2>
+            <p className="text-xs text-slate-400">
+              Trusted by creators worldwide to remove watermark from image, video, and digital media with zero quality loss.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2 pt-1">
+            {[
+              { label: 'Watermark Remover', path: '/' },
+              { label: 'AI Watermark Remover', path: '/' },
+              { label: 'Watermark Image Remover', path: '/' },
+              { label: 'Remove Watermark from Image', path: '/seo/image-watermark-remover' },
+              { label: 'Free Watermark Remover Online', path: '/' },
+              { label: 'Photo Watermark Remover', path: '/' },
+              { label: 'Remove Logo from Image', path: '/seo/remove-logo-from-image' },
+              { label: 'Remove Text from Photo', path: '/seo/remove-text-from-image' },
+              { label: 'Erase Watermark Free', path: '/' },
+              { label: 'AI Object Remover', path: '/seo/ai-object-remover' },
+              { label: 'Video Watermark Remover', path: '/editor/video' },
+              { label: 'Clean Watermark AI', path: '/' },
+              { label: 'Smart Image Compressor (20KB - 300KB)', path: '/compress-image' },
+              { label: 'Pakistan Form Photo Hub', path: '/pakistan-job-form-photo-size' }
+            ].map((kw, i) => (
+              <Link
+                key={i}
+                to={kw.path}
+                className="px-3.5 py-1.5 rounded-full bg-[#0A0F1E] hover:bg-teal-500/15 border border-white/10 hover:border-teal-500/40 text-xs font-semibold text-slate-300 hover:text-teal-300 transition-all flex items-center gap-1.5 shadow-xs"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
+                <span>{kw.label}</span>
+              </Link>
+            ))}
           </div>
         </div>
 
@@ -700,7 +730,7 @@ export const ImageEditorPage: React.FC = () => {
         <div className="pt-6 space-y-4">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center justify-center gap-2">
-              <HelpCircle className="w-6 h-6 text-amber-400" />
+              <HelpCircle className="w-6 h-6 text-teal-400" />
               Frequently Asked Questions
             </h2>
             <p className="text-xs sm:text-sm text-slate-400 max-w-lg mx-auto">
@@ -714,16 +744,16 @@ export const ImageEditorPage: React.FC = () => {
               return (
                 <div 
                   key={idx}
-                  className="bg-[#18181c] border border-white/10 rounded-2xl overflow-hidden transition-colors"
+                  className="bg-[#0D1527] border border-white/10 rounded-2xl overflow-hidden transition-colors"
                 >
                   <button
                     onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
-                    className="w-full p-5 text-left font-bold text-sm text-white flex items-center justify-between gap-4 cursor-pointer hover:text-amber-400 transition-colors"
+                    className="w-full p-5 text-left font-bold text-sm text-white flex items-center justify-between gap-4 cursor-pointer hover:text-teal-400 transition-colors"
                     aria-expanded={isOpen}
                   >
                     <span>{faq.question}</span>
                     {isOpen ? (
-                      <ChevronUp className="w-4 h-4 text-amber-400 shrink-0" />
+                      <ChevronUp className="w-4 h-4 text-teal-400 shrink-0" />
                     ) : (
                       <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
                     )}
@@ -746,9 +776,9 @@ export const ImageEditorPage: React.FC = () => {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-            <div className="p-6 rounded-3xl bg-[#18181c] border border-amber-500/30 hover:border-amber-500/60 shadow-xl transition-all space-y-4 flex flex-col justify-between">
+            <div className="p-6 rounded-3xl bg-[#0D1527] border border-teal-500/30 hover:border-teal-500/60 shadow-xl transition-all space-y-4 flex flex-col justify-between">
               <div className="space-y-3">
-                <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center border border-amber-500/20">
+                <div className="w-10 h-10 rounded-2xl bg-teal-500/10 text-teal-400 flex items-center justify-center border border-teal-500/20">
                   <Video className="w-5 h-5" />
                 </div>
                 <h3 className="text-base font-extrabold text-white">Video Watermark Remover</h3>
@@ -758,13 +788,13 @@ export const ImageEditorPage: React.FC = () => {
               </div>
               <Link 
                 to="/editor/video"
-                className="w-full py-2.5 bg-amber-500/15 hover:bg-amber-500 text-amber-400 hover:text-slate-950 font-extrabold text-xs rounded-xl border border-amber-500/30 transition-all text-center block cursor-pointer"
+                className="w-full py-2.5 bg-teal-500/15 hover:bg-teal-500 text-teal-400 hover:text-slate-950 font-extrabold text-xs rounded-xl border border-teal-500/30 transition-all text-center block cursor-pointer"
               >
                 Launch Video Remover
               </Link>
             </div>
 
-            <div className="p-6 rounded-3xl bg-[#18181c] border border-cyan-500/30 hover:border-cyan-500/60 shadow-xl transition-all space-y-4 flex flex-col justify-between">
+            <div className="p-6 rounded-3xl bg-[#0D1527] border border-cyan-500/30 hover:border-cyan-500/60 shadow-xl transition-all space-y-4 flex flex-col justify-between">
               <div className="space-y-3">
                 <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center border border-cyan-500/20">
                   <Layers className="w-5 h-5" />
@@ -782,7 +812,7 @@ export const ImageEditorPage: React.FC = () => {
               </Link>
             </div>
 
-            <div className="p-6 rounded-3xl bg-[#18181c] border border-purple-500/30 hover:border-purple-500/60 shadow-xl transition-all space-y-4 flex flex-col justify-between">
+            <div className="p-6 rounded-3xl bg-[#0D1527] border border-purple-500/30 hover:border-purple-500/60 shadow-xl transition-all space-y-4 flex flex-col justify-between">
               <div className="space-y-3">
                 <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-400 flex items-center justify-center border border-purple-500/20">
                   <Cpu className="w-5 h-5" />
@@ -807,10 +837,10 @@ export const ImageEditorPage: React.FC = () => {
       {/* Manual Edit Canvas Modal */}
       {manualEditItem && (
         <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-[#18181c] rounded-3xl border border-white/15 shadow-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150 text-slate-200">
-            <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-[#18181c]">
+          <div className="bg-[#0D1527] rounded-3xl border border-teal-500/30 shadow-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150 text-slate-200">
+            <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-[#0D1527]">
               <div className="flex items-center gap-2">
-                <Sliders className="w-5 h-5 text-amber-400" />
+                <Sliders className="w-5 h-5 text-teal-400" />
                 <h3 className="font-extrabold text-white text-base">Manual Watermark Brush & Box Tool</h3>
               </div>
               <button

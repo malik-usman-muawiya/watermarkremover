@@ -145,7 +145,7 @@ export const PakistanFormPhotoHubPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0e0e11] text-slate-100 py-10 px-4 sm:px-6 lg:px-8 space-y-16">
+    <div className="min-h-screen bg-[#070B14] text-slate-100 py-10 px-4 sm:px-6 lg:px-8 space-y-16">
       <SEO
         title="Pakistan Job & Form Photo Size Reducer — CNIC, NTS, PPSC"
         description="Resize and compress photos to the exact KB size required for Pakistani job forms, CNIC, NTS, PPSC, and FPSC applications — free online tool."
@@ -178,7 +178,7 @@ export const PakistanFormPhotoHubPage: React.FC = () => {
         </div>
 
         {/* Quick 1-Click Compressor Tool */}
-        <div className="p-8 bg-[#18181c] border border-white/10 rounded-3xl shadow-2xl space-y-6 text-center">
+        <div className="p-8 bg-[#0D1527] border border-teal-500/20 rounded-3xl shadow-2xl space-y-6 text-center">
           <div className="space-y-2">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
               Step 1: Choose Your Target Application Portal
@@ -190,8 +190,8 @@ export const PakistanFormPhotoHubPage: React.FC = () => {
                   onClick={() => setSelectedPortal(p)}
                   className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     selectedPortal.authority === p.authority
-                      ? 'bg-emerald-500 text-slate-950 font-black shadow-md'
-                      : 'bg-[#23232a] text-slate-300 hover:text-white border border-white/5'
+                      ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 font-black shadow-md shadow-teal-500/20'
+                      : 'bg-[#111A2E] text-slate-300 hover:text-white border border-teal-500/10'
                   }`}
                 >
                   {p.authority.split('(')[0]} ({p.maxKB}KB)
@@ -201,14 +201,14 @@ export const PakistanFormPhotoHubPage: React.FC = () => {
           </div>
 
           {result ? (
-            <div className="p-6 bg-[#23232a] rounded-2xl border border-emerald-500/30 flex flex-wrap items-center justify-between gap-6 animate-in fade-in">
+            <div className="p-6 bg-[#111A2E] rounded-2xl border border-teal-500/30 flex flex-wrap items-center justify-between gap-6 animate-in fade-in">
               <div className="flex items-center gap-4 text-left">
                 <div className="w-16 h-16 rounded-xl overflow-hidden bg-black border border-white/10 shrink-0">
                   <img src={result.dataUrl} alt="Form Photo" className="w-full h-full object-cover" />
                 </div>
                 <div className="space-y-1">
                   <span className="font-bold text-sm text-white">{selectedPortal.authority} Ready</span>
-                  <div className="text-xs text-emerald-400 font-bold">
+                  <div className="text-xs text-teal-400 font-bold">
                     Compressed to {formatBytes(result.compressedSize)} (Max: {selectedPortal.maxKB}KB)
                   </div>
                   <div className="text-[11px] text-slate-400">{selectedPortal.dimensions}</div>
@@ -218,14 +218,14 @@ export const PakistanFormPhotoHubPage: React.FC = () => {
               <div className="flex items-center gap-3">
                 <button
                   onClick={handleDownload}
-                  className="px-6 py-3 bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-black text-xs rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer active:scale-95"
+                  className="px-6 py-3 bg-gradient-to-r from-teal-400 to-cyan-500 hover:from-teal-300 hover:to-cyan-400 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-teal-500/20 transition-all flex items-center gap-2 cursor-pointer active:scale-95"
                 >
                   <Download className="w-4 h-4 text-slate-950" />
                   <span>Download Form-Ready Photo</span>
                 </button>
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="px-4 py-3 bg-[#18181c] text-slate-300 border border-white/10 text-xs font-bold rounded-xl"
+                  className="px-4 py-3 bg-[#0D1527] text-slate-300 border border-teal-500/20 text-xs font-bold rounded-xl"
                 >
                   Upload Another
                 </button>
@@ -236,7 +236,7 @@ export const PakistanFormPhotoHubPage: React.FC = () => {
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isCompressing}
-                className="px-9 py-4 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-600 hover:opacity-95 text-slate-950 font-black text-base rounded-2xl shadow-xl shadow-emerald-500/20 transition-all flex items-center justify-center gap-2.5 mx-auto active:scale-[0.98] cursor-pointer"
+                className="px-9 py-4 bg-gradient-to-r from-teal-400 via-cyan-500 to-teal-600 hover:opacity-95 text-slate-950 font-black text-base rounded-2xl shadow-xl shadow-teal-500/20 transition-all flex items-center justify-center gap-2.5 mx-auto active:scale-[0.98] cursor-pointer"
               >
                 <UploadCloud className="w-5 h-5" />
                 <span>{isCompressing ? 'Formatting photo...' : `Upload Photo for ${selectedPortal.authority.split('(')[0]}`}</span>
@@ -259,9 +259,9 @@ export const PakistanFormPhotoHubPage: React.FC = () => {
             </span>
           </div>
 
-          <div className="bg-[#18181c] border border-white/10 rounded-2xl overflow-x-auto shadow-xl">
-            <table className="w-full text-left text-xs text-slate-300 divide-y divide-white/10">
-              <thead className="bg-[#23232a] text-slate-400 font-bold uppercase text-[10px] tracking-wider">
+          <div className="bg-[#0D1527] border border-teal-500/20 rounded-2xl overflow-x-auto shadow-xl">
+            <table className="w-full text-left text-xs text-slate-300 divide-y divide-teal-500/10">
+              <thead className="bg-[#111A2E] text-slate-400 font-bold uppercase text-[10px] tracking-wider">
                 <tr>
                   <th className="p-4">Authority / Portal</th>
                   <th className="p-4">Max Size (KB)</th>
@@ -270,15 +270,15 @@ export const PakistanFormPhotoHubPage: React.FC = () => {
                   <th className="p-4 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5 font-medium">
+              <tbody className="divide-y divide-teal-500/5 font-medium">
                 {PAKISTAN_PORTALS.map((portal, i) => (
-                  <tr key={i} className="hover:bg-[#23232a]/50 transition-colors">
+                  <tr key={i} className="hover:bg-[#111A2E]/50 transition-colors">
                     <td className="p-4">
                       <strong className="text-white block font-bold">{portal.authority}</strong>
                       <span className="text-[11px] text-slate-500">{portal.notes}</span>
                     </td>
                     <td className="p-4">
-                      <span className="px-2.5 py-1 bg-amber-500/15 text-amber-400 border border-amber-500/30 rounded-lg font-black">
+                      <span className="px-2.5 py-1 bg-teal-500/15 text-teal-400 border border-teal-500/30 rounded-lg font-black">
                         &le; {portal.maxKB} KB
                       </span>
                     </td>
@@ -290,7 +290,7 @@ export const PakistanFormPhotoHubPage: React.FC = () => {
                           setSelectedPortal(portal);
                           fileInputRef.current?.click();
                         }}
-                        className="px-3.5 py-1.5 bg-emerald-500/15 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 border border-emerald-500/30 font-bold rounded-xl transition-all cursor-pointer"
+                        className="px-3.5 py-1.5 bg-teal-500/15 hover:bg-teal-500 text-teal-400 hover:text-slate-950 border border-teal-500/30 font-bold rounded-xl transition-all cursor-pointer"
                       >
                         Compress Now
                       </button>
@@ -303,7 +303,7 @@ export const PakistanFormPhotoHubPage: React.FC = () => {
         </div>
 
         {/* Verification Notice */}
-        <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-start gap-3 text-xs text-amber-300">
+        <div className="p-4 bg-teal-500/10 border border-teal-500/20 rounded-2xl flex items-start gap-3 text-xs text-teal-300">
           <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
           <p>
             <strong>Important note:</strong> Examination authorities periodically update upload criteria. Always double check your specific advertisement slip before final fee submission.
@@ -315,7 +315,7 @@ export const PakistanFormPhotoHubPage: React.FC = () => {
           <h3 className="text-xl font-black text-white text-center">Frequently Asked Questions</h3>
           <div className="space-y-3">
             {faqs.map((faq, i) => (
-              <div key={i} className="bg-[#18181c] border border-white/10 rounded-2xl overflow-hidden">
+              <div key={i} className="bg-[#0D1527] border border-teal-500/20 rounded-2xl overflow-hidden">
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   className="w-full p-4 text-left text-xs font-bold text-slate-200 flex items-center justify-between"

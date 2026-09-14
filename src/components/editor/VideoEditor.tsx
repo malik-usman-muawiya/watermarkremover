@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { useAuth } from '../../context/AuthContext';
 import { ApiService } from '../../services/api';
 import { 
   generateSyntheticSampleVideo, 
@@ -35,7 +34,6 @@ interface VideoEditorProps {
 }
 
 export const VideoEditor: React.FC<VideoEditorProps> = () => {
-  const { isAuthenticated, openAuthModal } = useAuth();
   const [selectedVideo, setSelectedVideo] = useState<string>('');
   const [videoTitle, setVideoTitle] = useState<string>('Vehicle_Save_Video.mp4');
   const [isPlaying, setIsPlaying] = useState(false);
@@ -339,11 +337,6 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
 
   // Video Export & Download
   const startVideoProcessing = async () => {
-    if (!isAuthenticated) {
-      openAuthModal('Please sign in with Google to start free video watermark removal');
-      return;
-    }
-
     setIsProcessing(true);
     setProgress(20);
     setCurrentStage(0);
@@ -396,9 +389,9 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
     <div className="max-w-6xl mx-auto space-y-6">
       
       {/* Top Header Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 p-6 bg-[#13151f] border border-[#232738] rounded-3xl shadow-xl">
+      <div className="flex flex-wrap items-center justify-between gap-4 p-6 bg-[#0D1527] border border-white/10 rounded-3xl shadow-xl">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20 mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 text-teal-400 text-xs font-bold border border-teal-500/20 mb-2">
             <Video className="w-3.5 h-3.5" />
             <span>AI Temporal Video Inpainter 3.0</span>
           </div>
@@ -419,24 +412,24 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
               className="hidden"
               onChange={handleFileUpload}
             />
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:opacity-95 text-white font-extrabold text-xs shadow-lg shadow-orange-500/20 transition-all cursor-pointer">
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-teal-400 via-teal-500 to-cyan-400 hover:opacity-95 text-slate-950 font-black text-xs shadow-lg shadow-teal-500/20 transition-all cursor-pointer">
               <UploadCloud className="w-4 h-4" />
               Upload Video
             </span>
           </label>
 
           {/* Sample Switcher */}
-          <div className="flex items-center gap-1.5 bg-[#1a1d2c] p-1 rounded-2xl border border-[#2d3248] text-xs">
+          <div className="flex items-center gap-1.5 bg-[#111A2E] p-1 rounded-2xl border border-white/10 text-xs">
             <span className="text-slate-400 text-[11px] px-2 font-medium">Demo:</span>
             <button
               onClick={() => loadSample('drone')}
-              className="px-2.5 py-1 font-semibold rounded-xl bg-[#282d42] text-amber-300 hover:text-white transition-colors cursor-pointer"
+              className="px-2.5 py-1 font-semibold rounded-xl bg-teal-500/20 text-teal-300 hover:text-white transition-colors cursor-pointer"
             >
               Sample 1
             </button>
             <button
               onClick={() => loadSample('vlog')}
-              className="px-2.5 py-1 font-semibold rounded-xl hover:bg-[#282d42] text-slate-300 hover:text-amber-300 transition-colors cursor-pointer"
+              className="px-2.5 py-1 font-semibold rounded-xl hover:bg-[#18243e] text-slate-300 hover:text-teal-300 transition-colors cursor-pointer"
             >
               Sample 2
             </button>
@@ -460,14 +453,14 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
           <div className="lg:col-span-2 space-y-4">
             
             {/* View Mode Bar */}
-            <div className="flex items-center justify-between p-2.5 bg-[#13151f] border border-[#232738] rounded-2xl shadow-md text-xs">
+            <div className="flex items-center justify-between p-2.5 bg-[#0D1527] border border-white/10 rounded-2xl shadow-md text-xs">
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setViewMode('preview')}
                   className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold transition-all cursor-pointer ${
                     viewMode === 'preview'
-                      ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20'
-                      : 'bg-[#1a1d2c] text-slate-300 hover:text-white'
+                      ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 shadow-md shadow-teal-500/20 font-black'
+                      : 'bg-[#111A2E] text-slate-300 hover:text-white'
                   }`}
                 >
                   <SlidersHorizontal className="w-3.5 h-3.5" />
@@ -478,8 +471,8 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                   onClick={() => setViewMode('edit')}
                   className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold transition-all cursor-pointer ${
                     viewMode === 'edit'
-                      ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20'
-                      : 'bg-[#1a1d2c] text-slate-300 hover:text-white'
+                      ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 shadow-md shadow-teal-500/20 font-black'
+                      : 'bg-[#111A2E] text-slate-300 hover:text-white'
                   }`}
                 >
                   <MousePointer2 className="w-3.5 h-3.5" />
@@ -487,7 +480,7 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                 </button>
               </div>
 
-              <div className="hidden sm:flex items-center gap-1.5 font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+              <div className="hidden sm:flex items-center gap-1.5 font-bold text-teal-400 bg-teal-500/10 px-3 py-1 rounded-full border border-teal-500/20">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Zero Artifact Inpainting</span>
               </div>
@@ -495,14 +488,14 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
 
             {/* Video Theater Viewport */}
             <div 
-              className="relative p-6 bg-[#0a0a0f] rounded-3xl border border-[#1f2334] flex items-center justify-center overflow-hidden shadow-2xl min-h-[480px]"
+              className="relative p-6 bg-[#070B14] rounded-3xl border border-white/10 flex items-center justify-center overflow-hidden shadow-2xl min-h-[480px]"
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
             >
               <div 
                 ref={videoWrapperRef}
                 onPointerDown={handleContainerPointerDown}
-                className="relative max-h-[62vh] rounded-2xl overflow-hidden shadow-2xl bg-black border border-[#2f354e] select-none mx-auto cursor-pointer"
+                className="relative max-h-[62vh] rounded-2xl overflow-hidden shadow-2xl bg-black border border-white/15 select-none mx-auto cursor-pointer"
                 style={{
                   aspectRatio: `${videoAspectRatio || 0.5625}`,
                   maxHeight: '62vh',
@@ -546,7 +539,7 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                     <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-black text-white uppercase tracking-wider pointer-events-none shadow border border-white/20 z-10">
                       BEFORE (ORIGINAL)
                     </div>
-                    <div className="absolute top-3 right-3 bg-amber-500/90 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-black text-white uppercase tracking-wider pointer-events-none shadow border border-amber-300/30 z-10">
+                    <div className="absolute top-3 right-3 bg-teal-500/90 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-black text-slate-950 uppercase tracking-wider pointer-events-none shadow border border-teal-300/40 z-10">
                       AFTER (CLEAN)
                     </div>
 
@@ -554,8 +547,8 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                       className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_12px_rgba(255,255,255,0.8)] flex items-center justify-center pointer-events-none z-30"
                       style={{ left: `${splitSliderPos}%` }}
                     >
-                      <div className="w-8 h-8 rounded-full bg-white text-slate-900 shadow-2xl flex items-center justify-center -ml-[15px] border-2 border-amber-500 pointer-events-auto cursor-ew-resize hover:scale-110 transition-transform">
-                        <SlidersHorizontal className="w-3.5 h-3.5 rotate-90 text-amber-600" />
+                      <div className="w-8 h-8 rounded-full bg-white text-slate-900 shadow-2xl flex items-center justify-center -ml-[15px] border-2 border-teal-500 pointer-events-auto cursor-ew-resize hover:scale-110 transition-transform">
+                        <SlidersHorizontal className="w-3.5 h-3.5 rotate-90 text-teal-600" />
                       </div>
                     </div>
                   </>
@@ -577,8 +570,8 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                           onPointerDown={(e) => handleBoxPointerDown(e, 'move', r.id || 'region-1')}
                           className={`absolute border-2 rounded-xl shadow-2xl cursor-move select-none transition-shadow pointer-events-auto ${
                             isSelected 
-                              ? 'border-amber-400 bg-amber-500/25 shadow-amber-500/30 ring-2 ring-amber-400/40' 
-                              : 'border-emerald-400/80 bg-emerald-500/15'
+                              ? 'border-teal-400 bg-teal-500/25 shadow-teal-500/30 ring-2 ring-teal-400/40' 
+                              : 'border-cyan-400/80 bg-cyan-500/15'
                           }`}
                           style={{
                             left: `${r.x}%`,
@@ -589,7 +582,7 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                         >
                           {/* Label tag */}
                           <div className={`text-[9px] font-black px-2 py-0.5 rounded-full shadow absolute -top-5 left-1 uppercase tracking-wider flex items-center gap-1 whitespace-nowrap ${
-                            isSelected ? 'bg-amber-500 text-black' : 'bg-emerald-600 text-white'
+                            isSelected ? 'bg-teal-400 text-slate-950' : 'bg-cyan-600 text-white'
                           }`}>
                             <Sparkle className="w-2.5 h-2.5" />
                             <span>{r.label || 'Target Watermark'}</span>
@@ -599,16 +592,16 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                           {isSelected && (
                             <>
                               {/* 4 Corners */}
-                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'nw', r.id || 'region-1')} className="w-3.5 h-3.5 bg-amber-400 border-2 border-black rounded-full absolute -top-1.5 -left-1.5 cursor-nwse-resize shadow-md" />
-                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'ne', r.id || 'region-1')} className="w-3.5 h-3.5 bg-amber-400 border-2 border-black rounded-full absolute -top-1.5 -right-1.5 cursor-nesw-resize shadow-md" />
-                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'sw', r.id || 'region-1')} className="w-3.5 h-3.5 bg-amber-400 border-2 border-black rounded-full absolute -bottom-1.5 -left-1.5 cursor-nesw-resize shadow-md" />
-                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'se', r.id || 'region-1')} className="w-3.5 h-3.5 bg-amber-400 border-2 border-black rounded-full absolute -bottom-1.5 -right-1.5 cursor-nwse-resize shadow-md" />
+                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'nw', r.id || 'region-1')} className="w-3.5 h-3.5 bg-teal-400 border-2 border-black rounded-full absolute -top-1.5 -left-1.5 cursor-nwse-resize shadow-md" />
+                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'ne', r.id || 'region-1')} className="w-3.5 h-3.5 bg-teal-400 border-2 border-black rounded-full absolute -top-1.5 -right-1.5 cursor-nesw-resize shadow-md" />
+                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'sw', r.id || 'region-1')} className="w-3.5 h-3.5 bg-teal-400 border-2 border-black rounded-full absolute -bottom-1.5 -left-1.5 cursor-nesw-resize shadow-md" />
+                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'se', r.id || 'region-1')} className="w-3.5 h-3.5 bg-teal-400 border-2 border-black rounded-full absolute -bottom-1.5 -right-1.5 cursor-nwse-resize shadow-md" />
                               
                               {/* 4 Edges */}
-                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'n', r.id || 'region-1')} className="w-5 h-2 bg-amber-400 border border-black rounded-full absolute -top-1 left-1/2 -translate-x-1/2 cursor-ns-resize shadow-sm" />
-                              <div onPointerDown={(e) => handleBoxPointerDown(e, 's', r.id || 'region-1')} className="w-5 h-2 bg-amber-400 border border-black rounded-full absolute -bottom-1 left-1/2 -translate-x-1/2 cursor-ns-resize shadow-sm" />
-                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'w', r.id || 'region-1')} className="w-2 h-5 bg-amber-400 border border-black rounded-full absolute top-1/2 -left-1 -translate-y-1/2 cursor-ew-resize shadow-sm" />
-                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'e', r.id || 'region-1')} className="w-2 h-5 bg-amber-400 border border-black rounded-full absolute top-1/2 -right-1 -translate-y-1/2 cursor-ew-resize shadow-sm" />
+                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'n', r.id || 'region-1')} className="w-5 h-2 bg-teal-400 border border-black rounded-full absolute -top-1 left-1/2 -translate-x-1/2 cursor-ns-resize shadow-sm" />
+                              <div onPointerDown={(e) => handleBoxPointerDown(e, 's', r.id || 'region-1')} className="w-5 h-2 bg-teal-400 border border-black rounded-full absolute -bottom-1 left-1/2 -translate-x-1/2 cursor-ns-resize shadow-sm" />
+                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'w', r.id || 'region-1')} className="w-2 h-5 bg-teal-400 border border-black rounded-full absolute top-1/2 -left-1 -translate-y-1/2 cursor-ew-resize shadow-sm" />
+                              <div onPointerDown={(e) => handleBoxPointerDown(e, 'e', r.id || 'region-1')} className="w-2 h-5 bg-teal-400 border border-black rounded-full absolute top-1/2 -right-1 -translate-y-1/2 cursor-ew-resize shadow-sm" />
                             </>
                           )}
                         </div>
@@ -627,7 +620,7 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                       e.stopPropagation();
                       togglePlay();
                     }}
-                    className="w-14 h-14 rounded-full bg-black/60 backdrop-blur-md border border-white/30 text-white flex items-center justify-center hover:scale-110 hover:bg-amber-500 hover:text-black transition-all shadow-2xl cursor-pointer"
+                    className="w-14 h-14 rounded-full bg-black/60 backdrop-blur-md border border-white/30 text-white flex items-center justify-center hover:scale-110 hover:bg-teal-400 hover:text-black transition-all shadow-2xl cursor-pointer"
                     aria-label={isPlaying ? 'Pause video' : 'Play video'}
                   >
                     {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-0.5" />}
@@ -637,9 +630,9 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
             </div>
 
             {/* Video Controls Bar */}
-            <div className="p-4 bg-[#13151f] border border-[#232738] rounded-2xl space-y-3 shadow-md">
+            <div className="p-4 bg-[#0D1527] border border-white/10 rounded-2xl space-y-3 shadow-md">
               <div className="flex items-center justify-between text-xs font-bold text-slate-300">
-                <span className="font-mono text-amber-400">{formatTime(currentTime)} / {formatTime(duration)}</span>
+                <span className="font-mono text-teal-400">{formatTime(currentTime)} / {formatTime(duration)}</span>
                 <div className="flex items-center gap-3">
                   <button 
                     onClick={() => setIsMuted(!isMuted)} 
@@ -648,7 +641,7 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                   >
                     {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                   </button>
-                  <span className="text-amber-400 font-extrabold flex items-center gap-1">
+                  <span className="text-teal-400 font-extrabold flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" /> Full HD Quality
                   </span>
                 </div>
@@ -666,13 +659,13 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                   if (videoRef.current) videoRef.current.currentTime = t;
                 }}
                 aria-label="Video playback position"
-                className="w-full accent-amber-500 cursor-pointer h-2 bg-[#232738] rounded-lg appearance-none"
+                className="w-full accent-teal-400 cursor-pointer h-2 bg-[#111A2E] rounded-lg appearance-none"
               />
 
               <div className="flex items-center justify-between pt-1">
                 <button
                   onClick={togglePlay}
-                  className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-95 text-black font-extrabold rounded-xl text-xs flex items-center gap-2 cursor-pointer shadow-md"
+                  className="px-4 py-2 bg-gradient-to-r from-teal-400 to-cyan-500 hover:opacity-95 text-slate-950 font-black rounded-xl text-xs flex items-center gap-2 cursor-pointer shadow-md"
                 >
                   {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
                   <span>{isPlaying ? 'Pause Video' : 'Play Video'}</span>
@@ -684,16 +677,16 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
           </div>
 
           {/* Right Col: Watermark Presets & Download */}
-          <div className="p-6 bg-[#13151f] border border-[#232738] rounded-3xl shadow-xl flex flex-col justify-between space-y-6">
+          <div className="p-6 bg-[#0D1527] border border-white/10 rounded-3xl shadow-xl flex flex-col justify-between space-y-6">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-extrabold text-white text-base flex items-center gap-2">
-                  <Sliders className="w-5 h-5 text-amber-400" />
+                  <Sliders className="w-5 h-5 text-teal-400" />
                   Watermark Placement
                 </h3>
                 <button
                   onClick={addRegion}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#1e2235] hover:bg-amber-500/20 text-amber-400 text-xs font-bold transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#111A2E] hover:bg-teal-500/20 text-teal-400 text-xs font-bold transition-colors cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" /> Add Box
                 </button>
@@ -724,17 +717,17 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                     aria-label={`Select ${r.label || `Watermark Region ${i + 1}`}`}
                     className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-between transition-all cursor-pointer ${
                       selectedRegionId === r.id 
-                        ? 'bg-amber-500/15 border-amber-500/50 text-white' 
-                        : 'bg-[#181a26] border-[#262a3e] text-slate-300 hover:border-amber-500/30'
+                        ? 'bg-teal-500/15 border-teal-500/50 text-white' 
+                        : 'bg-[#111A2E] border-white/10 text-slate-300 hover:border-teal-500/30'
                     }`}
                   >
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-amber-400" />
+                      <span className="w-2 h-2 rounded-full bg-teal-400" />
                       <span>{r.label || `Watermark Region ${i + 1}`}</span>
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] text-amber-400 bg-[#24283b] px-2 py-0.5 rounded font-mono">
+                      <span className="text-[10px] text-teal-400 bg-[#18243e] px-2 py-0.5 rounded font-mono">
                         {Math.round(r.width)}% &times; {Math.round(r.height)}%
                       </span>
                       {regions.length > 1 && (
@@ -752,18 +745,18 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
               </div>
 
               {/* AI Auto-Detect Action & Status */}
-              <div className="space-y-2 pt-2 border-t border-[#232738]">
+              <div className="space-y-2 pt-2 border-t border-white/10">
                 <button
                   onClick={() => runAutoDetection()}
-                  className="w-full py-2.5 px-4 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/10 hover:bg-amber-500/30 border border-amber-500/40 hover:border-amber-400 rounded-2xl text-xs font-black text-amber-300 flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
+                  className="w-full py-2.5 px-4 bg-gradient-to-r from-teal-500/20 via-cyan-500/20 to-teal-500/10 hover:bg-teal-500/30 border border-teal-500/40 hover:border-teal-400 rounded-2xl text-xs font-black text-teal-300 flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
                 >
-                  <Wand2 className="w-4 h-4 text-amber-400 animate-pulse" />
+                  <Wand2 className="w-4 h-4 text-teal-400 animate-pulse" />
                   <span>✨ AI Auto-Detect Watermark</span>
                 </button>
 
                 {detectStatus && (
-                  <div className="p-2.5 bg-amber-500/15 border border-amber-500/40 rounded-xl text-[11px] text-amber-300 font-bold flex items-center gap-2 animate-in fade-in slide-in-from-top-1">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <div className="p-2.5 bg-teal-500/15 border border-teal-500/40 rounded-xl text-[11px] text-teal-300 font-bold flex items-center gap-2 animate-in fade-in slide-in-from-top-1">
+                    <Sparkles className="w-3.5 h-3.5 text-teal-400 shrink-0" />
                     <span>{detectStatus}</span>
                   </div>
                 )}
@@ -778,28 +771,28 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => applyPreset('top-title')}
-                    className="p-2.5 bg-[#181a26] hover:bg-amber-500/10 border border-[#262a3e] hover:border-amber-500/40 rounded-xl text-left text-xs font-bold text-slate-200 transition-colors cursor-pointer"
+                    className="p-2.5 bg-[#111A2E] hover:bg-teal-500/10 border border-white/10 hover:border-teal-500/40 rounded-xl text-left text-xs font-bold text-slate-200 transition-colors cursor-pointer"
                   >
                     🎬 Title Banner (11%)
                   </button>
 
                   <button
                     onClick={() => applyPreset('top-banner')}
-                    className="p-2.5 bg-[#181a26] hover:bg-amber-500/10 border border-[#262a3e] hover:border-amber-500/40 rounded-xl text-left text-xs font-bold text-slate-200 transition-colors cursor-pointer"
+                    className="p-2.5 bg-[#111A2E] hover:bg-teal-500/10 border border-white/10 hover:border-teal-500/40 rounded-xl text-left text-xs font-bold text-slate-200 transition-colors cursor-pointer"
                   >
                     📝 Top Header (3%)
                   </button>
 
                   <button
                     onClick={() => applyPreset('bottom-subtitle')}
-                    className="p-2.5 bg-[#181a26] hover:bg-amber-500/10 border border-[#262a3e] hover:border-amber-500/40 rounded-xl text-left text-xs font-bold text-slate-200 transition-colors cursor-pointer"
+                    className="p-2.5 bg-[#111A2E] hover:bg-teal-500/10 border border-white/10 hover:border-teal-500/40 rounded-xl text-left text-xs font-bold text-slate-200 transition-colors cursor-pointer"
                   >
                     🕒 Bottom Subtitle
                   </button>
 
                   <button
                     onClick={() => applyPreset('bottom-right')}
-                    className="p-2.5 bg-[#181a26] hover:bg-amber-500/10 border border-[#262a3e] hover:border-amber-500/40 rounded-xl text-left text-xs font-bold text-slate-200 transition-colors cursor-pointer"
+                    className="p-2.5 bg-[#111A2E] hover:bg-teal-500/10 border border-white/10 hover:border-teal-500/40 rounded-xl text-left text-xs font-bold text-slate-200 transition-colors cursor-pointer"
                   >
                     🏷️ Bottom Handle
                   </button>
@@ -807,32 +800,32 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
               </div>
 
               {/* Status Info */}
-              <div className="p-3.5 bg-[#181a26] border border-[#262a3e] rounded-2xl space-y-1.5 text-xs text-slate-300">
+              <div className="p-3.5 bg-[#111A2E] border border-white/10 rounded-2xl space-y-1.5 text-xs text-slate-300">
                 <div className="flex justify-between items-center">
                   <span className="text-slate-400">Live Split Preview:</span>
-                  <span className="font-bold text-amber-400">Active</span>
+                  <span className="font-bold text-teal-400">Active</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-slate-400">Inpainting Engine:</span>
-                  <span className="font-bold text-emerald-400">⚡ Zero-Artifact GPU</span>
+                  <span className="font-bold text-teal-400">⚡ Zero-Artifact GPU</span>
                 </div>
               </div>
             </div>
 
             {/* Fast Processing / Download Trigger */}
             {isProcessing ? (
-              <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl space-y-3 animate-in fade-in">
+              <div className="p-4 bg-teal-500/10 border border-teal-500/30 rounded-2xl space-y-3 animate-in fade-in">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-amber-400 flex items-center gap-1.5">
-                    <Cpu className="w-4 h-4 animate-spin text-amber-400" />
+                  <span className="font-bold text-teal-400 flex items-center gap-1.5">
+                    <Cpu className="w-4 h-4 animate-spin text-teal-400" />
                     {stages[currentStage].title}
                   </span>
                   <span className="font-mono font-bold text-white">{progress}%</span>
                 </div>
 
-                <div className="w-full bg-[#232738] h-2.5 rounded-full overflow-hidden">
+                <div className="w-full bg-[#111A2E] h-2.5 rounded-full overflow-hidden">
                   <div 
-                    className="bg-gradient-to-r from-amber-500 to-orange-500 h-full transition-all duration-200 rounded-full"
+                    className="bg-gradient-to-r from-teal-400 via-teal-500 to-cyan-400 h-full transition-all duration-200 rounded-full"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
@@ -843,7 +836,7 @@ export const VideoEditor: React.FC<VideoEditorProps> = () => {
               <div className="space-y-2">
                 <button
                   onClick={startVideoProcessing}
-                  className="w-full py-4 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:opacity-95 text-black font-black text-sm rounded-2xl shadow-xl shadow-orange-500/20 transition-all flex items-center justify-center gap-2 active:scale-[0.99] cursor-pointer"
+                  className="w-full py-4 bg-gradient-to-r from-teal-400 via-teal-500 to-cyan-400 hover:opacity-95 text-slate-950 font-black text-sm rounded-2xl shadow-xl shadow-teal-500/20 transition-all flex items-center justify-center gap-2 active:scale-[0.99] cursor-pointer"
                 >
                   <Download className="w-5 h-5" />
                   <span>Download Clean HD Video</span>

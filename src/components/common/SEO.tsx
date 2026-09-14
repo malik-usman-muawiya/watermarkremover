@@ -14,6 +14,7 @@ export interface SEOProps {
   canonicalPath?: string;
   ogType?: 'website' | 'article';
   ogImage?: string;
+  keywords?: string | string[];
   faqs?: FAQItem[];
   noindex?: boolean;
   noIndex?: boolean;
@@ -25,16 +26,16 @@ export const SEO: React.FC<SEOProps> = ({
   canonicalPath = '/',
   ogType = 'website',
   ogImage = SITE_CONFIG.ogImage,
+  keywords,
   faqs,
   noindex = false,
   noIndex = false,
 }) => {
   const effectiveNoIndex = noindex || noIndex;
-  // Every page already provides a complete, well-formed title — no need
-  // to (and previously buggy to) auto-append the site name, which was
-  // silently pushing most pages' titles past Google's ~60-character
-  // truncation point.
   const fullTitle = title || `${SITE_CONFIG.name} - Free AI Watermark & Object Remover`;
+  const keywordsString = Array.isArray(keywords) 
+    ? keywords.join(', ') 
+    : (keywords || (SITE_CONFIG as any).keywords?.join(', ') || 'watermark remover, ai watermark remover, watermark image remover, remove watermark from image, free watermark remover');
 
   const canonicalUrl = `${SITE_CONFIG.url}${canonicalPath.startsWith('/') ? canonicalPath : '/' + canonicalPath}`;
   const fullOgImage = ogImage.startsWith('http') ? ogImage : `${SITE_CONFIG.url}${ogImage}`;
@@ -65,6 +66,7 @@ export const SEO: React.FC<SEOProps> = ({
     };
 
     setMeta('name', 'description', description);
+    setMeta('name', 'keywords', keywordsString);
     setMeta('name', 'robots', effectiveNoIndex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
     setLink('canonical', canonicalUrl);
 
@@ -94,7 +96,8 @@ export const SEO: React.FC<SEOProps> = ({
         '@type': 'WebSite',
         'name': SITE_CONFIG.name,
         'url': SITE_CONFIG.url,
-        'description': SITE_CONFIG.description
+        'description': SITE_CONFIG.description,
+        'keywords': keywordsString
       },
       {
         '@context': 'https://schema.org',
@@ -107,7 +110,8 @@ export const SEO: React.FC<SEOProps> = ({
           'price': '0',
           'priceCurrency': 'USD'
         },
-        'description': SITE_CONFIG.description
+        'description': SITE_CONFIG.description,
+        'keywords': keywordsString
       }
     ];
 

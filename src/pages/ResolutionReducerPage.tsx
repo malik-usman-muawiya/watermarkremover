@@ -110,7 +110,7 @@ export const ResolutionReducerPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0e0e11] text-slate-100 py-10 px-4 sm:px-6 lg:px-8 space-y-16">
+    <div className="min-h-screen bg-[#070B14] text-slate-100 py-10 px-4 sm:px-6 lg:px-8 space-y-16">
       <SEO
         title="Reduce Image Resolution Online Free — Resize Photos"
         description="Reduce the pixel resolution of your photos while keeping quality sharp and aspect ratio locked. Free, private, and instant in your browser."
@@ -143,23 +143,23 @@ export const ResolutionReducerPage: React.FC = () => {
         </div>
 
         {/* Interactive Resizer Box */}
-        <div className="p-8 sm:p-10 bg-[#18181c] border border-white/10 rounded-3xl shadow-2xl space-y-6">
+        <div className="p-8 sm:p-10 bg-[#0D1527] border border-teal-500/20 rounded-3xl shadow-2xl space-y-6">
           
           {selectedFile && result ? (
             <div className="space-y-6 animate-in fade-in">
               {/* Controls */}
-              <div className="p-6 bg-[#23232a] rounded-2xl border border-white/10 space-y-4">
+              <div className="p-6 bg-[#111A2E] rounded-2xl border border-teal-500/20 space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-4">
-                  <div className="flex items-center gap-2 bg-[#18181c] p-1 rounded-xl border border-white/10 text-xs font-bold">
+                  <div className="flex items-center gap-2 bg-[#0D1527] p-1 rounded-xl border border-teal-500/20 text-xs font-bold">
                     <button
                       onClick={() => setResizeMode('percent')}
-                      className={`px-3 py-1.5 rounded-lg transition-all ${resizeMode === 'percent' ? 'bg-cyan-500 text-slate-950 shadow' : 'text-slate-400'}`}
+                      className={`px-3 py-1.5 rounded-lg transition-all ${resizeMode === 'percent' ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 shadow' : 'text-slate-400'}`}
                     >
                       By Percentage (%)
                     </button>
                     <button
                       onClick={() => setResizeMode('dimensions')}
-                      className={`px-3 py-1.5 rounded-lg transition-all ${resizeMode === 'dimensions' ? 'bg-cyan-500 text-slate-950 shadow' : 'text-slate-400'}`}
+                      className={`px-3 py-1.5 rounded-lg transition-all ${resizeMode === 'dimensions' ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 shadow' : 'text-slate-400'}`}
                     >
                       Exact Pixels (W x H)
                     </button>
@@ -185,7 +185,7 @@ export const ResolutionReducerPage: React.FC = () => {
                             if (selectedFile) executeResize(selectedFile);
                           }}
                           disabled={isProcessing}
-                          className={`py-2 rounded-xl text-xs font-bold border transition-all disabled:opacity-60 disabled:cursor-not-allowed ${scalePercent === pct ? 'bg-cyan-500 text-slate-950 border-cyan-400 font-black' : 'bg-[#18181c] text-slate-300 border-white/5'}`}
+                          className={`py-2 rounded-xl text-xs font-bold border transition-all disabled:opacity-60 disabled:cursor-not-allowed ${scalePercent === pct ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 border-cyan-400 font-black' : 'bg-[#0D1527] text-slate-300 border-teal-500/10'}`}
                         >
                           {pct}%
                         </button>
@@ -201,13 +201,13 @@ export const ResolutionReducerPage: React.FC = () => {
                         type="number"
                         value={targetWidth}
                         onChange={(e) => handleWidthChange(parseInt(e.target.value) || 100)}
-                        className="w-28 px-3 py-1.5 bg-[#18181c] border border-white/10 rounded-xl text-xs text-cyan-400 font-bold"
+                        className="w-28 px-3 py-1.5 bg-[#0D1527] border border-teal-500/20 rounded-xl text-xs text-cyan-400 font-bold"
                       />
                     </div>
 
                     <button
                       onClick={() => setLockAspect(!lockAspect)}
-                      className={`p-2 rounded-xl mt-5 transition-colors border ${lockAspect ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/40' : 'bg-[#18181c] text-slate-500 border-white/10'}`}
+                      className={`p-2 rounded-xl mt-5 transition-colors border ${lockAspect ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/40' : 'bg-[#0D1527] text-slate-500 border-teal-500/20'}`}
                       title="Toggle Aspect Ratio Lock"
                       aria-label={lockAspect ? 'Unlock aspect ratio' : 'Lock aspect ratio'}
                     >
@@ -221,14 +221,14 @@ export const ResolutionReducerPage: React.FC = () => {
                         type="number"
                         value={targetHeight}
                         onChange={(e) => handleHeightChange(parseInt(e.target.value) || 100)}
-                        className="w-28 px-3 py-1.5 bg-[#18181c] border border-white/10 rounded-xl text-xs text-cyan-400 font-bold"
+                        className="w-28 px-3 py-1.5 bg-[#0D1527] border border-teal-500/20 rounded-xl text-xs text-cyan-400 font-bold"
                       />
                     </div>
 
                     <button
                       onClick={() => selectedFile && executeResize(selectedFile)}
                       disabled={isProcessing}
-                      className="px-4 py-2 mt-5 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-60 disabled:cursor-not-allowed text-slate-950 font-black text-xs rounded-xl shadow transition-all cursor-pointer"
+                      className="px-4 py-2 mt-5 bg-gradient-to-r from-teal-400 to-cyan-500 hover:from-teal-300 hover:to-cyan-400 disabled:opacity-60 disabled:cursor-not-allowed text-slate-950 font-black text-xs rounded-xl shadow transition-all cursor-pointer"
                     >
                       {isProcessing ? 'Applying...' : 'Apply Dimensions'}
                     </button>
@@ -237,7 +237,7 @@ export const ResolutionReducerPage: React.FC = () => {
               </div>
 
               {/* Preview & Download */}
-              <div className="p-6 bg-[#23232a] rounded-2xl border border-white/10 flex flex-wrap items-center justify-between gap-6">
+              <div className="p-6 bg-[#111A2E] rounded-2xl border border-teal-500/20 flex flex-wrap items-center justify-between gap-6">
                 <div className="flex items-center gap-4 text-left">
                   <div className="w-20 h-20 rounded-xl overflow-hidden bg-black border border-white/10 shrink-0">
                     <img src={result.dataUrl} alt="Resized" className="w-full h-full object-cover" />
@@ -253,7 +253,7 @@ export const ResolutionReducerPage: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <button
                     onClick={handleDownload}
-                    className="px-6 py-3 bg-gradient-to-r from-cyan-400 to-teal-500 text-slate-950 font-black text-xs rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer active:scale-95"
+                    className="px-6 py-3 bg-gradient-to-r from-cyan-400 to-teal-500 hover:from-cyan-300 hover:to-teal-400 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-teal-500/20 transition-all flex items-center gap-2 cursor-pointer active:scale-95"
                   >
                     <Download className="w-4 h-4 text-slate-950" />
                     <span>Download Resized Image</span>
@@ -261,7 +261,7 @@ export const ResolutionReducerPage: React.FC = () => {
 
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-4 py-3 bg-[#18181c] text-slate-300 border border-white/10 text-xs font-bold rounded-xl"
+                    className="px-4 py-3 bg-[#0D1527] text-slate-300 border border-teal-500/20 text-xs font-bold rounded-xl"
                   >
                     Resize Another
                   </button>
@@ -290,7 +290,7 @@ export const ResolutionReducerPage: React.FC = () => {
           <h2 className="text-xl font-black text-white text-center">Frequently Asked Questions</h2>
           <div className="space-y-3">
             {faqs.map((faq, i) => (
-              <div key={i} className="bg-[#18181c] border border-white/10 rounded-2xl overflow-hidden">
+              <div key={i} className="bg-[#0D1527] border border-teal-500/20 rounded-2xl overflow-hidden">
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   className="w-full p-4 text-left text-xs font-bold text-slate-200 flex items-center justify-between"
@@ -299,7 +299,7 @@ export const ResolutionReducerPage: React.FC = () => {
                   <ChevronDown className={`w-4 h-4 text-slate-400 ${openFaq === i ? 'rotate-180 text-cyan-400' : ''}`} />
                 </button>
                 {openFaq === i && (
-                  <div className="px-4 pb-4 text-xs text-slate-400 border-t border-white/5 pt-2">
+                  <div className="px-4 pb-4 text-xs text-slate-400 border-t border-teal-500/10 pt-2">
                     {faq.a}
                   </div>
                 )}

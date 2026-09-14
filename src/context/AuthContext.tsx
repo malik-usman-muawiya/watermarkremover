@@ -1,6 +1,18 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, PlanType } from '../types';
 
+const DEFAULT_USER: User = {
+  id: 'usr_guest_creator',
+  name: 'Creator',
+  email: 'creator@watermarksairemover.com',
+  avatar: '',
+  plan: 'pro',
+  credits: 9999,
+  maxCredits: 9999,
+  apiKey: 'wm_live_894f2910ba749320e8',
+  createdAt: new Date().toISOString()
+};
+
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
@@ -21,66 +33,38 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
     const saved = localStorage.getItem('cleanmark_auth_user');
-    return saved ? JSON.parse(saved) : null; // Start as guest until login or Google sign-in
+    return saved ? JSON.parse(saved) : DEFAULT_USER;
   });
 
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authModalReason, setAuthModalReason] = useState('Sign in to remove watermarks for free');
+  const [isAuthModalOpen] = useState(false);
+  const [authModalReason] = useState('');
 
   useEffect(() => {
     if (user) {
       localStorage.setItem('cleanmark_auth_user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('cleanmark_auth_user');
     }
   }, [user]);
 
-  const openAuthModal = (reason = 'Please sign in with Google to start free watermark & object removal') => {
-    setAuthModalReason(reason);
-    setIsAuthModalOpen(true);
+  // Auth modal is deactivated per user instruction (no Google sign-in barrier)
+  const openAuthModal = () => {};
+  const closeAuthModal = () => {};
+
+  const loginWithGoogle = () => {
+    setUser(DEFAULT_USER);
   };
 
-  const closeAuthModal = () => {
-    setIsAuthModalOpen(false);
-  };
-
-  const loginWithGoogle = (
-    email = 'creator.user@gmail.com',
-    name = 'Google Creator',
-    avatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'
-  ) => {
+  const login = (email: string, name = 'Creator') => {
     const newUser: User = {
-      id: `usr_google_${Math.random().toString(36).substring(2, 9)}`,
-      name,
-      email,
-      avatar,
-      plan: 'pro',
-      credits: 9999,
-      maxCredits: 9999,
-      apiKey: `cmk_live_g_${Math.random().toString(36).substring(2, 15)}`,
-      createdAt: new Date().toISOString()
-    };
-    setUser(newUser);
-    setIsAuthModalOpen(false);
-  };
-
-  const login = (email: string, name = 'Creator User') => {
-    const newUser: User = {
+      ...DEFAULT_USER,
       id: `usr_${Math.random().toString(36).substring(2, 9)}`,
       name: name || email.split('@')[0],
-      email,
-      plan: 'pro',
-      credits: 9999,
-      maxCredits: 9999,
-      apiKey: `cmk_live_${Math.random().toString(36).substring(2, 15)}`,
-      createdAt: new Date().toISOString()
+      email
     };
     setUser(newUser);
-    setIsAuthModalOpen(false);
   };
 
   const logout = () => {
-    setUser(null);
+    setUser(DEFAULT_USER);
   };
 
   const updateUserPlan = (plan: PlanType) => {
@@ -103,7 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const regenerateApiKey = () => {
-    const newKey = `cmk_live_${Math.random().toString(36).substring(2, 12)}_${Math.random().toString(36).substring(2, 12)}`;
+    const newKey = `wm_live_${Math.random().toString(36).substring(2, 12)}_${Math.random().toString(36).substring(2, 12)}`;
     if (user) {
       setUser({ ...user, apiKey: newKey });
     }
@@ -113,7 +97,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   return (
     <AuthContext.Provider value={{
       user,
-      isAuthenticated: !!user,
+      isAuthenticated: true, // Always free and unblocked
       isAuthModalOpen,
       authModalReason,
       openAuthModal,

@@ -4,23 +4,23 @@ import { Sparkles, Shield, ArrowRight } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#121216] text-white text-sm border-t border-white/10">
+    <footer className="bg-[#0A0F1E] text-white text-sm border-t border-white/[0.08]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           
           {/* Col 1: Brand & Philosophy */}
           <div className="lg:col-span-1 space-y-4">
             <Link to="/" className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 shadow-md">
-                <div className="w-full h-full bg-[#18181c] rounded-[10px] flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-400 to-cyan-500 p-0.5 shadow-md shadow-teal-500/20">
+                <div className="w-full h-full bg-[#070B14] rounded-[10px] flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-teal-400" />
                 </div>
               </div>
               <div className="flex flex-col">
                 <span className="font-extrabold text-lg text-white tracking-tight leading-none">
-                  WATERMARK <span className="text-amber-400">AI</span> REMOVER
+                  WATERMARK <span className="text-teal-400">AI</span> REMOVER
                 </span>
-                <span className="text-[9px] text-amber-400 uppercase tracking-widest font-bold mt-0.5">
+                <span className="text-[9px] text-teal-400 uppercase tracking-widest font-bold mt-0.5">
                   AI TOOLS SUITE
                 </span>
               </div>
@@ -37,7 +37,7 @@ export const Footer: React.FC = () => {
 
           {/* Col 2: Image Compression Cluster */}
           <div>
-            <h4 className="font-extrabold text-white uppercase text-xs tracking-wider mb-4 text-amber-400">
+            <h4 className="font-extrabold text-white uppercase text-xs tracking-wider mb-4 text-teal-400">
               IMAGE COMPRESSOR
             </h4>
             <ul className="space-y-2.5 text-xs text-slate-400">
@@ -162,19 +162,19 @@ export const Footer: React.FC = () => {
       </div>
 
       {/* Bottom credit bar */}
-      <div className="border-t border-white/10">
+      <div className="border-t border-white/[0.08]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 text-center">
-          <p className="text-xs text-slate-500">
-            This project is created by{' '}
+          <p className="text-xs text-slate-400">
+            Powered with precision by{' '}
             <a
               href="https://www.ranknexai.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-amber-400 hover:text-amber-300 font-bold transition-colors"
+              className="text-teal-400 hover:text-teal-300 font-extrabold transition-colors underline decoration-teal-500/50 hover:decoration-teal-400"
             >
               RankNex AI
             </a>
-            {' '}agency.
+            {' '}Agency.
           </p>
         </div>
       </div>

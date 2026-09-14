@@ -111,11 +111,11 @@ export const AdminPage: React.FC = () => {
     return (
       <div className="min-h-[75vh] flex items-center justify-center px-4 py-12">
         <SEO title="Admin Login — Watermark AI Remover" noIndex={true} />
-        <div className="w-full max-w-md bg-[#121216] border border-white/10 rounded-3xl p-8 shadow-2xl space-y-6 animate-in zoom-in-95 duration-200">
+        <div className="w-full max-w-md bg-[#0D1527] border border-white/10 rounded-3xl p-8 shadow-2xl space-y-6 animate-in zoom-in-95 duration-200">
           
           {/* Header */}
           <div className="text-center space-y-2">
-            <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center mx-auto shadow-sm">
+            <div className="w-14 h-14 rounded-2xl bg-teal-500/10 text-teal-400 border border-teal-500/20 flex items-center justify-center mx-auto shadow-sm">
               <Lock className="w-7 h-7" />
             </div>
             <h1 className="text-2xl font-black text-white tracking-tight">Admin Portal Login</h1>
@@ -134,13 +134,13 @@ export const AdminPage: React.FC = () => {
 
           {/* Lockout Notification Banner */}
           {lockout.isLocked && (
-            <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl text-center space-y-1">
-              <div className="text-xs font-bold text-amber-400 flex items-center justify-center gap-1.5">
+            <div className="p-4 bg-teal-500/10 border border-teal-500/30 rounded-2xl text-center space-y-1">
+              <div className="text-xs font-bold text-teal-400 flex items-center justify-center gap-1.5">
                 <ShieldAlert className="w-4 h-4" />
                 <span>Rate-Limit Security Lockout</span>
               </div>
               <p className="text-xs text-slate-300">
-                Please wait <strong className="text-amber-400 font-mono">{lockout.remainingSeconds}s</strong> before trying again.
+                Please wait <strong className="text-teal-400 font-mono">{lockout.remainingSeconds}s</strong> before trying again.
               </p>
             </div>
           )}
@@ -158,7 +158,7 @@ export const AdminPage: React.FC = () => {
                 autoComplete="username"
                 value={usernameInput}
                 onChange={(e) => setUsernameInput(e.target.value)}
-                className="w-full px-4 py-2.5 bg-[#18181c] border border-white/15 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="w-full px-4 py-2.5 bg-[#111A2E] border border-white/15 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               />
             </div>
 
@@ -174,7 +174,7 @@ export const AdminPage: React.FC = () => {
                   autoComplete="current-password"
                   value={passwordInput}
                   onChange={(e) => setPasswordInput(e.target.value)}
-                  className="w-full px-4 py-2.5 pr-10 bg-[#18181c] border border-white/15 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="w-full px-4 py-2.5 pr-10 bg-[#111A2E] border border-white/15 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 />
                 <button
                   type="button"
@@ -191,7 +191,7 @@ export const AdminPage: React.FC = () => {
             <button
               type="submit"
               disabled={lockout.isLocked || isSubmitting}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer active:scale-[0.99]"
+              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-teal-400 via-teal-500 to-cyan-400 hover:opacity-95 text-slate-950 font-black text-sm shadow-lg shadow-teal-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer active:scale-[0.99]"
             >
               {isSubmitting ? 'Authenticating...' : lockout.isLocked ? `Locked (${lockout.remainingSeconds}s)` : 'Sign In to Admin Dashboard'}
             </button>
@@ -219,9 +219,9 @@ export const AdminPage: React.FC = () => {
       <SEO title="Admin Dashboard — Watermark AI Remover" noIndex={true} />
       
       {/* Admin Header with Logout */}
-      <div className="flex flex-wrap items-center justify-between gap-4 p-6 bg-[#121216] border border-white/10 rounded-3xl shadow-xl">
+      <div className="flex flex-wrap items-center justify-between gap-4 p-6 bg-[#0D1527] border border-white/10 rounded-3xl shadow-xl">
         <div className="flex items-center gap-3">
-          <div className="p-3 bg-amber-500/10 text-amber-400 rounded-2xl border border-amber-500/20">
+          <div className="p-3 bg-teal-500/10 text-teal-400 rounded-2xl border border-teal-500/20">
             <ShieldAlert className="w-6 h-6" />
           </div>
           <div>
@@ -238,12 +238,12 @@ export const AdminPage: React.FC = () => {
 
         <div className="flex items-center gap-3">
           {/* Tab selector */}
-          <div className="bg-[#18181c] p-1 rounded-2xl border border-white/10 flex items-center text-xs">
+          <div className="bg-[#111A2E] p-1 rounded-2xl border border-white/10 flex items-center text-xs">
             <button
               onClick={() => setActiveTab('metrics')}
               className={`px-3.5 py-1.5 font-bold rounded-xl transition-all cursor-pointer ${
                 activeTab === 'metrics' 
-                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-md font-extrabold' 
+                  ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 shadow-md font-black' 
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -253,7 +253,7 @@ export const AdminPage: React.FC = () => {
               onClick={() => setActiveTab('workers')}
               className={`px-3.5 py-1.5 font-bold rounded-xl transition-all cursor-pointer ${
                 activeTab === 'workers' 
-                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-md font-extrabold' 
+                  ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 shadow-md font-black' 
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -263,7 +263,7 @@ export const AdminPage: React.FC = () => {
               onClick={() => setActiveTab('users')}
               className={`px-3.5 py-1.5 font-bold rounded-xl transition-all cursor-pointer ${
                 activeTab === 'users' 
-                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-md font-extrabold' 
+                  ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-slate-950 shadow-md font-black' 
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -283,10 +283,10 @@ export const AdminPage: React.FC = () => {
 
       {/* Top Metrics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-5 bg-[#121216] border border-white/10 rounded-3xl shadow-lg space-y-2">
+        <div className="p-5 bg-[#0D1527] border border-white/10 rounded-3xl shadow-lg space-y-2">
           <div className="flex items-center justify-between text-xs text-slate-400">
             <span>Launch Traffic (Visitors)</span>
-            <Users className="w-4 h-4 text-amber-400" />
+            <Users className="w-4 h-4 text-teal-400" />
           </div>
           <div className="text-2xl font-black text-white">18,420</div>
           <div className="flex items-center gap-1 text-xs text-emerald-400 font-bold">
@@ -294,7 +294,7 @@ export const AdminPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-5 bg-[#121216] border border-white/10 rounded-3xl shadow-lg space-y-2">
+        <div className="p-5 bg-[#0D1527] border border-white/10 rounded-3xl shadow-lg space-y-2">
           <div className="flex items-center justify-between text-xs text-slate-400">
             <span>Free Inpaintings Rendered</span>
             <Activity className="w-4 h-4 text-indigo-400" />
@@ -303,7 +303,7 @@ export const AdminPage: React.FC = () => {
           <div className="text-xs text-emerald-400 font-bold">99.88% Success Rate</div>
         </div>
 
-        <div className="p-5 bg-[#121216] border border-white/10 rounded-3xl shadow-lg space-y-2">
+        <div className="p-5 bg-[#0D1527] border border-white/10 rounded-3xl shadow-lg space-y-2">
           <div className="flex items-center justify-between text-xs text-slate-400">
             <span>Active Sign-ins</span>
             <UserCheck className="w-4 h-4 text-emerald-400" />
@@ -312,7 +312,7 @@ export const AdminPage: React.FC = () => {
           <div className="text-xs text-slate-400">Unlimited Free Pass enabled</div>
         </div>
 
-        <div className="p-5 bg-[#121216] border border-white/10 rounded-3xl shadow-lg space-y-2">
+        <div className="p-5 bg-[#0D1527] border border-white/10 rounded-3xl shadow-lg space-y-2">
           <div className="flex items-center justify-between text-xs text-slate-400">
             <span>Storage Auto-Purged (24h)</span>
             <HardDrive className="w-4 h-4 text-purple-400" />
@@ -325,10 +325,10 @@ export const AdminPage: React.FC = () => {
       {/* Main Tab View */}
       {activeTab === 'metrics' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 p-6 bg-[#121216] border border-white/10 rounded-3xl shadow-lg space-y-6">
+          <div className="lg:col-span-2 p-6 bg-[#0D1527] border border-white/10 rounded-3xl shadow-lg space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="font-bold text-white text-base flex items-center gap-2">
-                <Cpu className="w-4 h-4 text-amber-400" />
+                <Cpu className="w-4 h-4 text-teal-400" />
                 Live Inpainting Worker Throughput
               </h2>
               <span className="text-xs text-emerald-400 font-bold flex items-center gap-1.5">
@@ -340,7 +340,7 @@ export const AdminPage: React.FC = () => {
               {[40, 65, 30, 85, 45, 95, 70, 60, 80, 50, 90, 75, 85, 40, 60, 90, 70, 85, 95, 60, 45, 80].map((h, i) => (
                 <div key={i} className="flex-1 flex flex-col items-center gap-1 group relative">
                   <div 
-                    className="w-full bg-gradient-to-t from-amber-600 to-orange-400 rounded-t-sm group-hover:from-amber-400 group-hover:to-orange-300 transition-all"
+                    className="w-full bg-gradient-to-t from-teal-600 via-teal-500 to-cyan-400 rounded-t-sm group-hover:from-teal-400 group-hover:to-cyan-300 transition-all"
                     style={{ height: `${h}%` }}
                   />
                 </div>
@@ -354,24 +354,24 @@ export const AdminPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="p-6 bg-[#121216] border border-white/10 rounded-3xl shadow-lg space-y-4">
+          <div className="p-6 bg-[#0D1527] border border-white/10 rounded-3xl shadow-lg space-y-4">
             <h2 className="font-bold text-white text-base flex items-center gap-2">
-              <Server className="w-4 h-4 text-amber-400" />
+              <Server className="w-4 h-4 text-teal-400" />
               Cluster Controls
             </h2>
             
             <div className="space-y-3 text-xs">
-              <button className="w-full p-3.5 bg-[#18181c] hover:bg-[#202026] rounded-2xl border border-white/10 text-left font-bold text-slate-200 flex items-center justify-between transition-all cursor-pointer">
+              <button className="w-full p-3.5 bg-[#111A2E] hover:bg-[#18243e] rounded-2xl border border-white/10 text-left font-bold text-slate-200 flex items-center justify-between transition-all cursor-pointer">
                 <span>Scale PyTorch Worker Pool</span>
-                <span className="text-amber-400 font-bold">+ Add Node</span>
+                <span className="text-teal-400 font-bold">+ Add Node</span>
               </button>
 
-              <button className="w-full p-3.5 bg-[#18181c] hover:bg-[#202026] rounded-2xl border border-white/10 text-left font-bold text-slate-200 flex items-center justify-between transition-all cursor-pointer">
+              <button className="w-full p-3.5 bg-[#111A2E] hover:bg-[#18243e] rounded-2xl border border-white/10 text-left font-bold text-slate-200 flex items-center justify-between transition-all cursor-pointer">
                 <span>Trigger Manual Storage Purge</span>
                 <span className="text-red-400 font-bold">Execute</span>
               </button>
 
-              <button className="w-full p-3.5 bg-[#18181c] hover:bg-[#202026] rounded-2xl border border-white/10 text-left font-bold text-slate-200 flex items-center justify-between transition-all cursor-pointer">
+              <button className="w-full p-3.5 bg-[#111A2E] hover:bg-[#18243e] rounded-2xl border border-white/10 text-left font-bold text-slate-200 flex items-center justify-between transition-all cursor-pointer">
                 <span>Export Traffic & Launch Logs</span>
                 <span className="text-slate-400 font-mono">CSV</span>
               </button>
@@ -381,9 +381,9 @@ export const AdminPage: React.FC = () => {
       )}
 
       {activeTab === 'workers' && (
-        <div className="p-6 bg-[#121216] border border-white/10 rounded-3xl shadow-lg space-y-4">
+        <div className="p-6 bg-[#0D1527] border border-white/10 rounded-3xl shadow-lg space-y-4">
           <h2 className="font-bold text-white text-base flex items-center gap-2">
-            <Zap className="w-4 h-4 text-amber-400" />
+            <Zap className="w-4 h-4 text-teal-400" />
             Active GPU Cluster Nodes
           </h2>
           
@@ -412,9 +412,9 @@ export const AdminPage: React.FC = () => {
       )}
 
       {activeTab === 'users' && (
-        <div className="p-6 bg-[#121216] border border-white/10 rounded-3xl shadow-lg space-y-4">
+        <div className="p-6 bg-[#0D1527] border border-white/10 rounded-3xl shadow-lg space-y-4">
           <h2 className="font-bold text-white text-base flex items-center gap-2">
-            <Users className="w-4 h-4 text-amber-400" />
+            <Users className="w-4 h-4 text-teal-400" />
             Active Launch Users
           </h2>
           
@@ -431,8 +431,8 @@ export const AdminPage: React.FC = () => {
                   <div className="text-slate-400">Auth: {usr.method}</div>
                 </div>
                 <div className="flex items-center gap-6">
-                  <div>Activity: <strong className="text-amber-400">{usr.processed}</strong></div>
-                  <span className="px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold text-[10px]">
+                  <div>Activity: <strong className="text-teal-400">{usr.processed}</strong></div>
+                  <span className="px-2.5 py-1 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 font-bold text-[10px]">
                     Unlimited Launch Access
                   </span>
                 </div>

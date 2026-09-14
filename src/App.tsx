@@ -5,9 +5,7 @@ import { CreditsProvider } from './context/CreditsContext';
 import { PromoBanner } from './components/layout/PromoBanner';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
-import { AuthModal } from './components/ui/AuthModal';
 import { UpgradeModal } from './components/ui/UpgradeModal';
-import { ProtectedRoute } from './components/common/ProtectedRoute';
 
 // Primary landing is eager for fastest LCP
 import { ImageEditorPage } from './pages/ImageEditorPage';
@@ -40,8 +38,8 @@ function ScrollToTop() {
 function PageLoadingFallback() {
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3">
-      <div className="w-10 h-10 rounded-full border-2 border-amber-500/20 border-t-amber-400 animate-spin" />
-      <span className="text-xs font-semibold text-slate-400">Loading neural modules...</span>
+      <div className="w-10 h-10 rounded-full border-2 border-teal-500/20 border-t-teal-400 animate-spin" />
+      <span className="text-xs font-semibold text-slate-400">Loading AI studio...</span>
     </div>
   );
 }
@@ -52,15 +50,12 @@ export function App() {
       <CreditsProvider>
         <Router>
           <ScrollToTop />
-          <div className="min-h-screen flex flex-col bg-[#0e0e11] text-slate-100 selection:bg-amber-500 selection:text-black overflow-x-hidden">
+          <div className="min-h-screen flex flex-col bg-[#070B14] text-slate-100 selection:bg-teal-500 selection:text-slate-950 overflow-x-hidden">
             {/* Top Launch Alert Continuous Marquee Ticker */}
             <PromoBanner />
 
-            {/* Navbar */}
-            <Navbar />
-
             {/* Main Application Routes */}
-            <main className="flex-1">
+            <main className="flex-1 pb-24">
               <Suspense fallback={<PageLoadingFallback />}>
                 <Routes>
                   {/* Core AI Tools - Default Front Page is Image Watermark Remover */}
@@ -83,11 +78,11 @@ export function App() {
                   <Route path="/reduce-image-resolution" element={<ResolutionReducerPage />} />
                   <Route path="/pakistan-job-form-photo-size" element={<PakistanFormPhotoHubPage />} />
 
-                  {/* User & Admin — sign-in required */}
-                  <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+                  {/* User & Admin */}
+                  <Route path="/dashboard" element={<DashboardPage />} />
                   <Route path="/pricing" element={<PricingPage />} />
                   <Route path="/api-docs" element={<ApiDocsPage />} />
-                  <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+                  <Route path="/admin" element={<AdminPage />} />
                   <Route path="/auth" element={<AuthPage />} />
                   <Route path="/legal" element={<LegalPage />} />
                   <Route path="/seo/:slug" element={<SeoLandingPage />} />
@@ -98,11 +93,11 @@ export function App() {
               </Suspense>
             </main>
 
+            {/* Minimal Floating Bottom Dock Navbar */}
+            <Navbar />
+
             {/* Dark Footer */}
             <Footer />
-
-            {/* Global Google Authentication Modal */}
-            <AuthModal />
 
             {/* Upgrade & Top-up Modal */}
             <UpgradeModal />

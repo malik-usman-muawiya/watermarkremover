@@ -23,6 +23,18 @@ export default {
         tealHeader: '#088395',
         tealDark: '#02677a',
         tealDeep: '#014f5d',
+        navy: {
+          800: '#0F172A',
+          900: '#0B1120',
+          950: '#070B14',
+        },
+        ranknex: {
+          teal: '#00C9A7',
+          cyan: '#00D2D2',
+          navy: '#070B14',
+          card: '#0D1527',
+          cardHover: '#121C33',
+        },
         surface: {
           50: '#ffffff',
           100: '#f8fafc',

@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import type { ToolMode, Point, Rect } from '../../types';
 import { EditorToolbar } from './EditorToolbar';
 import { performClientInpainting } from '../../services/inpaintingEngine';
-import { useAuth } from '../../context/AuthContext';
 
 interface CanvasEditorProps {
   imageSrc: string;
@@ -16,7 +15,6 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
   initialMask,
   onProcessSuccess
 }) => {
-  const { isAuthenticated, openAuthModal } = useAuth();
 
   // Canvas Refs
   const imageCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -252,12 +250,6 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     const imgCanvas = imageCanvasRef.current;
     const maskCanvas = maskCanvasRef.current;
     if (!imgCanvas || !maskCanvas) return;
-
-    // Check authentication requirement
-    if (!isAuthenticated) {
-      openAuthModal('Please sign in with Google to start free watermark removal');
-      return;
-    }
 
     setIsProcessing(true);
 
